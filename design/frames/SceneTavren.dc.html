@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scene 01, Tavren</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&amp;family=Rethink+Sans:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f2a24}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #ffd34d; color: #1f2a24; font-family: 'Rethink Sans', system-ui, sans-serif;">
+
+<div style="position: absolute; left: 0; top: 0; height: 2px; width: 38%; background: #1f2a24;"></div>
+
+<div style="position: absolute; left: 80px; top: 72px; right: 80px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">
+<span>01 · Tavren</span>
+<span>Scene 01 / 04</span>
+</div>
+
+<div style="position: absolute; left: 80px; top: 200px; width: 500px; display: flex; flex-direction: column; gap: 24px;">
+<h2 style="margin: 0 0 0 -0.04em; font-size: 160px; line-height: 0.84; font-weight: 800; letter-spacing: -0.045em;">Tavren</h2>
+<p style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; letter-spacing: -0.01em;">A medieval hex-board strategy game for two to four players.</p>
+<p style="margin: 0; font-size: 16px; line-height: 24px; max-width: 42ch;">Settle an island, build roads and villages, trade, and hold off the bandits. Play on one device, online, or against the computer.</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+<a href="#play" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; border: 2px solid #1f2a24; background: #1f2a24; color: #ffd34d; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none;">Play Tavren ↗</a>
+<a href="#how" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; border: 2px solid #1f2a24; color: #1f2a24; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none;">How it plays</a>
+</div>
+</div>
+
+<div aria-hidden="true" style="position: absolute; left: 640px; top: 120px; width: 760px; height: 660px; perspective: 1400px;">
+<div style="width: 680px; margin: 40px auto 0; transform: rotateX(52deg) rotateZ(-8deg); transform-origin: 50% 50%;">
+<sc-for list="{{rows}}" as="row" hint-placeholder-count="5">
+<div style="{{row.style}}">
+<sc-for list="{{row.hexes}}" as="hex" hint-placeholder-count="6">
+<div style="{{hex.style}}"></div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="position: absolute; left: 80px; right: 80px; bottom: 56px; display: flex; justify-content: space-between; align-items: end; border-top: 1px solid #1f2a24; padding-top: 16px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase;">
+<span>Vue 3 · TypeScript · Three.js</span>
+<span>2-4 players · plays in the browser</span>
+<span>[Screenshots stack here as the board settles]</span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const counts = [4, 5, 6, 5, 4];
+    const lit = '2-3';
+    const rows = counts.map((n, r) => ({
+      style: 'display:flex;justify-content:center;gap:6px;margin-top:' + (r === 0 ? 0 : -24) + 'px',
+      hexes: Array.from({ length: n }, (_, i) => {
+        const isLit = (r + '-' + i) === lit;
+        const ring = Math.abs(r - 2) + Math.abs(i - (n - 1) / 2);
+        const fill = isLit ? '#1f2a24' : (ring < 1.6 ? '#fbf6ea' : '#e4d9bf');
+        const lift = isLit ? 'transform:translateY(-18px);' : '';
+        return { style: 'width:96px;height:110px;flex:none;background:' + fill + ';clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);' + lift };
+      })
+    }));
+    return { rows };
+  }
+}
+</script>
+</body>
+</html>

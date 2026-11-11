@@ -1,0 +1,65 @@
+# Motion
+
+The motion system for njvan.net, built with GSAP (ScrollTrigger, SplitText, CustomEase, Flip) and the Animaxxing recipes. The frame moves the same way everywhere; each project adds one signature moment of its own.
+
+## Tokens
+
+Keep these in one module in the build (`motion.ts`). The design-system page has no motion family, so they live here.
+
+| Token | Value | Use |
+|---|---|---|
+| `DURATION.micro` | 0.14s | Hovers, presses, underline draws (range 100-180ms) |
+| `DURATION.component` | 0.2s | Chips, cards, menus (160-240ms) |
+| `DURATION.page` | 0.28s | Panels and route changes (220-320ms) |
+| `EASE.entrance` | `power2.out` | Things arriving: fast, then settled |
+| `EASE.exit` | `power2.in` | Things leaving: accelerate away, feel shorter |
+| `EASE.shift` | `power2.inOut` | Moves that start and end at rest |
+| `animaxxing` curve | `M0,0 C0.16,1 0.3,1 1,1` | Large deliberate moves only: accent washes, Flip morphs, scene changes |
+| `SHIFT` | 4 / 8 / 16px | Travel for micro / component / page rises |
+| `STAGGER` | 0.03s tight, 0.05s loose | Letters and list items |
+| `WEIGHT` | 400 rest, 600 emphasis, 800 display | Animated weight stays inside 400-800 |
+
+A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, project moments) run longer on purpose.
+
+## The frame: same on every surface
+
+| Surface | Intro | Settled | Outro |
+|---|---|---|---|
+| Wordmark | letters spring in, 1px underline draws `scaleX 0 → 1` | still | none (shell persists) |
+| Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | slow letter wave, period 1.5s, weight dips 800 → 450 → 800 | blast-off when the visitor scrolls past |
+| Hero lead line | speak-in, word by word, from 1.05s | words persist | thrown with the blast |
+| Index rows | rise, staggered 0.05s, on entering view | hover: name waves once, accent rule draws under it | standard exit |
+| Project names (statement) | masked split by line as the scene pins | still | slide up behind the mask |
+| Labels and annotations | standard rise | still | standard exit |
+| Body copy | appears with its block, never split | still | with its block |
+| Page progress | none | 1px rule along the top in `foreground`, in the project's accent inside a scene | none |
+| Primary button (one per page) | particle `reactor` assembles it | embers | `blast()` on press |
+| External links `↗` | `slipstream` | drifting hairlines | `blast()` on press |
+
+## Project scenes: one signature moment each
+
+Each scene pins for about 1.5 screens of scroll. The accent wash uses the `animaxxing` curve: the accent grows from the index row's rule to fill the scene, then retracts into the next row as the following scene arrives. Text on the wash switches to the `on-` token as the wash passes under it.
+
+| Project | Accent | Signature moment (scrubbed to scroll) |
+|---|---|---|
+| **Tavren** | `tavren` | The hex board tilts from flat to 3D (CSS 3D or a small Three.js scene). Hexes rise in a ripple from the centre; one village lights up gold. |
+| **Kora** | `kora` | The violet wash arrives, then interface panels slide into a grid with Flip (projects, timesheets, Ask Kora). A typewriter line asks Kora a question and the answer speaks in. |
+| **Cotrip** | `cotrip` | A route line draws itself across a stylised map (SVG `strokeDashoffset`), dropping pins at each stop; phone screenshots stack beside it. |
+| **Campaign Tower** | `tower` | The tower builds itself floor by floor in pixel blocks (stepped ease, no smoothing). A small pixel lift rides up the side as the scroll indicator. |
+
+Rules for project moments:
+
+- **One signature moment per scene.** Everything else in the scene uses frame motion.
+- Scrub moments to scroll (`scrub: 0.6`) so the visitor controls them; never autoplay a long sequence.
+- Campaign Tower is the one place stepped, unsmoothed motion is allowed, to match its pixel art.
+
+## Mobile
+
+- No pinning under 768px. Scenes become stacked sections; the signature moment plays once on entering view.
+- Hover effects have a tap or in-view equivalent; nothing important hides behind hover.
+- The letter wave pauses when the hero leaves the viewport.
+
+## Reduced motion and no-script
+
+- `prefers-reduced-motion: reduce`: no scatter, wave, speak-in, particles, pinning or scrubbing. Elements fade in over `DURATION.component`. Accent washes are shown as static fields.
+- No script: the page renders its settled state. Nothing starts hidden unless a script is there to reveal it.

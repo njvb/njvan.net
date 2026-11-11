@@ -1,0 +1,25 @@
+{
+ "v": 3,
+ "createdOnFiles": {"v": 1, "at": "2026-11-11T16:45:00Z"},
+ "title": "njvan.net homepage",
+ "launch": {"view": "canvas"},
+ "pages": [],
+ "boards": {
+  "Main.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 1640, "title": "Homepage - desktop", "expand": "fill"},
+  "Mobile.dc.html": {"x": 1520, "y": 0, "w": 390, "h": 1300, "title": "Homepage - mobile"},
+  "SceneTavren.dc.html": {"x": 0, "y": 2060, "w": 1440, "h": 900, "title": "Scene 01 - Tavren"},
+  "SceneKora.dc.html": {"x": 1520, "y": 2060, "w": 1440, "h": 900, "title": "Scene 02 - Kora"},
+  "SceneCotrip.dc.html": {"x": 0, "y": 3080, "w": 1440, "h": 900, "title": "Scene 03 - Cotrip"},
+  "SceneTower.dc.html": {"x": 1520, "y": 3080, "w": 1440, "h": 900, "title": "Scene 04 - Campaign Tower"}
+ },
+ "order": ["Main.dc.html", "Mobile.dc.html", "SceneTavren.dc.html", "SceneKora.dc.html", "SceneCotrip.dc.html", "SceneTower.dc.html"],
+ "notes": {
+  "homeTitle": {"x": 0, "y": -300, "text": "Homepage: hero and project index", "kind": "title1", "maxW": 1910},
+  "homeMotion": {"x": 2000, "y": 0, "w": 420, "fill": "gray", "text": "Hero motion\n\n1. Wordmark letters spring in, underline draws.\n2. 'Nathan VanderByl' scatters in from off screen, lands from 0.75s.\n3. Lead line speaks in word by word from 1.05s.\n4. 'See the projects' button assembles from particles.\n5. Settled: slow letter wave through the name, weight dipping 800 to 450.\n6. Scrolling past: the hero blasts off.\n\nIndex: rows rise in, 0.05s apart. Hover draws the project's accent rule and waves the name once (Kora shown hovered)."},
+  "sceneTitle": {"x": 0, "y": 1760, "text": "Project scenes: each pinned for about 1.5 screens of scroll", "kind": "title1", "maxW": 2960},
+  "sceneMotion": {"x": 3040, "y": 2060, "w": 420, "fill": "gray", "text": "Scene motion (all scrubbed to scroll)\n\nThe accent grows from the index row's rule to fill the scene (animaxxing curve), text switches to its on- colour as the wash passes, then it retracts as the next scene arrives.\n\nTavren: hex board tilts flat to 3D, hexes ripple up, one village lights gold.\nKora: interface panels assemble with Flip, an Ask Kora question types itself.\nCotrip: the route line draws across the map, dropping pins.\nCampaign Tower: floors stack in pixel steps (stepped ease), the lift rides up as the scroll indicator.\n\nMobile: no pinning; each moment plays once on entering view."}
+ },
+ "designSystems": [
+  {"title": "njvan", "namespace": "njvan", "artifact": "https://claude.ai/artifact/7TudbuBnrogdYkgpxxTV4X", "version": "1794415237-fee5", "copiedAt": "2026-11-11T16:45:00Z"}
+ ]
+}

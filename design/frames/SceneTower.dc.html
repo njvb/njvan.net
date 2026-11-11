@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scene 04, Campaign Tower</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&amp;family=Rethink+Sans:wght@400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0a0a0a}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #3fbf5f; color: #0a0a0a; font-family: 'Rethink Sans', system-ui, sans-serif;">
+
+<div style="position: absolute; left: 0; top: 0; height: 2px; width: 92%; background: #0a0a0a;"></div>
+
+<div style="position: absolute; left: 80px; top: 72px; right: 80px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">
+<span>04 · Campaign Tower</span>
+<span>Scene 04 / 04</span>
+</div>
+
+<div style="position: absolute; left: 80px; top: 200px; width: 560px; display: flex; flex-direction: column; gap: 24px;">
+<h2 style="margin: 0 0 0 -0.04em; font-size: 128px; line-height: 0.84; font-weight: 800; letter-spacing: -0.045em;">Campaign Tower</h2>
+<p style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; letter-spacing: -0.01em;">Build an ad agency one floor at a time.</p>
+<p style="margin: 0; font-size: 16px; line-height: 24px; max-width: 42ch;">A pixel-art tower game for iPhone. Hire creatives with strange habits, drive the lift yourself and win briefs from sixty made-up brands.</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+<a href="https://njvb.github.io/campaigntower-site/" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; border: 2px solid #0a0a0a; background: #0a0a0a; color: #3fbf5f; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none;">Visit the tower ↗</a>
+</div>
+</div>
+
+<div aria-hidden="true" style="position: absolute; left: 820px; top: 120px; width: 520px; height: 680px; display: flex; align-items: flex-end; justify-content: center; gap: 0;">
+<div style="width: 32px; height: 640px; position: relative; background: #1b1b24;">
+<div style="position: absolute; left: 4px; bottom: 316px; width: 24px; height: 32px; background: #f2c94c;"></div>
+</div>
+<div style="width: 384px; display: flex; flex-direction: column;">
+<sc-for list="{{floors}}" as="floor" hint-placeholder-count="12">
+<div style="{{floor.style}}">
+<sc-for list="{{floor.cells}}" as="cell" hint-placeholder-count="6">
+<div style="{{cell.style}}"></div>
+</sc-for>
+</div>
+</sc-for>
+<div style="height: 24px; background: #1b1b24;"></div>
+</div>
+</div>
+
+<div style="position: absolute; left: 80px; right: 80px; bottom: 56px; display: flex; justify-content: space-between; align-items: end; border-top: 1px solid #0a0a0a; padding-top: 16px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase;">
+<span>iOS · Pixel art</span>
+<span>Floors build in steps, no smoothing</span>
+<span>The lift is the scroll indicator</span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const total = 13;
+    const built = 10;
+    const palette = ['#82c9f2', '#f4f1ea', '#f2c94c', '#82c9f2', '#c89b6a', '#f4f1ea'];
+    const floors = Array.from({ length: total }, (_, k) => {
+      const level = total - 1 - k;
+      const lit = level <= built;
+      return {
+        style: 'height:44px;box-sizing:border-box;padding:8px 12px;display:flex;justify-content:space-between;' + (lit ? 'background:#2a2733;' : ''),
+        cells: this.cellsFor(k, total, built, palette)
+      };
+    });
+    return { floors };
+  }
+  cellsFor(k, total, built, palette) {
+    const level = total - 1 - k;
+    const isBuilt = level < built;
+    const isBuilding = level === built;
+    return Array.from({ length: 6 }, (_, i) => {
+      const empty = (!isBuilt && !isBuilding) || (isBuilding && i > 2);
+      const bg = empty ? 'transparent' : palette[(i + level) % palette.length];
+      const edge = empty ? 'outline:2px dashed rgba(10,10,10,0.35);outline-offset:-2px;' : '';
+      return { style: 'width:52px;height:28px;background:' + bg + ';' + edge };
+    });
+  }
+}
+</script>
+</body>
+</html>
