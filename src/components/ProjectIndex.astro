@@ -2,27 +2,35 @@
 import { projects } from '../data/projects';
 ---
 
-<section class="index" id="projects" aria-labelledby="index-title">
+<section class="index" id="projects" aria-labelledby="index-title" data-snap-panel>
   <div class="shell">
     <div class="index__head" data-scroll-reveal>
-      <h2 class="t-caption" id="index-title">Index</h2>
-      <span class="index__hint t-annotation muted">Hover to preview · click to jump</span>
+      <h2 class="t-caption" id="index-title" aria-label="Index" data-ledger-scramble>Index</h2>
+      <span class="index__hint t-annotation muted" data-ledger-scramble>Hover to preview · click to jump</span>
+      <span class="index__rule" aria-hidden="true" data-ledger-rule></span>
     </div>
 
     <ol class="ledger" role="list">
       {
         projects.map((p) => (
           <li data-scroll-reveal>
-            <a class="ledger-row" href={`#${p.id}`} data-project={p.id}>
+            <a
+              class="ledger-row"
+              href={`#${p.id}`}
+              data-project={p.id}
+              aria-label={`${p.number}, ${p.kind}: ${p.name}. ${p.indexLine}`}
+            >
               <span class="ledger-row__meta t-annotation">
-                <span class="ledger-row__num">
-                  {p.number} · {p.kind}
-                </span>
-                <span class="ledger-row__stack">{p.indexStack}</span>
+                <span class="ledger-row__num" data-ledger-scramble>{`${p.number} · ${p.kind}`}</span>
+                <span class="ledger-row__stack" data-ledger-scramble>{p.indexStack}</span>
               </span>
               <span class="ledger-row__name t-statement" data-ledger-name>{p.name}</span>
-              <span class="ledger-row__line">{p.indexLine}</span>
-              <span class="ledger-row__stack ledger-row__stack--wide t-annotation">{p.indexStack}</span>
+              <span class="ledger-row__line" data-ledger-line>{p.indexLine}</span>
+              <span class="ledger-row__stack ledger-row__stack--wide t-annotation" data-ledger-scramble>
+                {p.indexStack}
+              </span>
+              <span class="ledger-row__rule" aria-hidden="true" data-ledger-rule></span>
+              <span class="ledger-row__accent" aria-hidden="true" data-ledger-accent></span>
             </a>
           </li>
         ))
@@ -41,8 +49,8 @@ import { projects } from '../data/projects';
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    position: relative;
     padding-bottom: 12px;
-    border-bottom: var(--border-hairline) solid var(--color-border);
   }
 
   .index__hint {
@@ -63,7 +71,6 @@ import { projects } from '../data/projects';
     flex-direction: column;
     gap: var(--space-2);
     padding-block: 20px;
-    border-bottom: var(--border-hairline) solid var(--color-border);
     color: var(--color-foreground);
     text-decoration: none;
   }
@@ -73,19 +80,30 @@ import { projects } from '../data/projects';
   .ledger-row[data-project='cotrip'] { --accent: var(--color-cotrip); }
   .ledger-row[data-project='tower'] { --accent: var(--color-tower); }
 
-  /* Gold, coral and green fail contrast as text on white; only Kora's violet holds in light. */
+  /* Light theme: accents are fields, not text, so every name stays ink on hover and only the rule takes the accent. */
   @media (prefers-color-scheme: light) {
-    :root:not([data-theme='dark']) .ledger-row:not([data-project='kora']) {
+    :root:not([data-theme='dark']) .ledger-row {
       --accent-text: var(--color-foreground);
     }
   }
-  :root[data-theme='light'] .ledger-row:not([data-project='kora']) {
+  :root[data-theme='light'] .ledger-row {
     --accent-text: var(--color-foreground);
   }
 
-  /* The accent rule: draws along the row's bottom edge on hover or focus. */
-  .ledger-row::after {
-    content: '';
+  /* Hairlines are elements, not borders, so the entrance can draw them. */
+  .index__rule,
+  .ledger-row__rule {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--border-hairline);
+    background: var(--color-border);
+    transform-origin: left center;
+  }
+
+  /* The accent rule: draws along the row's bottom edge on hover or focus (and runs once in the entrance). */
+  .ledger-row__accent {
     position: absolute;
     left: 0;
     right: 0;
@@ -128,7 +146,7 @@ import { projects } from '../data/projects';
   }
 
   @media (hover: hover) {
-    .ledger-row:hover::after {
+    .ledger-row:hover .ledger-row__accent {
       transform: scaleX(1);
     }
     .ledger-row:hover .ledger-row__num,
@@ -140,8 +158,14 @@ import { projects } from '../data/projects';
     }
   }
 
-  .ledger-row:focus-visible::after {
+  .ledger-row:focus-visible .ledger-row__accent {
     transform: scaleX(1);
+  }
+
+  /* Room for the name's letters to rise from behind their masks without clipping descenders. */
+  .ledger-row__name :global(.ledger-char-mask) {
+    padding-block: 0.1em;
+    margin-block: -0.1em;
   }
 
   @media (min-width: 768px) {

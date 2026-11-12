@@ -67,23 +67,31 @@ html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data
 }
 
 /*
- * Scene snapping: the browser's own CSS scroll snap, so wheels, trackpad
+ * Panel snapping: the browser's own CSS scroll snap, so wheels, trackpad
  * momentum, keys, touch and the scrollbar all behave natively and nothing in
  * JavaScript ever holds the scroll. Matches SCENE.pageQuery in motion.ts.
- *   - The hero and index form one snap area taller than the screen, so they
- *     scroll freely; its scroll margin reaches over the header to the page top.
- *   - Each scene snaps to the top, and scroll-snap-stop keeps a hard flick
- *     from skipping past one.
+ *   - The hero, the project index and each scene are full-screen panels, and
+ *     scroll-snap-stop keeps a hard flick from skipping past one. A panel whose
+ *     content is taller than the screen scrolls freely within itself.
+ *   - The header sits over the hero, so the hero panel starts at the very top.
  *   - The footer snaps to the bottom, so it can always be reached.
  */
 @media (min-width: 1024px) and (min-height: 600px) {
   html {
     scroll-snap-type: y mandatory;
   }
-  [data-snap-intro] {
-    scroll-snap-align: start;
-    scroll-margin-top: 50vh;
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 5;
   }
+  [data-snap-panel] {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  [data-snap-panel],
   [data-scene] {
     scroll-snap-align: start;
     scroll-snap-stop: always;

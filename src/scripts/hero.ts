@@ -13,7 +13,7 @@ import { startWave, type WaveStop } from '../lib/effects/wave';
 import { blastOff, type BlastOff } from '../lib/effects/blast-off';
 import { attachParticleEffect, type ParticleEffectControls } from '../lib/effects/particles/attach';
 import { reactor } from '../lib/effects/particles/reactor';
-import { ledgerRevealItems, setupLedgerHover, startLedgerReveal } from './ledger';
+import { ledgerRevealItems, setupLedgerHover, setupLedgerIntro } from './ledger';
 import { setupScenes } from './scenes';
 import { setupProgress } from './progress';
 import { setMoment } from '../lib/moments';
@@ -265,7 +265,8 @@ function introFull(els: Elements) {
       particles = attachParticleEffect(els.particleRoot, els.canvas, els.cta, reactor);
       particles.enter(HERO.buttonDelay);
       if (readPaused()) particles.pause();
-      ledgerTeardown = startLedgerReveal(ledgerRevealItems());
+      // The index entrance waits for the hero's supporting items, so rows never arrive before the name.
+      ledgerTeardown = setupLedgerIntro({ hold: HERO.riseDelay });
       master = gsap.timeline({ paused: true }).add(mark, 0).add(page, 0).add(spoken.timeline, 0);
     } catch (error) {
       failure = error;
@@ -315,6 +316,7 @@ function lateSettle(els: Elements) {
   if (prefersReducedMotion()) return;
   const particles = attachParticleEffect(els.particleRoot, els.canvas, els.cta, reactor);
   particles.idle();
+  setupLedgerIntro();
   const words = SplitText.create(els.sub, { type: 'words' }).words as HTMLElement[];
   els.pause.hidden = false;
   settle(els, words, particles);

@@ -208,3 +208,23 @@ export const TOWER = {
   /** Start loading the video when the scene is this close (viewport heights). */
   preloadMargin: '400%',
 } as const;
+
+/**
+ * The project index's entrance (src/scripts/ledger.ts), replayed each time the
+ * index comes into view. Times in seconds.
+ */
+export const INDEX = {
+  /** Each row starts this long after the one above it. */
+  rowStagger: 0.12,
+  /** A hairline's draw, left to right. */
+  ruleDraw: 0.7,
+  /** Mono labels decode into place (ScrambleText) over this long. */
+  scramble: 0.55,
+  scrambleChars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+  /** Name letters rise from behind their masks. */
+  nameRise: 0.6,
+  nameStagger: 0.025,
+  /** Then the accent preview: each row's accent runs under it and retracts, one at a time. */
+  sweepGap: 0.3,
+  sweep: 0.42,
+} as const;

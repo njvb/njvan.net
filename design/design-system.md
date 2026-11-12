@@ -40,7 +40,7 @@ Monochrome by default. Twelve neutral tokens run the frame; dark is the primary 
 Rules for accents:
 
 - **An accent lives only in its own project's section.** Never two accents on screen at once, except the project index, where each is a small mark beside its name.
-- **Accents are fields, not text.** Use them as full-bleed washes, highlights, drawn lines and progress rules. Text on an accent uses its `on-` token. Kora's violet is the one accent strong enough for large text (24px+) on canvas.
+- **Accents are fields, not text.** Use them as full-bleed washes, highlights, drawn lines and progress rules. Text on an accent uses its `on-` token. In the light theme no text takes an accent, Kora's violet included; hover and focus keep text in ink and put the accent in a rule.
 - **Cotrip uses coral, not its brand violet,** so it never reads as Kora.
 - The four accents differ in lightness as well as hue (gold lightest, violet darkest), so they stay distinct for colour-blind visitors.
 - No gradients, glows or shadows. Depth comes from hairlines and from colour taking over the page.
