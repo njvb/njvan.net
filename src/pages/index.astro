@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ProjectIndex from '../components/ProjectIndex.astro';
+import Scene from '../components/Scene.astro';
+import TavrenBoard from '../components/scenes/TavrenBoard.astro';
+import KoraPanels from '../components/scenes/KoraPanels.astro';
+import CotripRoute from '../components/scenes/CotripRoute.astro';
+import TowerFloors from '../components/scenes/TowerFloors.astro';
+import { projects } from '../data/projects';
+
+const visuals = {
+  tavren: TavrenBoard,
+  kora: KoraPanels,
+  cotrip: CotripRoute,
+  tower: TowerFloors,
+};
+---
+
+<Base
+  title="Nathan VanderByl · Games, tools and apps"
+  description="Games, tools and apps I've built: Tavren, Kora, Cotrip and Campaign Tower."
+>
+  <Hero />
+  <ProjectIndex />
+  {
+    projects.map((p) => {
+      const Visual = visuals[p.id];
+      return (
+        <Scene project={p} total={projects.length}>
+          <Visual />
+        </Scene>
+      );
+    })
+  }
+</Base>

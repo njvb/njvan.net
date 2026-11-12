@@ -26,7 +26,7 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 | Surface | Intro | Settled | Outro |
 |---|---|---|---|
 | Wordmark | letters spring in, 1px underline draws `scaleX 0 → 1` | still | none (shell persists) |
-| Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | slow letter wave, period 1.5s, weight dips 800 → 450 → 800 | blast-off when the visitor scrolls past |
+| Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | letter wave every 4s, a different move each pass (hop, breathe, lean, flip, weight dips to 500 or 400, shear, squash, twist) | blast-off when the visitor scrolls past |
 | Hero lead line | speak-in, word by word, from 1.05s | words persist | thrown with the blast |
 | Index rows | rise, staggered 0.05s, on entering view | hover: name waves once, accent rule draws under it | standard exit |
 | Project names (statement) | masked split by line as the scene pins | still | slide up behind the mask |

@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+# Generated from design/tokens.json by scripts/build-tokens.mjs
+src/styles/tokens.css

@@ -1,0 +1,214 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  total: number;
+}
+
+const { project: p, total } = Astro.props;
+const totalLabel = String(total).padStart(2, '0');
+---
+
+<section class="scene" id={p.id} data-project={p.id} aria-labelledby={`${p.id}-title`}>
+  <div class="shell scene__inner">
+    <div class="scene__top t-caption">
+      <span>{p.number} · {p.name}</span>
+      <span class="scene__count">Scene {p.number} / {totalLabel}</span>
+    </div>
+
+    <div class="scene__copy">
+      <h2 class="scene__name" id={`${p.id}-title`}>{p.name}</h2>
+      <p class="scene__line">{p.line}</p>
+      <p class="scene__more t-body">{p.more}</p>
+      <div class="scene__links">
+        {
+          p.links.map((l) =>
+            l.href ? (
+              <a
+                class:list={['btn', `scene-btn--${l.variant}`]}
+                href={l.href}
+                {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}
+              >
+                {l.label}
+                {l.external && ' ↗'}
+              </a>
+            ) : (
+              <span
+                class:list={['btn', 'btn--placeholder', `scene-btn--${l.variant}`]}
+                title="Placeholder: URL needed"
+              >
+                {l.label}
+                {l.external && ' ↗'} <span class="placeholder-note">[link needed]</span>
+              </span>
+            )
+          )
+        }
+      </div>
+    </div>
+
+    <div class="scene__visual" aria-hidden="true">
+      <slot />
+    </div>
+
+    <div class="scene__notes t-annotation">
+      {p.notes.map((n) => <span>{n}</span>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .scene {
+    --field: var(--color-foreground);
+    --on: var(--color-canvas);
+    background: var(--field);
+    color: var(--on);
+    padding-block: 48px;
+    overflow: hidden;
+  }
+
+  .scene[data-project='tavren'] { --field: var(--color-tavren); --on: var(--color-on-tavren); }
+  .scene[data-project='kora'] { --field: var(--color-kora); --on: var(--color-on-kora); }
+  .scene[data-project='cotrip'] { --field: var(--color-cotrip); --on: var(--color-on-cotrip); }
+  .scene[data-project='tower'] { --field: var(--color-tower); --on: var(--color-on-tower); }
+
+  .scene ::selection {
+    background: var(--on);
+    color: var(--field);
+  }
+
+  .scene :focus-visible {
+    outline-color: var(--on);
+  }
+
+  .scene__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'top'
+      'copy'
+      'visual'
+      'notes';
+    gap: 40px;
+  }
+
+  .scene__top {
+    grid-area: top;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .scene__copy {
+    grid-area: copy;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter);
+    container-type: inline-size;
+  }
+
+  .scene__name {
+    margin-left: -0.04em;
+    font-size: clamp(3.5rem, 20cqi, 10rem);
+    line-height: 0.84;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+  }
+
+  .scene[data-project='tower'] .scene__name {
+    font-size: clamp(3rem, 16cqi, 8rem);
+  }
+
+  .scene__line {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .scene__more {
+    max-width: 42ch;
+  }
+
+  .scene__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .scene-btn--solid {
+    background: var(--on);
+    border-color: var(--on);
+    color: var(--field);
+  }
+
+  .scene-btn--outline {
+    border-color: var(--on);
+    color: var(--on);
+  }
+
+  a.scene-btn--outline:hover {
+    background: color-mix(in srgb, var(--on) 10%, transparent);
+  }
+
+  .scene__visual {
+    grid-area: visual;
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  .scene__notes {
+    grid-area: notes;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--gutter);
+    border-top: var(--border-hairline) solid currentColor;
+    padding-top: var(--space-4);
+  }
+
+  @media (min-width: 768px) {
+    .scene {
+      padding-block: 72px 56px;
+    }
+
+    .scene__line {
+      font-size: 28px;
+      line-height: 36px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .scene__inner {
+      min-height: calc(100svh - 128px);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas: none;
+      column-gap: var(--gutter);
+      row-gap: 72px;
+    }
+
+    .scene__top {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .scene__copy {
+      grid-column: 1 / span 5;
+      grid-row: 2;
+      align-self: start;
+      padding-top: 56px;
+    }
+
+    .scene__visual {
+      grid-column: 6 / -1;
+      grid-row: 2;
+      align-self: center;
+    }
+
+    .scene__notes {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+  }
+</style>

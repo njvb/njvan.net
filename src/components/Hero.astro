@@ -1,0 +1,183 @@
+---
+import { projects } from '../data/projects';
+const count = String(projects.length).padStart(2, '0');
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title" data-hero>
+  <div class="shell hero__inner">
+    <div class="hero__name-wrap">
+      <h1 class="hero__name t-poster" id="hero-title" data-intro data-letters>
+        <span class="hero__line">Nathan</span>
+        <span class="hero__line">VanderByl</span>
+      </h1>
+    </div>
+
+    <div class="hero__row">
+      <p class="hero__sub" data-intro data-speak>Games, tools and apps I've built.</p>
+      <div class="hero__actions">
+        <!-- The particle canvas bleeds 180px past the button (the reactor's bleed). -->
+        <div class="particle-button" data-particle-button>
+          <canvas class="particle-button__canvas" aria-hidden="true" data-particles></canvas>
+          <a class="btn btn--lg btn--inverse hero__cta" href="#projects" data-intro data-cta>See the projects →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__meta t-annotation muted" data-intro data-rise>
+      <span aria-hidden="true">{count} projects</span>
+      <!-- Pauses the looping wave and embers (WCAG 2.2.2). Shown only when they run. -->
+      <button class="hero__pause t-annotation" type="button" hidden data-motion-pause aria-pressed="false">
+        Pause motion
+      </button>
+      <span class="hero__scroll" aria-hidden="true">Scroll ↓</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/hero';
+</script>
+
+<style>
+  .hero {
+    padding-block: 48px 40px;
+  }
+
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter);
+  }
+
+  /* The poster size is fluid against this container. */
+  .hero__name-wrap {
+    container-type: inline-size;
+    border-bottom: var(--border-hairline) solid var(--color-border);
+    padding-bottom: var(--space-4);
+  }
+
+  .hero__name {
+    /* Stable typography for character animation: kerning would snap on split and revert. */
+    font-kerning: none;
+    text-rendering: optimizeSpeed;
+    /* Optical alignment: pull the N's side bearing to the column edge. */
+    margin-left: -0.055em;
+    padding-bottom: 0.08em;
+    line-height: 0.88;
+  }
+
+  .hero__line {
+    display: block;
+  }
+
+  .hero__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter);
+  }
+
+  .hero__sub {
+    font-kerning: none;
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    max-width: 26ch;
+  }
+
+  .particle-button {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .particle-button__canvas {
+    position: absolute;
+    left: -180px;
+    top: -180px;
+    z-index: 10;
+    pointer-events: none;
+    color: var(--color-foreground);
+  }
+
+  .hero__cta {
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    height: 52px;
+  }
+
+  /* Focus ring sits 4px out where a particle canvas surrounds the control. */
+  .hero__cta:focus-visible {
+    outline-offset: 4px;
+  }
+
+  .hero__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .hero__pause {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 12px 0;
+    margin: -12px 0;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+
+  .hero__pause:hover {
+    color: var(--color-foreground);
+  }
+
+  .hero__pause[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .hero__scroll {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding-block: 72px 64px;
+    }
+
+    .hero__inner {
+      gap: 32px;
+    }
+
+    .hero__name-wrap {
+      padding-bottom: var(--gutter);
+    }
+
+    .hero__row {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+      row-gap: 32px;
+      align-items: end;
+    }
+
+    .hero__sub {
+      grid-column: span 6;
+      font-size: 28px;
+      line-height: 36px;
+    }
+
+    .hero__actions {
+      grid-column: 8 / span 5;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .hero__cta {
+      width: auto;
+      height: 48px;
+    }
+  }
+</style>

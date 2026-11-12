@@ -1,0 +1,105 @@
+---
+import { contact } from '../data/projects';
+---
+
+<footer class="site-footer" id="contact">
+  <div class="shell site-footer__inner t-caption">
+    <a class="site-footer__email" href={`mailto:${contact.email}`}>{contact.email}</a>
+    {
+      contact.linkedin ? (
+        <a href={contact.linkedin} rel="me noopener" target="_blank">
+          LinkedIn ↗
+        </a>
+      ) : (
+        <span class="muted" title="Placeholder: LinkedIn URL needed">
+          LinkedIn ↗ [link needed]
+        </span>
+      )
+    }
+    <span class="muted">© Nathan VanderByl · London</span>
+    <!-- Only works with JavaScript, so it stays hidden until the script reveals it. -->
+    <button class="theme-toggle t-caption" type="button" hidden data-theme-toggle>
+      <span data-theme-label>Light</span> ◐
+    </button>
+  </div>
+</footer>
+
+<script>
+  const root = document.documentElement;
+  const osLight = window.matchMedia('(prefers-color-scheme: light)');
+
+  const current = (): 'light' | 'dark' =>
+    (root.dataset.theme as 'light' | 'dark' | undefined) ?? (osLight.matches ? 'light' : 'dark');
+
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+    const label = btn.querySelector('[data-theme-label]')!;
+    const sync = () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      label.textContent = next === 'light' ? 'Light' : 'Dark';
+      btn.setAttribute('aria-label', `Switch to ${next} theme`);
+    };
+    btn.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {}
+      sync();
+    });
+    osLight.addEventListener('change', sync);
+    sync();
+    btn.hidden = false;
+  });
+</script>
+
+<style>
+  .site-footer {
+    border-top: var(--border-hairline) solid var(--color-border);
+    padding-block: var(--gutter-lg);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4) var(--gutter);
+    flex-wrap: wrap;
+  }
+
+  .site-footer a {
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .theme-toggle {
+    appearance: none;
+    background: none;
+    border: var(--border-strong) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-foreground);
+    min-height: 44px;
+    padding: 0 var(--space-4);
+    cursor: pointer;
+    transition: border-color var(--duration-micro) var(--ease-entrance);
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--color-foreground);
+  }
+
+  .theme-toggle[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .site-footer__inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

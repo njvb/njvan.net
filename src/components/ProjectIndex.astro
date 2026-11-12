@@ -1,0 +1,185 @@
+---
+import { projects } from '../data/projects';
+---
+
+<section class="index" id="projects" aria-labelledby="index-title">
+  <div class="shell">
+    <div class="index__head">
+      <h2 class="t-caption" id="index-title">Index</h2>
+      <span class="index__hint t-annotation muted">Hover to preview · click to jump</span>
+    </div>
+
+    <ol class="ledger" role="list">
+      {
+        projects.map((p) => (
+          <li>
+            <a class="ledger-row" href={`#${p.id}`} data-project={p.id}>
+              <span class="ledger-row__meta t-annotation">
+                <span class="ledger-row__num">
+                  {p.number} · {p.kind}
+                </span>
+                <span class="ledger-row__stack">{p.indexStack}</span>
+              </span>
+              <span class="ledger-row__name t-statement">{p.name}</span>
+              <span class="ledger-row__line">{p.indexLine}</span>
+              <span class="ledger-row__stack ledger-row__stack--wide t-annotation">{p.indexStack}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .index {
+    padding-block: 0 64px;
+    container-type: inline-size;
+  }
+
+  .index__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 12px;
+    border-bottom: var(--border-hairline) solid var(--color-border);
+  }
+
+  .index__hint {
+    display: none;
+  }
+
+  .ledger {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ledger-row {
+    --accent: var(--color-foreground);
+    --accent-text: var(--accent);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block: 20px;
+    border-bottom: var(--border-hairline) solid var(--color-border);
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .ledger-row[data-project='tavren'] { --accent: var(--color-tavren); }
+  .ledger-row[data-project='kora'] { --accent: var(--color-kora); }
+  .ledger-row[data-project='cotrip'] { --accent: var(--color-cotrip); }
+  .ledger-row[data-project='tower'] { --accent: var(--color-tower); }
+
+  /* Gold, coral and green fail contrast as text on white; only Kora's violet holds in light. */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) .ledger-row:not([data-project='kora']) {
+      --accent-text: var(--color-foreground);
+    }
+  }
+  :root[data-theme='light'] .ledger-row:not([data-project='kora']) {
+    --accent-text: var(--color-foreground);
+  }
+
+  /* The accent rule: draws along the row's bottom edge on hover or focus. */
+  .ledger-row::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: var(--border-strong);
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--duration-micro) var(--ease-entrance);
+  }
+
+  .ledger-row__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    color: var(--color-muted);
+  }
+
+  .ledger-row__num,
+  .ledger-row__name {
+    transition: color var(--duration-micro) var(--ease-entrance);
+  }
+
+  .ledger-row__line {
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--color-muted);
+    max-width: 36ch;
+    transition: color var(--duration-micro) var(--ease-entrance);
+  }
+
+  .ledger-row__stack--wide {
+    display: none;
+  }
+
+  @media (hover: hover) {
+    .ledger-row:hover::after {
+      transform: scaleX(1);
+    }
+    .ledger-row:hover .ledger-row__num,
+    .ledger-row:hover .ledger-row__name {
+      color: var(--accent-text);
+    }
+    .ledger-row:hover .ledger-row__line {
+      color: var(--color-foreground);
+    }
+  }
+
+  .ledger-row:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  @media (min-width: 768px) {
+    .index {
+      padding-block: 48px 96px;
+    }
+
+    .index__head {
+      padding-bottom: var(--space-4);
+    }
+
+    .index__hint {
+      display: inline;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ledger-row {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr) minmax(0, 1fr) 220px;
+      gap: var(--gutter);
+      align-items: center;
+      padding-block: 28px;
+    }
+
+    .ledger-row__meta {
+      font-family: var(--font-mono);
+      font-size: var(--type-caption-size);
+      font-weight: var(--type-caption-weight);
+    }
+
+    .ledger-row__meta .ledger-row__stack {
+      display: none;
+    }
+
+    .ledger-row__line {
+      font-size: var(--type-body-size);
+      line-height: var(--type-body-line-height);
+    }
+
+    .ledger-row__stack--wide {
+      display: block;
+      color: var(--color-muted);
+      text-align: right;
+    }
+  }
+</style>

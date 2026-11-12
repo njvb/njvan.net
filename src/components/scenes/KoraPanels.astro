@@ -1,0 +1,208 @@
+---
+// Kora's interface panels in their settled grid. Stylised, not screenshots:
+// they stand in for real Kora screens until Nathan supplies them.
+// Panels stay dark in both themes, like Kora's own UI chrome.
+const plan = [
+  { offset: 0, width: 55 },
+  { offset: 15, width: 35 },
+  { offset: 0, width: 75 },
+  { offset: 30, width: 45 },
+];
+const hours = [60, 80, 45, 90, 30];
+---
+
+<div class="kora">
+  <div class="kora__ask">
+    <span class="kora__ask-label">Ask Kora</span>
+    <span class="kora__ask-q">Which projects need more people next week?</span>
+    <span class="kora__caret"></span>
+  </div>
+
+  <div class="kora__grid">
+    <div class="panel panel--plan">
+      <span class="panel__label">Plans and resourcing</span>
+      <div class="plan">
+        {
+          plan.map((b, i) => (
+            <div class="plan__row">
+              <span class="plan__who" />
+              <span class="plan__track">
+                <span
+                  class="plan__bar"
+                  data-alt={i % 2 === 1}
+                  style={`margin-left:${b.offset}%;width:${b.width}%`}
+                />
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="panel">
+      <span class="panel__label">Timesheets</span>
+      <div class="hours">
+        {hours.map((h, i) => <span data-empty={i === hours.length - 1} style={`height:${h}%`} />)}
+      </div>
+    </div>
+
+    <div class="panel panel--short"><span class="panel__label">Scopes</span></div>
+    <div class="panel panel--short"><span class="panel__label">Billing</span></div>
+    <div class="panel panel--short"><span class="panel__label">Client portal</span></div>
+  </div>
+</div>
+
+<style>
+  .kora {
+    --panel: #0a0a0a;
+    --panel-text: #ededed;
+    --panel-muted: #a3a3a3;
+    --panel-empty: #262626;
+    --violet: #8b7cff;
+    --violet-deep: #5b4be0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 720px;
+    margin-left: auto;
+  }
+
+  .kora__ask {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 12px 20px;
+    border-radius: var(--radius-xl);
+    background: var(--panel);
+    color: var(--panel-text);
+  }
+
+  .kora__ask-label,
+  .panel__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .kora__ask-label {
+    color: var(--violet);
+    flex: none;
+  }
+
+  .kora__ask-q {
+    font-size: clamp(15px, 2.6cqi, 18px);
+    line-height: 24px;
+  }
+
+  .kora__caret {
+    flex: none;
+    width: 2px;
+    height: 24px;
+    background: var(--violet);
+  }
+
+  .kora__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .panel {
+    min-height: 220px;
+    padding: 20px;
+    border-radius: var(--radius-xl);
+    background: var(--panel);
+    color: var(--panel-text);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .panel__label {
+    color: var(--panel-muted);
+  }
+
+  .panel--plan {
+    grid-column: span 2;
+  }
+
+  .panel--short {
+    min-height: 150px;
+  }
+
+  .plan {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .plan__row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .plan__who {
+    flex: none;
+    width: 22%;
+    height: 14px;
+    border-radius: var(--radius-xs);
+    background: var(--panel-empty);
+  }
+
+  .plan__track {
+    flex: 1;
+    display: flex;
+  }
+
+  .plan__bar {
+    height: 14px;
+    border-radius: var(--radius-xs);
+    background: var(--violet);
+  }
+
+  .plan__bar[data-alt='true'] {
+    background: var(--violet-deep);
+  }
+
+  .hours {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+    align-items: end;
+  }
+
+  .hours span {
+    border-radius: var(--radius-xs);
+    background: var(--violet);
+  }
+
+  .hours span[data-empty='true'] {
+    background: var(--panel-empty);
+  }
+
+  @container (max-width: 559px) {
+    .kora__ask {
+      flex-wrap: wrap;
+    }
+
+    .kora__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .panel {
+      min-height: 160px;
+    }
+
+    .panel--short {
+      min-height: 110px;
+    }
+
+    .panel--plan {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,145 @@
+---
+// The route map in its settled state (drawn to Day 3) and the phone screenshot slot.
+// Positions come from the 520 x 580 map in the Cotrip frame.
+const W = 520;
+const H = 580;
+const pct = (x: number, y: number) => `left:${(x / W) * 100}%;top:${(y / H) * 100}%`;
+const stops = [
+  { x: 40, y: 500, label: 'Day 1' },
+  { x: 200, y: 350, label: 'Day 2' },
+  { x: 320, y: 250, label: 'Day 3 · you are here', current: true },
+];
+---
+
+<div class="cotrip">
+  <div class="cotrip__map">
+    <svg viewBox={`0 0 ${W} ${H}`} fill="none">
+      <path
+        class="cotrip__grid"
+        d="M0 116H520M0 232H520M0 348H520M0 464H520M104 0V580M208 0V580M312 0V580M416 0V580"
+        stroke="currentColor"
+        stroke-opacity="0.18"
+        stroke-width="1"
+        vector-effect="non-scaling-stroke"></path>
+      <path
+        class="cotrip__route"
+        d="M40 500 C 120 470, 140 380, 200 350 S 300 330, 320 250"
+        stroke="currentColor"
+        stroke-width="4"
+        stroke-linecap="round"></path>
+      <path
+        class="cotrip__ahead"
+        d="M320 250 S 360 140, 470 90"
+        stroke="currentColor"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-dasharray="2 12"
+        stroke-opacity="0.45"></path>
+      <circle cx="40" cy="500" r="10" fill="currentColor"></circle>
+      <circle cx="200" cy="350" r="10" fill="currentColor"></circle>
+      <circle cx="320" cy="250" r="14" fill="#fbf6ea" stroke="currentColor" stroke-width="4"></circle>
+      <circle cx="470" cy="90" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.45"></circle>
+    </svg>
+    {
+      stops.map((s) => (
+        <span class:list={['cotrip__label', 't-annotation', { 'is-current': s.current }]} style={pct(s.x, s.y)}>
+          {s.label}
+        </span>
+      ))
+    }
+  </div>
+
+  <div class="cotrip__phones">
+    <div class="cotrip__phone-back"></div>
+    <div class="cotrip__phone">
+      <span class="t-annotation">[Cotrip iPhone screenshot]</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cotrip {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 220px);
+    gap: 4cqi;
+    align-items: center;
+  }
+
+  .cotrip__map {
+    position: relative;
+    /* Fit both the column and the viewport height (map is 520 x 580). */
+    width: min(100%, 520px, calc(58svh * 520 / 580));
+  }
+
+  .cotrip__map svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .cotrip__label {
+    position: absolute;
+    /* Sit to the right of and just below each pin. */
+    translate: 18px 4px;
+    white-space: nowrap;
+  }
+
+  .cotrip__label.is-current {
+    font-weight: 700;
+    translate: 24px -14px;
+  }
+
+  .cotrip__phones {
+    position: relative;
+    width: min(100%, 220px, calc(54svh * 220 / 460));
+    aspect-ratio: 220 / 460;
+  }
+
+  .cotrip__phone,
+  .cotrip__phone-back {
+    position: absolute;
+    border-radius: 32px;
+  }
+
+  .cotrip__phone-back {
+    left: 14%;
+    top: 9%;
+    width: 95%;
+    height: 96%;
+    background: currentColor;
+    opacity: 0.35;
+    transform: rotate(6deg);
+  }
+
+  .cotrip__phone {
+    inset: 0;
+    border: var(--border-strong) solid currentColor;
+    background: #fbf6ea;
+    color: #0a0a0a;
+    padding: 24px 18px;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  /* Stack the map and phone when their column is too narrow for both. */
+  @container (max-width: 679px) {
+    .cotrip {
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      gap: 48px;
+    }
+
+    .cotrip__map {
+      width: min(100%, 520px);
+    }
+
+    .cotrip__label {
+      white-space: normal;
+      max-width: 34%;
+    }
+
+    .cotrip__phones {
+      width: 180px;
+    }
+  }
+</style>

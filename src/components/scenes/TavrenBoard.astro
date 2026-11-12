@@ -1,0 +1,70 @@
+---
+// The hex board in its settled state: tilted into 3D, one village lit.
+// Colours are Tavren's own palette (paper, parchment, ink), scoped to this board.
+const counts = [4, 5, 6, 5, 4];
+const lit = '2-3';
+const rows = counts.map((n, r) =>
+  Array.from({ length: n }, (_, i) => {
+    const ring = Math.abs(r - 2) + Math.abs(i - (n - 1) / 2);
+    const kind = `${r}-${i}` === lit ? 'lit' : ring < 1.6 ? 'inner' : 'outer';
+    return { kind, ring };
+  })
+);
+---
+
+<div class="tavren-board">
+  <div class="tavren-board__plane">
+    {
+      rows.map((row) => (
+        <div class="tavren-board__row">
+          {row.map((h) => (
+            <div class="hex" data-kind={h.kind} style={`--ring:${h.ring}`} />
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .tavren-board {
+    --hex: min(96px, 13cqi);
+    perspective: 1400px;
+    display: flex;
+    justify-content: center;
+    padding-block: 2cqi;
+  }
+
+  .tavren-board__plane {
+    transform: rotateX(52deg) rotateZ(-8deg);
+    transform-origin: 50% 50%;
+    transform-style: preserve-3d;
+  }
+
+  .tavren-board__row {
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--hex) * 0.0625);
+  }
+
+  .tavren-board__row + .tavren-board__row {
+    margin-top: calc(var(--hex) * -0.25);
+  }
+
+  .hex {
+    width: var(--hex);
+    aspect-ratio: 96 / 110;
+    flex: none;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    background: #e4d9bf;
+  }
+
+  .hex[data-kind='inner'] {
+    background: #fbf6ea;
+  }
+
+  .hex[data-kind='lit'] {
+    background: var(--color-on-tavren);
+    transform: translateY(calc(var(--hex) * -0.19));
+  }
+</style>

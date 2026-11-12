@@ -1,0 +1,78 @@
+---
+import '@fontsource-variable/rethink-sans/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!--
+      Apply a saved theme choice before first paint so there is no flash.
+      Without a saved choice the page follows the OS setting via CSS alone.
+    -->
+    <script is:inline>
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <!--
+      Motion boot. Marks <html> so CSS can hide intro targets before first paint,
+      and arms a recovery deadline first: if the motion bundle has not taken over
+      in time, the mark flips to "recovered" and the page shows settled.
+      Without JavaScript none of this runs and nothing is hidden.
+      The deadline (ms) is the one motion value that cannot live in motion.ts.
+    -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        var DEADLINE = 1500;
+        // Preview override for tuning: ?motion=reduced or ?motion=full beats the OS setting.
+        var m = new URLSearchParams(location.search).get('motion');
+        if (m === 'reduced' || m === 'full') d.dataset.motion = m;
+        function arm() {
+          window.__motionBootTimer = setTimeout(function () {
+            if (d.dataset.motionBoot === 'pending') d.dataset.motionBoot = 'recovered';
+          }, DEADLINE);
+        }
+        if (document.prerendering) {
+          document.addEventListener('prerenderingchange', arm, { once: true });
+        } else {
+          arm();
+        }
+        d.dataset.motionBoot = 'pending';
+      })();
+    </script>
+  </head>
+  <body data-motion-owner data-phase="initial">
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
