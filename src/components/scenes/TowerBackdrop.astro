@@ -1,0 +1,159 @@
+---
+// Campaign Tower's backdrop: the drifting pixel city from the game's landing page
+// (njvb.github.io/campaigntower-site, its hero scene layers), redrawn as
+// silhouettes in the field's own palette so the scene keeps one accent: the
+// city, flyers and walkers in the scene's ink, the clouds in soft white.
+// Each layer drifts on a compositor transform at the landing page's speed and
+// scale; the walkers step through their sprite sheet. Drifting pauses off
+// screen and with "Pause motion", and stops under reduced motion.
+const base = `${import.meta.env.BASE_URL}assets/tower/`;
+
+type Layer = {
+  file: string;
+  /** Native PNG size, and the whole-number scale it's drawn at (crisp pixels). */
+  w: number;
+  h: number;
+  scale: number;
+  /** Vertical placement: from the top or the bottom of the scene. */
+  top?: string;
+  bottom?: string;
+  tint: 'ink' | 'sky';
+  opacity: number;
+  /** Seconds for one full tile to drift past. */
+  seconds: number;
+  direction: 'left' | 'right';
+  /** Sprite sheet rows to step through (walkers), else undefined. */
+  frames?: number;
+};
+
+const layers: Layer[] = [
+  { file: 'scene-clouds-far.png', w: 600, h: 90, scale: 2, top: '4%', tint: 'sky', opacity: 0.24, seconds: 240, direction: 'left' },
+  { file: 'scene-clouds.png', w: 520, h: 80, scale: 3, top: '9%', tint: 'sky', opacity: 0.34, seconds: 150, direction: 'left' },
+  { file: 'scene-flyers.png', w: 520, h: 40, scale: 3, top: '17%', tint: 'ink', opacity: 0.1, seconds: 95, direction: 'left' },
+  { file: 'scene-far.png', w: 301, h: 42, scale: 5, bottom: '0', tint: 'ink', opacity: 0.07, seconds: 120, direction: 'left' },
+  { file: 'scene-near.png', w: 321, h: 66, scale: 3, bottom: '0', tint: 'ink', opacity: 0.12, seconds: 70, direction: 'left' },
+  { file: 'scene-walk-left.png', w: 520, h: 64, scale: 3, bottom: '6px', tint: 'ink', opacity: 0.2, seconds: 34, direction: 'left', frames: 4 },
+  { file: 'scene-walk-right.png', w: 480, h: 64, scale: 3, bottom: '0', tint: 'ink', opacity: 0.2, seconds: 80, direction: 'right', frames: 4 },
+];
+
+const styleFor = (l: Layer) => {
+  const tile = l.w * l.scale;
+  const sheet = l.h * l.scale;
+  const height = l.frames ? sheet / l.frames : sheet;
+  return [
+    `--img:url(${base}${l.file})`,
+    `--tile:${tile}px`,
+    `--h:${height}px`,
+    `--sheet:${sheet}px`,
+    `--dur:${l.seconds}s`,
+    `--a:${l.opacity}`,
+    l.top ? `top:${l.top}` : '',
+    l.bottom ? `bottom:${l.bottom}` : '',
+  ]
+    .filter(Boolean)
+    .join(';');
+};
+---
+
+<div class="tower-backdrop" aria-hidden="true" data-scene-backdrop data-tower-backdrop>
+  {
+    layers.map((l) => (
+      <div
+        class:list={['tb-layer', `tb-layer--${l.tint}`, { 'tb-layer--walk': l.frames, 'tb-layer--right': l.direction === 'right' }]}
+        style={styleFor(l)}
+      />
+    ))
+  }
+</div>
+
+<script>
+  // Drift only while the city is on screen.
+  document.querySelectorAll<HTMLElement>('[data-tower-backdrop]').forEach((el) => {
+    new IntersectionObserver(([entry]) => el.classList.toggle('is-running', entry?.isIntersecting ?? false)).observe(el);
+  });
+</script>
+
+<style>
+  .tower-backdrop {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .tb-layer {
+    position: absolute;
+    left: 0;
+    width: calc(100% + var(--tile));
+    height: var(--h);
+    opacity: var(--a);
+    -webkit-mask-image: var(--img);
+    mask-image: var(--img);
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-size: var(--tile) 100%;
+    mask-size: var(--tile) 100%;
+    image-rendering: pixelated;
+    animation: tb-pan var(--dur) linear infinite paused;
+    will-change: transform;
+  }
+
+  .tb-layer--ink {
+    background: var(--on);
+  }
+
+  .tb-layer--sky {
+    background: #ffffff;
+  }
+
+  /* Walkers: the mask is the whole sprite sheet; stepping it shows each frame in turn. */
+  .tb-layer--walk {
+    -webkit-mask-size: var(--tile) var(--sheet);
+    mask-size: var(--tile) var(--sheet);
+    animation:
+      tb-pan var(--dur) linear infinite paused,
+      tb-walk 0.64s steps(4) infinite paused;
+  }
+
+  .tb-layer--right {
+    animation-direction: reverse;
+  }
+
+  .tower-backdrop.is-running .tb-layer {
+    animation-play-state: running;
+  }
+
+  :global(html[data-motion-paused]) .tower-backdrop .tb-layer {
+    animation-play-state: paused;
+  }
+
+  @keyframes tb-pan {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-1 * var(--tile)));
+    }
+  }
+
+  @keyframes tb-walk {
+    from {
+      -webkit-mask-position: 0 0;
+      mask-position: 0 0;
+    }
+    to {
+      -webkit-mask-position: 0 calc(-1 * var(--sheet));
+      mask-position: 0 calc(-1 * var(--sheet));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tb-layer {
+      animation: none !important;
+    }
+  }
+
+  :global(html[data-motion='reduced']) .tb-layer {
+    animation: none !important;
+  }
+</style>

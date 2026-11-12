@@ -1,0 +1,71 @@
+---
+// Campaign Tower's visual: real gameplay from the game's landing page
+// (njvb.github.io/campaigntower-site), a visitor riding the lift up the tower,
+// in a phone standing in front of the drifting city. Without JavaScript, or
+// under reduced motion, the phone shows the poster frame and nothing plays.
+// src/scripts/tower-moment.ts plays the signature moment: the phone rises in
+// pixel steps, the screen reveals floor by floor, then the gameplay runs.
+const base = `${import.meta.env.BASE_URL}assets/tower/`;
+---
+
+<div class="tower-phone" data-tower-phone>
+  <div class="tower-phone__screen" data-tower-screen>
+    <video
+      class="tower-phone__video"
+      data-tower-video
+      poster={`${base}lift-poster.jpg`}
+      muted
+      loop
+      playsinline
+      preload="none"
+      width="430"
+      height="932"
+    >
+      <source src={`${base}lift.mp4`} type="video/mp4" />
+    </video>
+  </div>
+</div>
+
+<script>
+  import { mountTower } from '../../scripts/tower-moment';
+  document.querySelectorAll<HTMLElement>('[data-tower-phone]').forEach((root) => {
+    try {
+      mountTower(root);
+    } catch (error) {
+      console.error('[tower] moment failed, keeping the poster', error);
+    }
+  });
+</script>
+
+<style>
+  .tower-phone {
+    /* The game's own phone: black, rounded, with a flat pixel-style offset shadow like its landing page. */
+    --phone-h: min(64svh, 620px);
+    width: calc(var(--phone-h) * 430 / 932 + 20px);
+    margin-inline: auto;
+    padding: 10px;
+    border-radius: 44px;
+    background: #0a0a0a;
+    box-shadow: 10px 0 0 rgba(10, 10, 10, 0.18);
+  }
+
+  .tower-phone__screen {
+    border-radius: 34px;
+    overflow: hidden;
+    background: #82c9f2;
+    aspect-ratio: 430 / 932;
+  }
+
+  .tower-phone__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @container (max-width: 559px) {
+    .tower-phone {
+      --phone-h: min(calc(64cqi * 932 / 430), 480px);
+    }
+  }
+</style>

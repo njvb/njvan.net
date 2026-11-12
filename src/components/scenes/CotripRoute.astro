@@ -1,0 +1,279 @@
+---
+// The route map in its settled state (drawn to Day 3) and the phone screenshot slot.
+// Positions come from the 520 x 580 map in the Cotrip frame. The settled state is
+// the markup; src/scripts/cotrip-moment.ts plays the signature moment: the route
+// draws itself, pins drop as it reaches them, and the phones stack in.
+const W = 520;
+const H = 580;
+const pct = (x: number, y: number) => `left:${(x / W) * 100}%;top:${(y / H) * 100}%`;
+/** Anchored from the right, for a label that sits to the left of its point. */
+const pctRight = (x: number, y: number) => `right:${100 - (x / W) * 100}%;top:${(y / H) * 100}%`;
+// The day in the front phone's screenshot: landed in Dublin, the Book of Kells done, Dublin Castle up next.
+const stops = [
+  { x: 40, y: 500, label: 'Landed · DUB' },
+  { x: 200, y: 350, label: 'Book of Kells' },
+  { x: 320, y: 250, label: 'Dublin Castle · up next', current: true },
+];
+const shots = `${import.meta.env.BASE_URL}assets/cotrip/`;
+// What TripTalk is asked, and the stop it adds: the dotted leg to the destination ring.
+const ask = 'Suggest pubs near Temple Bar';
+const added = 'Added The Brazen Head for tonight';
+const destination = { x: 470, y: 90, label: 'The Brazen Head · tonight' };
+---
+
+<div class="cotrip" data-cotrip>
+  <div class="cotrip__map">
+    <svg viewBox={`0 0 ${W} ${H}`} fill="none">
+      <defs>
+        <!-- Reveals the dotted leg along its length without losing its dots. -->
+        <mask id="cotrip-ahead-mask" maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={H}>
+          <path d="M320 250 S 360 140, 470 90" stroke="#fff" stroke-width="10" stroke-linecap="round" data-cotrip-ahead-reveal></path>
+        </mask>
+      </defs>
+      <path
+        data-cotrip-grid
+        class="cotrip__grid"
+        d="M0 116H520M0 232H520M0 348H520M0 464H520M104 0V580M208 0V580M312 0V580M416 0V580"
+        stroke="currentColor"
+        stroke-opacity="0.18"
+        stroke-width="1"
+        vector-effect="non-scaling-stroke"></path>
+      <path
+        data-cotrip-route
+        class="cotrip__route"
+        d="M40 500 C 120 470, 140 380, 200 350 S 300 330, 320 250"
+        stroke="currentColor"
+        stroke-width="4"
+        stroke-linecap="round"></path>
+      <path
+        data-cotrip-ahead
+        mask="url(#cotrip-ahead-mask)"
+        class="cotrip__ahead"
+        d="M320 250 S 360 140, 470 90"
+        stroke="currentColor"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-dasharray="2 12"
+        stroke-opacity="0.45"></path>
+      <circle cx="40" cy="500" r="10" fill="currentColor" data-cotrip-pin="0"></circle>
+      <circle cx="200" cy="350" r="10" fill="currentColor" data-cotrip-pin="1"></circle>
+      <circle cx="320" cy="250" r="14" fill="#fbf6ea" stroke="currentColor" stroke-width="4" data-cotrip-pin="2"></circle>
+      <circle cx="470" cy="90" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.45" data-cotrip-destination></circle>
+      <!-- "You are here": one ping from Dublin Castle, and the dot that leads the line as it draws. -->
+      <circle cx="320" cy="250" r="14" stroke="currentColor" stroke-width="2" opacity="0" data-cotrip-ping></circle>
+      <circle cx="40" cy="500" r="7" fill="currentColor" opacity="0" data-cotrip-traveller></circle>
+    </svg>
+    <span
+      class="cotrip__label cotrip__label--ahead t-annotation"
+      style={pctRight(destination.x, destination.y)}
+      data-cotrip-destination-label
+    >
+      {destination.label}
+    </span>
+    {
+      stops.map((s, i) => (
+        <span
+          class:list={['cotrip__label', 't-annotation', { 'is-current': s.current }]}
+          style={pct(s.x, s.y)}
+          data-cotrip-label={i}
+        >
+          {s.label}
+        </span>
+      ))
+    }
+  </div>
+
+  <div class="cotrip__phones">
+    <!-- Real screenshots from cotrip.app: TripTalk behind, the trip day in front. -->
+    <div class="cotrip__phone-back" data-cotrip-phone-back>
+      <img src={`${shots}shot-triptalk.jpg`} alt="" width="520" height="1131" loading="lazy" decoding="async" />
+    </div>
+    <div class="cotrip__phone" data-cotrip-phone>
+      <img src={`${shots}hero-today.jpg`} alt="" width="520" height="1131" loading="lazy" decoding="async" />
+    </div>
+    <!-- Asking TripTalk to change the plan, and its answer. -->
+    <div class="cotrip__chat">
+      <p class="cotrip__ask" data-cotrip-ask>
+        <span data-cotrip-ask-text>{ask}</span><span class="cotrip__caret" data-cotrip-caret></span>
+      </p>
+      <p class="cotrip__reply" data-cotrip-reply>
+        <span class="cotrip__reply-label">TripTalk</span>
+        {added}
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { mountCotrip } from '../../scripts/cotrip-moment';
+  document.querySelectorAll<HTMLElement>('[data-cotrip]').forEach((root) => {
+    try {
+      mountCotrip(root);
+    } catch (error) {
+      console.error('[cotrip] moment failed, keeping the settled map', error);
+    }
+  });
+</script>
+
+<style>
+  .cotrip {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 220px);
+    gap: 4cqi;
+    align-items: center;
+  }
+
+  .cotrip__map {
+    position: relative;
+    /* Fit both the column and the viewport height (map is 520 x 580). */
+    width: min(100%, 520px, calc(58svh * 520 / 580));
+  }
+
+  .cotrip__map svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .cotrip__label {
+    position: absolute;
+    /* Sit to the right of and just below each pin. */
+    /* Margins, not translate: GSAP clears translate on elements it animates. */
+    margin: 4px 0 0 18px;
+    white-space: nowrap;
+  }
+
+  .cotrip__label.is-current {
+    font-weight: 700;
+    margin: -14px 0 0 24px;
+  }
+
+  .cotrip__phones {
+    position: relative;
+    width: min(100%, 220px, calc(54svh * 220 / 460));
+    aspect-ratio: 220 / 460;
+  }
+
+  /* The new stop's label sits to the left of its ring, so it never runs off the map. */
+  .cotrip__label.cotrip__label--ahead {
+    width: max-content;
+    max-width: none;
+    margin: -8px 18px 0 0;
+    white-space: nowrap;
+  }
+
+  /* Asking TripTalk, and its answer: cards floating off the phones, like cotrip.app's own. */
+  .cotrip__chat {
+    position: absolute;
+    right: 72%;
+    bottom: 12%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    width: max-content;
+    max-width: 240px;
+  }
+
+  .cotrip__ask,
+  .cotrip__reply {
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .cotrip__ask {
+    background: #0a0a0a;
+    color: #fbf6ea;
+    border-bottom-right-radius: 4px;
+  }
+
+  .cotrip__caret {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: -0.12em;
+    background: currentColor;
+    opacity: 0;
+  }
+
+  .cotrip__reply {
+    align-self: flex-start;
+    background: #fbf6ea;
+    color: #0a0a0a;
+    border: var(--border-strong) solid #0a0a0a;
+    border-bottom-left-radius: 4px;
+  }
+
+  .cotrip__reply-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Phones: a black bezel around each screenshot. */
+  .cotrip__phone,
+  .cotrip__phone-back {
+    position: absolute;
+    padding: 6px;
+    border-radius: 32px;
+    background: #0a0a0a;
+  }
+
+  .cotrip__phone img,
+  .cotrip__phone-back img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 26px;
+  }
+
+  .cotrip__phone-back {
+    left: 22%;
+    top: 7%;
+    width: 100%;
+    height: 100%;
+    transform: rotate(6deg);
+  }
+
+  .cotrip__phone {
+    inset: 0;
+  }
+
+  /* Stack the map and phone when their column is too narrow for both. */
+  @container (max-width: 679px) {
+    .cotrip {
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      gap: 48px;
+    }
+
+    .cotrip__map {
+      width: min(100%, 520px);
+    }
+
+    .cotrip__label {
+      white-space: normal;
+      max-width: 34%;
+    }
+
+    .cotrip__phones {
+      width: 180px;
+    }
+
+    .cotrip__chat {
+      right: 48%;
+      bottom: 6%;
+      max-width: 168px;
+    }
+  }
+</style>

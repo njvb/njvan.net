@@ -1,0 +1,284 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  total: number;
+}
+
+const { project: p, total } = Astro.props;
+const totalLabel = String(total).padStart(2, '0');
+---
+
+<section class="scene" id={p.id} data-project={p.id} data-scene aria-labelledby={`${p.id}-title`}>
+  <!-- The accent wash. Hidden until the scene is staged for pinning; the section itself is the field otherwise. -->
+  <div class="scene__wash" aria-hidden="true" data-scene-wash></div>
+  <!-- An optional backdrop (Campaign Tower's drifting city), clipped with the wash when staged. -->
+  <slot name="backdrop" />
+  <div class="shell scene__inner">
+    <div class="scene__top t-caption" data-ink data-scene-rise>
+      {
+        p.logo ? (
+          <span class="scene__mark">
+            <span>{p.number} ·</span>
+            <span
+              class="scene__logo"
+              role="img"
+              aria-label={`${p.name} logo`}
+              style={`--logo:url(${import.meta.env.BASE_URL}${p.logo.src});--ratio:${p.logo.ratio}`}
+            />
+          </span>
+        ) : (
+          <span>
+            {p.number} · {p.name}
+          </span>
+        )
+      }
+      <span class="scene__count">Scene {p.number} / {totalLabel}</span>
+    </div>
+
+    <div class="scene__copy">
+      <h2 class="scene__name" id={`${p.id}-title`} data-ink data-scene-name>{p.name}</h2>
+      <p class="scene__line" data-ink data-scene-rise>{p.line}</p>
+      <p class="scene__more t-body" data-ink data-scene-rise>{p.more}</p>
+      <div class="scene__links" data-ink data-scene-rise>
+        {
+          p.links.map((l) =>
+            l.href ? (
+              <a
+                class:list={['btn', `scene-btn--${l.variant}`]}
+                href={l.href}
+                {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}
+              >
+                {l.label}
+                {l.external && ' ↗'}
+              </a>
+            ) : (
+              <span
+                class:list={['btn', 'btn--placeholder', `scene-btn--${l.variant}`]}
+                title="Placeholder: URL needed"
+              >
+                {l.label}
+                {l.external && ' ↗'} <span class="placeholder-note">[link needed]</span>
+              </span>
+            )
+          )
+        }
+      </div>
+    </div>
+
+    <div class="scene__visual" aria-hidden="true" data-ink data-scene-visual>
+      <slot />
+    </div>
+
+    <div class="scene__notes t-annotation" data-ink data-scene-rise>
+      {p.notes.map((n) => <span>{n}</span>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .scene {
+    --field: var(--color-foreground);
+    --on: var(--color-canvas);
+    position: relative;
+    background: var(--field);
+    color: var(--on);
+    padding-block: 48px;
+    overflow: hidden;
+  }
+
+  /* Each block carries its own ink, so the wash can change it block by block. */
+  .scene [data-ink] {
+    color: var(--on);
+  }
+
+  .scene__wash {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: var(--field);
+    pointer-events: none;
+  }
+
+  .scene__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Staged by src/scripts/scenes.ts: canvas ground, the wash grows over it when the scene is active. */
+  .scene:global(.is-staged) {
+    background: var(--color-canvas);
+  }
+
+  .scene:global(.is-staged) .scene__wash {
+    display: block;
+  }
+
+  /* Room for ascenders and descenders inside the name's line masks (tight 0.84 line height). */
+  .scene__name :global(.scene-line-mask) {
+    padding-block: 0.12em;
+    margin-block: -0.12em;
+  }
+
+  .scene[data-project='tavren'] { --field: var(--color-tavren); --on: var(--color-on-tavren); }
+  .scene[data-project='kora'] { --field: var(--color-kora); --on: var(--color-on-kora); }
+  .scene[data-project='cotrip'] { --field: var(--color-cotrip); --on: var(--color-on-cotrip); }
+  .scene[data-project='tower'] { --field: var(--color-tower); --on: var(--color-on-tower); }
+
+  .scene ::selection {
+    background: var(--on);
+    color: var(--field);
+  }
+
+  .scene :focus-visible {
+    outline-color: var(--on);
+  }
+
+  .scene__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'top'
+      'copy'
+      'visual'
+      'notes';
+    gap: 40px;
+  }
+
+  .scene__top {
+    grid-area: top;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .scene__copy {
+    grid-area: copy;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter);
+    container-type: inline-size;
+  }
+
+  /* The project's own logo in the top row, drawn in the scene's ink so it never adds a second accent. */
+  .scene__mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .scene__logo {
+    display: inline-block;
+    height: 20px;
+    aspect-ratio: var(--ratio);
+    background: currentColor;
+    -webkit-mask: var(--logo) center / contain no-repeat;
+    mask: var(--logo) center / contain no-repeat;
+  }
+
+  .scene__name {
+    margin-left: -0.04em;
+    font-size: clamp(3.5rem, 20cqi, 10rem);
+    line-height: 0.84;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+  }
+
+  .scene[data-project='tower'] .scene__name {
+    font-size: clamp(3rem, 16cqi, 8rem);
+  }
+
+  .scene__line {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .scene__more {
+    max-width: 42ch;
+  }
+
+  .scene__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .scene-btn--solid {
+    background: var(--on);
+    border-color: var(--on);
+    color: var(--field);
+  }
+
+  .scene-btn--outline {
+    border-color: var(--on);
+    color: var(--on);
+  }
+
+  a.scene-btn--outline:hover {
+    background: color-mix(in srgb, var(--on) 10%, transparent);
+  }
+
+  .scene__visual {
+    grid-area: visual;
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  .scene__notes {
+    grid-area: notes;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--gutter);
+    border-top: var(--border-hairline) solid currentColor;
+    padding-top: var(--space-4);
+  }
+
+  @media (min-width: 768px) {
+    .scene {
+      padding-block: 72px 56px;
+    }
+
+    .scene__line {
+      font-size: 28px;
+      line-height: 36px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .scene__inner {
+      min-height: calc(100svh - 128px);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas: none;
+      column-gap: var(--gutter);
+      row-gap: 72px;
+    }
+
+    .scene__top {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .scene__copy {
+      grid-column: 1 / span 5;
+      grid-row: 2;
+      align-self: start;
+      padding-top: 56px;
+    }
+
+    .scene__visual {
+      grid-column: 6 / -1;
+      grid-row: 2;
+      align-self: center;
+    }
+
+    .scene__notes {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+  }
+</style>

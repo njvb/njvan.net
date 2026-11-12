@@ -26,10 +26,10 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 | Surface | Intro | Settled | Outro |
 |---|---|---|---|
 | Wordmark | letters spring in, 1px underline draws `scaleX 0 → 1` | still | none (shell persists) |
-| Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | slow letter wave, period 1.5s, weight dips 800 → 450 → 800 | blast-off when the visitor scrolls past |
+| Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | letter wave every 4s, a different move each pass (hop, breathe, lean, flip, weight dips to 500 or 400, shear, squash, twist) | blast-off when the visitor scrolls past |
 | Hero lead line | speak-in, word by word, from 1.05s | words persist | thrown with the blast |
 | Index rows | rise, staggered 0.05s, on entering view | hover: name waves once, accent rule draws under it | standard exit |
-| Project names (statement) | masked split by line as the scene pins | still | slide up behind the mask |
+| Project names (statement) | masked split by line once the scene is in view | still | slide up behind the mask |
 | Labels and annotations | standard rise | still | standard exit |
 | Body copy | appears with its block, never split | still | with its block |
 | Page progress | none | 1px rule along the top in `foreground`, in the project's accent inside a scene | none |
@@ -38,24 +38,24 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 
 ## Project scenes: one signature moment each
 
-Each scene pins for about 1.5 screens of scroll. The accent wash uses the `animaxxing` curve: the accent grows from the index row's rule to fill the scene, then retracts into the next row as the following scene arrives. Text on the wash switches to the `on-` token as the wash passes under it.
+On wide screens the browser's own CSS scroll snapping stops on each scene (`scroll-snap-type: y mandatory`, `scroll-snap-stop: always` on scenes), so a flick never skips one and wheels, trackpad momentum, keys and touch all behave natively; nothing in JavaScript holds the scroll. The hero and the project index are full-screen panels too, so the page moves hero, index, then each scene, one panel per gesture; the footer snaps to the bottom. Each scene then plays on its own time (Nathan's call, replacing the earlier pinned, scroll-scrubbed version). A rule draws along the top and the accent grows from it to fill the scene on the `animaxxing` curve; text switches to the `on-` token as the wash passes under it; the name and copy rise in; then the signature moment plays. When the visitor scrolls on, the wash retracts down and the name slides up. Scrolling up out of the first scene returns to the index panel.
 
-| Project | Accent | Signature moment (scrubbed to scroll) |
+| Project | Accent | Signature moment (plays once the scene is in view) |
 |---|---|---|
 | **Tavren** | `tavren` | The hex board tilts from flat to 3D (CSS 3D or a small Three.js scene). Hexes rise in a ripple from the centre; one village lights up gold. |
-| **Kora** | `kora` | The violet wash arrives, then interface panels slide into a grid with Flip (projects, timesheets, Ask Kora). A typewriter line asks Kora a question and the answer speaks in. |
+| **Kora** | `kora` | The violet wash arrives, then the real overview screen (from kora-os.com) slides in, bleeding off the edge. Ask Kora pops out over its corner, the question types itself, the answer arrives word by word with its sources, and the off-track bar it describes is outlined. (Replaced the earlier Flip panels.) |
 | **Cotrip** | `cotrip` | A route line draws itself across a stylised map (SVG `strokeDashoffset`), dropping pins at each stop; phone screenshots stack beside it. |
 | **Campaign Tower** | `tower` | The tower builds itself floor by floor in pixel blocks (stepped ease, no smoothing). A small pixel lift rides up the side as the scroll indicator. |
 
 Rules for project moments:
 
 - **One signature moment per scene.** Everything else in the scene uses frame motion.
-- Scrub moments to scroll (`scrub: 0.6`) so the visitor controls them; never autoplay a long sequence.
+- Moments play every time the scene comes into view, along with the wash and name, and reset once it has left the screen, so they replay on each return.
 - Campaign Tower is the one place stepped, unsmoothed motion is allowed, to match its pixel art.
 
 ## Mobile
 
-- No pinning under 768px. Scenes become stacked sections; the signature moment plays once on entering view.
+- No pinning or paging below the wide layout. Scenes become stacked sections; the name and contents rise and the signature moment plays each time the scene enters view.
 - Hover effects have a tap or in-view equivalent; nothing important hides behind hover.
 - The letter wave pauses when the hero leaves the viewport.
 

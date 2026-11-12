@@ -16,7 +16,7 @@ What each project is, as the site should describe it, and what its section draws
 - **More.** Clients, projects, scopes, plans, resourcing, timesheets, billing and a client portal in one place, with Ask Kora answering across all of it.
 - **Stack.** `NUXT 4 · SUPABASE · AI`
 - **Accent.** `kora` (#5B4BE0 light, #8B7CFF dark), Kora's own primary in both themes.
-- **Moment.** Interface panels assemble with Flip; a question to Ask Kora types itself.
+- **Moment.** The real overview screen slides in; Ask Kora asks "Which projects are off track?", the answer arrives word by word, and the off-track bar is outlined in the screen.
 
 ## 03 · Cotrip
 
@@ -30,7 +30,7 @@ What each project is, as the site should describe it, and what its section draws
 
 - **Line.** Build an ad agency one floor at a time.
 - **More.** A pixel-art tower game for iPhone. Hire creatives with strange habits, drive the lift yourself and win briefs from sixty made-up brands.
-- **Stack.** `IOS · PIXEL ART`
+- **Stack.** `SWIFTUI · SPRITEKIT · STOREKIT`
 - **Accent.** `tower` (#3FBF5F), from the game's pixel palette.
 - **Moment.** The tower builds itself floor by floor.
 - **Links.** The existing landing page at njvb.github.io/campaigntower-site stays where it is; this section links to it.

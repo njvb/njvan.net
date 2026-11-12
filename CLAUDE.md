@@ -57,7 +57,6 @@ Show Nathan each step running locally (`npm run dev`) before moving on. He tunes
 - Screenshots for Tavren, Kora and Cotrip, and each project's logo. Ask Nathan for them; until then use labelled placeholders, never invented screens.
 - Kora's status (live, beta or in development).
 - Links: play Tavren, Cotrip on the App Store, Kora. Ask before inventing any URL.
-- Campaign Tower's stack line is a guess ("iOS · Pixel art"): confirm.
 
 ## Deploy
 

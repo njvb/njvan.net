@@ -1,0 +1,159 @@
+---
+// Kora's visual, after kora-os.com's own hero: the overview screen large and
+// bleeding off the scene's edge, with Ask Kora floating over its corner asking
+// the site's own question. Without JavaScript this is the settled layout.
+// src/scripts/kora-moment.ts plays the signature moment: the screen slides in,
+// Ask Kora pops out, the question types itself, the answer arrives word by
+// word with its sources, and the off-track bar it describes is outlined.
+const base = `${import.meta.env.BASE_URL}assets/kora/`;
+---
+
+<div class="kora" data-kora>
+  <figure class="kora__screen" data-kora-screen>
+    <img src={`${base}overview.jpg`} alt="" width="1200" height="625" loading="lazy" decoding="async" />
+    <span class="kora__mark" data-kora-mark></span>
+  </figure>
+
+  <div class="kora__ask" data-kora-ask>
+    <div class="kora__ask-row">
+      <span class="kora__ask-label">Ask Kora</span>
+      <span class="kora__caret" data-kora-caret></span>
+    </div>
+    <p class="kora__question" data-kora-question>Which projects are off track?</p>
+    <p class="kora__answer" data-kora-answer>
+      3 need you this week: Brand Guidelines, Website Redesign and Internal Dashboard.
+    </p>
+    <span class="kora__sources" data-kora-sources>From Overview · Plans</span>
+  </div>
+</div>
+
+<script>
+  import { mountKora } from '../../scripts/kora-moment';
+  document.querySelectorAll<HTMLElement>('[data-kora]').forEach((root) => {
+    try {
+      mountKora(root);
+    } catch (error) {
+      console.error('[kora] moment failed, keeping the settled screen', error);
+    }
+  });
+</script>
+
+<style>
+  .kora {
+    --violet: #8b7cff;
+    position: relative;
+    padding-bottom: 72px;
+  }
+
+  /* The overview, large, running off the scene's right edge like a product shot. */
+  .kora__screen {
+    position: relative;
+    margin: 0;
+    /* Out past the content column and the page margin, off the viewport edge (the scene clips it). */
+    width: calc(100% + max(var(--pad), (100vw - 1280px) / 2) + 8vw);
+    aspect-ratio: 1200 / 625;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: #ffffff;
+    border: var(--border-hairline) solid rgba(10, 10, 10, 0.2);
+  }
+
+  .kora__screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Around the "4 off track" bar (percentages of the screenshot's own pixels; it is never cropped). */
+  .kora__mark {
+    position: absolute;
+    left: 18.4%;
+    top: 40%;
+    width: 29.8%;
+    height: 5.6%;
+    border: 2px solid var(--violet);
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  /* Ask Kora, floating over the screen's lower-left corner. */
+  .kora__ask {
+    position: absolute;
+    left: -5%;
+    bottom: 0;
+    z-index: 1;
+    width: min(380px, 64%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 18px;
+    border-radius: var(--radius-xl);
+    background: #0a0a0a;
+    color: #ededed;
+  }
+
+  .kora__ask-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kora__ask-label,
+  .kora__sources {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .kora__ask-label {
+    color: var(--violet);
+  }
+
+  .kora__caret {
+    width: 2px;
+    height: 14px;
+    background: var(--violet);
+    opacity: 0;
+  }
+
+  .kora__question {
+    margin: 0;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .kora__answer {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: #d4d4d4;
+  }
+
+  .kora__sources {
+    margin-top: 4px;
+    color: #a3a3a3;
+  }
+
+  /* Narrow columns: the screen fits the column and Ask Kora tucks under its corner. */
+  @container (max-width: 559px) {
+    .kora {
+      padding-bottom: 0;
+    }
+
+    .kora__screen {
+      width: 100%;
+    }
+
+    .kora__ask {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      width: auto;
+      margin: -20px 12px 0;
+    }
+  }
+</style>

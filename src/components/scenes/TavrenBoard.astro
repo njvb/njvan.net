@@ -1,0 +1,137 @@
+---
+// Tavren's board. With WebGL, src/scripts/tavren-3d.ts loads the game's own
+// KayKit tiles into a canvas on this stage as the scene approaches and plays
+// the signature moment. Without it (no JavaScript, no WebGL, or a failed
+// load) the CSS board below stays: tilted into 3D, one village lit, in
+// Tavren's paper, parchment and ink.
+const counts = [4, 5, 6, 5, 4];
+const lit = '2-3';
+const rows = counts.map((n, r) =>
+  Array.from({ length: n }, (_, i) => {
+    const ring = Math.abs(r - 2) + Math.abs(i - (n - 1) / 2);
+    const kind = `${r}-${i}` === lit ? 'lit' : ring < 1.6 ? 'inner' : 'outer';
+    return { kind, ring };
+  })
+);
+---
+
+<div class="tavren-stage" data-tavren-stage>
+<div class="tavren-board">
+  <div class="tavren-board__plane">
+    {
+      rows.map((row) => (
+        <div class="tavren-board__row">
+          {row.map((h) => (
+            <div class="hex" data-kind={h.kind} style={`--ring:${h.ring}`} />
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
+</div>
+
+<script>
+  import { holdMoment } from '../../lib/moments';
+
+  // Load the 3D board as the visitor nears the project index, so the hero never
+  // waits on Three.js but the board is ready by the time Tavren is on screen.
+  // The scene holds its moment until the board has mounted (or failed), so the
+  // tiles always play their entrance rather than arriving settled.
+  const stage = document.querySelector<HTMLElement>('[data-tavren-stage]');
+  const id = stage?.closest<HTMLElement>('[data-scene]')?.id;
+  const gl = (() => {
+    try {
+      return Boolean(document.createElement('canvas').getContext('webgl2'));
+    } catch {
+      return false;
+    }
+  })();
+  if (stage && id && gl) {
+    let ready!: () => void;
+    holdMoment(id, new Promise<void>((resolve) => (ready = resolve)));
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        import('../../scripts/tavren-3d')
+          .then((m) => m.mountTavren(stage))
+          .catch((error) => console.error('[tavren] 3D board failed, keeping the CSS board', error))
+          .finally(ready);
+      },
+      { rootMargin: '400% 0px' }
+    );
+    io.observe(stage);
+  }
+</script>
+
+<style>
+  /* A fixed stage, so swapping the CSS board for the canvas never moves the layout. */
+  .tavren-stage {
+    position: relative;
+    width: min(100%, calc(62svh * 760 / 640));
+    aspect-ratio: 760 / 640;
+    margin-inline: auto;
+    display: grid;
+    place-items: center;
+  }
+
+  .tavren-stage :global(canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.28s ease-out;
+  }
+
+  .tavren-stage:global(.is-3d) :global(canvas) {
+    opacity: 1;
+  }
+
+  .tavren-stage:global(.is-3d) .tavren-board {
+    opacity: 0;
+    transition: opacity 0.28s ease-out;
+  }
+
+  .tavren-board {
+    --hex: min(96px, 13cqi);
+    perspective: 1400px;
+    display: flex;
+    justify-content: center;
+    padding-block: 2cqi;
+  }
+
+  .tavren-board__plane {
+    transform: rotateX(52deg) rotateZ(-8deg);
+    transform-origin: 50% 50%;
+    transform-style: preserve-3d;
+  }
+
+  .tavren-board__row {
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--hex) * 0.0625);
+  }
+
+  .tavren-board__row + .tavren-board__row {
+    margin-top: calc(var(--hex) * -0.25);
+  }
+
+  .hex {
+    width: var(--hex);
+    aspect-ratio: 96 / 110;
+    flex: none;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    background: #e4d9bf;
+  }
+
+  .hex[data-kind='inner'] {
+    background: #fbf6ea;
+  }
+
+  .hex[data-kind='lit'] {
+    background: var(--color-on-tavren);
+    transform: translateY(calc(var(--hex) * -0.19));
+  }
+</style>

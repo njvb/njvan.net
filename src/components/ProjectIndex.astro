@@ -1,0 +1,215 @@
+---
+import { projects } from '../data/projects';
+---
+
+<section class="index" id="projects" aria-labelledby="index-title" data-snap-panel>
+  <div class="shell">
+    <div class="index__head" data-scroll-reveal>
+      <h2 class="t-caption" id="index-title" aria-label="Index" data-ledger-scramble>Index</h2>
+      <span class="index__hint t-annotation muted" data-ledger-scramble>Hover to preview · click to jump</span>
+      <span class="index__rule" aria-hidden="true" data-ledger-rule></span>
+    </div>
+
+    <ol class="ledger" role="list">
+      {
+        projects.map((p) => (
+          <li data-scroll-reveal>
+            <a
+              class="ledger-row"
+              href={`#${p.id}`}
+              data-project={p.id}
+              aria-label={`${p.number}, ${p.kind}: ${p.name}. ${p.indexLine}`}
+            >
+              <span class="ledger-row__meta t-annotation">
+                <span class="ledger-row__num" data-ledger-scramble>{`${p.number} · ${p.kind}`}</span>
+                <span class="ledger-row__stack" data-ledger-scramble>{p.indexStack}</span>
+              </span>
+              <span class="ledger-row__name t-statement" data-ledger-name>{p.name}</span>
+              <span class="ledger-row__line" data-ledger-line>{p.indexLine}</span>
+              <span class="ledger-row__stack ledger-row__stack--wide t-annotation" data-ledger-scramble>
+                {p.indexStack}
+              </span>
+              <span class="ledger-row__rule" aria-hidden="true" data-ledger-rule></span>
+              <span class="ledger-row__accent" aria-hidden="true" data-ledger-accent></span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .index {
+    padding-block: 0 64px;
+    container-type: inline-size;
+  }
+
+  .index__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    position: relative;
+    padding-bottom: 12px;
+  }
+
+  .index__hint {
+    display: none;
+  }
+
+  .ledger {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ledger-row {
+    --accent: var(--color-foreground);
+    --accent-text: var(--accent);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block: 20px;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .ledger-row[data-project='tavren'] { --accent: var(--color-tavren); }
+  .ledger-row[data-project='kora'] { --accent: var(--color-kora); }
+  .ledger-row[data-project='cotrip'] { --accent: var(--color-cotrip); }
+  .ledger-row[data-project='tower'] { --accent: var(--color-tower); }
+
+  /* Light theme: accents are fields, not text, so every name stays ink on hover and only the rule takes the accent. */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) .ledger-row {
+      --accent-text: var(--color-foreground);
+    }
+  }
+  :root[data-theme='light'] .ledger-row {
+    --accent-text: var(--color-foreground);
+  }
+
+  /* Hairlines are elements, not borders, so the entrance can draw them. */
+  .index__rule,
+  .ledger-row__rule {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--border-hairline);
+    background: var(--color-border);
+    transform-origin: left center;
+  }
+
+  /* The accent rule: draws along the row's bottom edge on hover or focus (and runs once in the entrance). */
+  .ledger-row__accent {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: var(--border-strong);
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--duration-micro) var(--ease-entrance);
+  }
+
+  .ledger-row__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    color: var(--color-muted);
+  }
+
+  /* Stable typography for the hover wave: kerning would snap on split and revert. */
+  .ledger-row__name {
+    font-kerning: none;
+    text-rendering: optimizeSpeed;
+  }
+
+  .ledger-row__num,
+  .ledger-row__name {
+    transition: color var(--duration-micro) var(--ease-entrance);
+  }
+
+  .ledger-row__line {
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--color-muted);
+    max-width: 36ch;
+    transition: color var(--duration-micro) var(--ease-entrance);
+  }
+
+  .ledger-row__stack--wide {
+    display: none;
+  }
+
+  @media (hover: hover) {
+    .ledger-row:hover .ledger-row__accent {
+      transform: scaleX(1);
+    }
+    .ledger-row:hover .ledger-row__num,
+    .ledger-row:hover .ledger-row__name {
+      color: var(--accent-text);
+    }
+    .ledger-row:hover .ledger-row__line {
+      color: var(--color-foreground);
+    }
+  }
+
+  .ledger-row:focus-visible .ledger-row__accent {
+    transform: scaleX(1);
+  }
+
+  /* Room for the name's letters to rise from behind their masks without clipping descenders. */
+  .ledger-row__name :global(.ledger-char-mask) {
+    padding-block: 0.1em;
+    margin-block: -0.1em;
+  }
+
+  @media (min-width: 768px) {
+    .index {
+      padding-block: 48px 96px;
+    }
+
+    .index__head {
+      padding-bottom: var(--space-4);
+    }
+
+    .index__hint {
+      display: inline;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ledger-row {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr) minmax(0, 1fr) 220px;
+      gap: var(--gutter);
+      align-items: center;
+      padding-block: 28px;
+    }
+
+    .ledger-row__meta {
+      font-family: var(--font-mono);
+      font-size: var(--type-caption-size);
+      font-weight: var(--type-caption-weight);
+    }
+
+    .ledger-row__meta .ledger-row__stack {
+      display: none;
+    }
+
+    .ledger-row__line {
+      font-size: var(--type-body-size);
+      line-height: var(--type-body-line-height);
+    }
+
+    .ledger-row__stack--wide {
+      display: block;
+      color: var(--color-muted);
+      text-align: right;
+    }
+  }
+</style>
