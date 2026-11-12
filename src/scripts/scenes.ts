@@ -344,7 +344,6 @@ export function setupScenes(): void {
   // Colours are read from the theme, and block positions from the layout: rebuild when either changes.
   const rebuild = () => build();
   new MutationObserver(rebuild).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', rebuild);
   let width = window.innerWidth;
   let timer = 0;
   window.addEventListener('resize', () => {

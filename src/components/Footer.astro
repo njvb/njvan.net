@@ -26,10 +26,9 @@ import { contact } from '../data/projects';
 
 <script>
   const root = document.documentElement;
-  const osLight = window.matchMedia('(prefers-color-scheme: light)');
-
-  const current = (): 'light' | 'dark' =>
-    (root.dataset.theme as 'light' | 'dark' | undefined) ?? (osLight.matches ? 'light' : 'dark');
+  // Dark unless the visitor picked light here; the OS setting is not consulted.
+  const current = (): 'light' | 'dark' => (root.dataset.theme === 'light' ? 'light' : 'dark');
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
 
   document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
     const label = btn.querySelector('[data-theme-label]')!;
@@ -41,12 +40,12 @@ import { contact } from '../data/projects';
     btn.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
+      themeColor?.setAttribute('content', next === 'light' ? '#ffffff' : '#0a0a0a');
       try {
         localStorage.setItem('theme', next);
       } catch {}
       sync();
     });
-    osLight.addEventListener('change', sync);
     sync();
     btn.hidden = false;
   });
