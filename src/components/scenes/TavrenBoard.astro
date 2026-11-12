@@ -1,6 +1,9 @@
 ---
-// The hex board in its settled state: tilted into 3D, one village lit.
-// Colours are Tavren's own palette (paper, parchment, ink), scoped to this board.
+// Tavren's board. With WebGL, src/scripts/tavren-3d.ts loads the game's own
+// KayKit tiles into a canvas on this stage as the scene approaches and plays
+// the signature moment. Without it (no JavaScript, no WebGL, or a failed
+// load) the CSS board below stays: tilted into 3D, one village lit, in
+// Tavren's paper, parchment and ink.
 const counts = [4, 5, 6, 5, 4];
 const lit = '2-3';
 const rows = counts.map((n, r) =>
@@ -12,6 +15,7 @@ const rows = counts.map((n, r) =>
 );
 ---
 
+<div class="tavren-stage" data-tavren-stage>
 <div class="tavren-board">
   <div class="tavren-board__plane">
     {
@@ -25,8 +29,62 @@ const rows = counts.map((n, r) =>
     }
   </div>
 </div>
+</div>
+
+<script>
+  // Load the 3D board only as Tavren approaches, so the hero never waits on Three.js.
+  const stage = document.querySelector<HTMLElement>('[data-tavren-stage]');
+  const gl = (() => {
+    try {
+      return Boolean(document.createElement('canvas').getContext('webgl2'));
+    } catch {
+      return false;
+    }
+  })();
+  if (stage && gl) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        import('../../scripts/tavren-3d')
+          .then((m) => m.mountTavren(stage))
+          .catch((error) => console.error('[tavren] 3D board failed, keeping the CSS board', error));
+      },
+      { rootMargin: '150% 0px' }
+    );
+    io.observe(stage);
+  }
+</script>
 
 <style>
+  /* A fixed stage, so swapping the CSS board for the canvas never moves the layout. */
+  .tavren-stage {
+    position: relative;
+    width: min(100%, calc(62svh * 760 / 640));
+    aspect-ratio: 760 / 640;
+    margin-inline: auto;
+    display: grid;
+    place-items: center;
+  }
+
+  .tavren-stage :global(canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.28s ease-out;
+  }
+
+  .tavren-stage:global(.is-3d) :global(canvas) {
+    opacity: 1;
+  }
+
+  .tavren-stage:global(.is-3d) .tavren-board {
+    opacity: 0;
+    transition: opacity 0.28s ease-out;
+  }
+
   .tavren-board {
     --hex: min(96px, 13cqi);
     perspective: 1400px;

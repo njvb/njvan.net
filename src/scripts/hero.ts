@@ -16,6 +16,7 @@ import { reactor } from '../lib/effects/particles/reactor';
 import { ledgerRevealItems, setupLedgerHover, startLedgerReveal } from './ledger';
 import { setupScenes } from './scenes';
 import { setupProgress } from './progress';
+import { setMoment } from '../lib/moments';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -329,6 +330,7 @@ async function main() {
     setupScenes();
   } catch (error) {
     console.error('[scenes] setup failed, scenes stay static fields', error);
+    document.querySelectorAll<HTMLElement>('[data-scene]').forEach((scene) => setMoment(scene.id, 1));
   }
   setupProgress();
 

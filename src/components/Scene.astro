@@ -4,15 +4,13 @@ import type { Project } from '../data/projects';
 interface Props {
   project: Project;
   total: number;
-  /** The first scene shows its wash's starting rule before the page scrolls to it. */
-  first?: boolean;
 }
 
-const { project: p, total, first = false } = Astro.props;
+const { project: p, total } = Astro.props;
 const totalLabel = String(total).padStart(2, '0');
 ---
 
-<section class="scene" id={p.id} data-project={p.id} data-scene data-scene-first={first ? '' : undefined} aria-labelledby={`${p.id}-title`}>
+<section class="scene" id={p.id} data-project={p.id} data-scene aria-labelledby={`${p.id}-title`}>
   <!-- The accent wash. Hidden until the scene is staged for pinning; the section itself is the field otherwise. -->
   <div class="scene__wash" aria-hidden="true" data-scene-wash></div>
   <div class="shell scene__inner">
@@ -90,7 +88,7 @@ const totalLabel = String(total).padStart(2, '0');
     z-index: 1;
   }
 
-  /* Staged for pinning by src/scripts/scenes.ts: canvas ground, the wash grows over it. */
+  /* Staged by src/scripts/scenes.ts: canvas ground, the wash grows over it when the scene is active. */
   .scene:global(.is-staged) {
     background: var(--color-canvas);
   }

@@ -29,7 +29,7 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 | Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | letter wave every 4s, a different move each pass (hop, breathe, lean, flip, weight dips to 500 or 400, shear, squash, twist) | blast-off when the visitor scrolls past |
 | Hero lead line | speak-in, word by word, from 1.05s | words persist | thrown with the blast |
 | Index rows | rise, staggered 0.05s, on entering view | hover: name waves once, accent rule draws under it | standard exit |
-| Project names (statement) | masked split by line as the scene pins | still | slide up behind the mask |
+| Project names (statement) | masked split by line once the scene is in view | still | slide up behind the mask |
 | Labels and annotations | standard rise | still | standard exit |
 | Body copy | appears with its block, never split | still | with its block |
 | Page progress | none | 1px rule along the top in `foreground`, in the project's accent inside a scene | none |
@@ -38,9 +38,9 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 
 ## Project scenes: one signature moment each
 
-Each scene pins for about 1.5 screens of scroll. The accent wash uses the `animaxxing` curve: the accent grows from the index row's rule to fill the scene, then retracts into the next row as the following scene arrives. Text on the wash switches to the `on-` token as the wash passes under it.
+On wide screens the scenes page: from one screen above the first scene to the footer, each wheel flick, swipe or arrow key moves exactly one scene, each filling the viewport, and trackpad momentum never skips ahead (adapted from the Animaxxing section pager). The scene then plays on its own time (Nathan's call, replacing the earlier pinned, scroll-scrubbed version). A rule draws along the top and the accent grows from it to fill the scene on the `animaxxing` curve; text switches to the `on-` token as the wash passes under it; the name and copy rise in; then the signature moment plays. When the visitor scrolls on, the wash retracts down and the name slides up. The hero and index scroll freely; scrolling up from the index stop hands back to normal scrolling.
 
-| Project | Accent | Signature moment (scrubbed to scroll) |
+| Project | Accent | Signature moment (plays once the scene is in view) |
 |---|---|---|
 | **Tavren** | `tavren` | The hex board tilts from flat to 3D (CSS 3D or a small Three.js scene). Hexes rise in a ripple from the centre; one village lights up gold. |
 | **Kora** | `kora` | The violet wash arrives, then interface panels slide into a grid with Flip (projects, timesheets, Ask Kora). A typewriter line asks Kora a question and the answer speaks in. |
@@ -50,7 +50,7 @@ Each scene pins for about 1.5 screens of scroll. The accent wash uses the `anima
 Rules for project moments:
 
 - **One signature moment per scene.** Everything else in the scene uses frame motion.
-- Scrub moments to scroll (`scrub: 0.6`) so the visitor controls them; never autoplay a long sequence.
+- Moments play once the scene is in view, once per visit; returning to a scene replays the wash and name but leaves the moment settled.
 - Campaign Tower is the one place stepped, unsmoothed motion is allowed, to match its pixel art.
 
 ## Mobile

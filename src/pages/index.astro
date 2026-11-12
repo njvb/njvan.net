@@ -24,10 +24,10 @@ const visuals = {
   <Hero />
   <ProjectIndex />
   {
-    projects.map((p, i) => {
+    projects.map((p) => {
       const Visual = visuals[p.id];
       return (
-        <Scene project={p} total={projects.length} first={i === 0}>
+        <Scene project={p} total={projects.length}>
           <Visual />
         </Scene>
       );
