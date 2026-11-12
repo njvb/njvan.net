@@ -1,8 +1,10 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
 
+// The site lives at njvan.net. Until the domain points at GitHub Pages, the deploy
+// workflow builds it for njvb.github.io/njvan.net/ by setting SITE and BASE.
 export default defineConfig({
-  site: 'https://njvan.net',
+  site: process.env.SITE ?? 'https://njvan.net',
+  base: process.env.BASE ?? '/',
   output: 'static',
   vite: {
     build: {
