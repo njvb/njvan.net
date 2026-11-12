@@ -16,7 +16,7 @@ What each project is, as the site should describe it, and what its section draws
 - **More.** Clients, projects, scopes, plans, resourcing, timesheets, billing and a client portal in one place, with Ask Kora answering across all of it.
 - **Stack.** `NUXT 4 · SUPABASE · AI`
 - **Accent.** `kora` (#5B4BE0 light, #8B7CFF dark), Kora's own primary in both themes.
-- **Moment.** Interface panels assemble with Flip; a question to Ask Kora types itself.
+- **Moment.** The real overview screen slides in; Ask Kora asks "Which projects are off track?", the answer arrives word by word, and the off-track bar is outlined in the screen.
 
 ## 03 · Cotrip
 

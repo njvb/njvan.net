@@ -28,6 +28,8 @@ export interface Project {
   more: string;
   /** Scene annotations along the bottom rule. */
   notes: string[];
+  /** The project's own logo, shown in its scene's top row (drawn in the scene's ink). */
+  logo?: { src: string; /** Width over height. */ ratio: number };
   links: ProjectLink[];
 }
 
@@ -52,12 +54,17 @@ export const projects: Project[] = [
     number: '02',
     name: 'Kora',
     kind: 'Tool',
-    indexLine: 'An operating system for agencies, with AI over everything.',
+    indexLine: 'The operating system for creative agencies. Ask Kora answers across all of it.',
     indexStack: 'Nuxt 4 · Supabase · AI',
-    line: 'An operating system for agencies, with AI over everything.',
-    more: 'Clients, projects, scopes, plans, resourcing, timesheets, billing and a client portal in one place, with Ask Kora answering across all of it.',
-    notes: ['Nuxt 4 · Supabase · AI', 'For agencies · [status]'],
-    links: [{ label: 'See Kora', external: true, variant: 'solid' }],
+    // From the product's site (kora-os.com).
+    line: 'Run the agency. Not the spreadsheets.',
+    more: 'Kora is where your team wins, plans and delivers client work. With a portal your clients will actually use.',
+    notes: ['Nuxt 4 · Supabase · AI', 'Live · 14 days free, no card needed'],
+    logo: { src: 'assets/kora/kora-logo.svg', ratio: 424.86 / 100 },
+    links: [
+      { label: 'Try Kora free', href: 'https://app.kora-os.com/signup', external: true, variant: 'solid' },
+      { label: 'Visit kora-os.com', href: 'https://www.kora-os.com', external: true, variant: 'outline' },
+    ],
   },
   {
     id: 'cotrip',
@@ -70,6 +77,7 @@ export const projects: Project[] = [
     line: 'Your whole trip, in one place.',
     more: "Find a place and let AI draft the days. Plan it with your crew, ask TripTalk to change it, split what you spend, and on the day see what's next and how to get there.",
     notes: ['SwiftUI · Vue 3 · Firebase', 'Free · iPhone, iPad and web'],
+    logo: { src: 'assets/cotrip/cotrip-logo.png', ratio: 440 / 112 },
     links: [
       { label: 'App Store', href: 'https://apps.apple.com/app/id1536158484', external: true, variant: 'solid' },
       { label: 'Visit cotrip.app', href: 'https://cotrip.app', external: true, variant: 'outline' },
@@ -99,6 +107,5 @@ export const projects: Project[] = [
 
 export const contact = {
   email: 'njvanderbyl@gmail.com',
-  /** Waiting on Nathan's profile URL. */
-  linkedin: undefined as string | undefined,
+  linkedin: 'https://www.linkedin.com/in/njvan/' as string | undefined,
 };

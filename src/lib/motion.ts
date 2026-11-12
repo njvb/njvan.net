@@ -112,7 +112,7 @@ export const SCENE = {
   /** The signature moment plays once, the first time the scene is active. */
   moment: { at: 0.7, duration: 2.8 },
   /** Scenes whose moment tells a longer story get their own length, in seconds. */
-  momentLength: { cotrip: 5 } as Record<string, number>,
+  momentLength: { cotrip: 5, kora: 4.5 } as Record<string, number>,
   /** A moment whose visual loads late waits for it, up to this many seconds. */
   momentWait: 4,
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
@@ -149,19 +149,21 @@ export const TAVREN = {
 } as const;
 
 /**
- * Kora's signature moment (src/scripts/kora-moment.ts). It starts when the
- * scene's moment starts and runs on its own clock; times are seconds from then.
+ * Kora's signature moment (src/scripts/kora-moment.ts). Spans are fractions of
+ * the moment's progress (0 to 1); the moment runs SCENE.momentLength.kora seconds.
  */
 export const KORA = {
-  /** The pile of panels Flips into the grid on the animaxxing curve. */
-  flip: { duration: 0.9, stagger: 0.07 },
-  /** Resourcing bars and timesheet columns grow in as the panels land. */
-  bars: { at: 0.55, duration: 0.5, stagger: 0.05 },
-  /** The question types itself, at about this many characters a second. */
-  typeAt: 0.95,
-  typeSpeed: 26,
-  /** The answer starts speaking this long after the question is typed. */
-  answerGap: 0.25,
+  /** The overview screen slides in from the right. */
+  screen: [0, 0.22] as [number, number],
+  /** Ask Kora pops out over its corner. */
+  askPop: [0.2, 0.28] as [number, number],
+  /** The question types itself behind a violet caret. */
+  type: [0.3, 0.54] as [number, number],
+  /** The answer arrives word by word, then its sources. */
+  answer: [0.58, 0.8] as [number, number],
+  sources: [0.8, 0.86] as [number, number],
+  /** The off-track bar the answer describes is outlined in the overview. */
+  mark: [0.86, 0.96] as [number, number],
 } as const;
 
 /**

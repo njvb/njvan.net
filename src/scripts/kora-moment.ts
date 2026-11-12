@@ -1,125 +1,74 @@
-// Kora's signature moment: the interface panels Flip from a loose pile into
-// their grid, the resourcing bars and timesheet columns grow in, a question to
-// Ask Kora types itself, and the answer speaks in. Timings in KORA (motion.ts).
+// Kora's signature moment, after kora-os.com's own hero: the overview screen
+// slides in, Ask Kora pops out over its corner, the site's question types
+// itself, the answer arrives word by word with its sources, and the off-track
+// bar it describes is outlined in the screen.
 //
-// The scene's moment (src/lib/moments.ts) is the trigger: at 0 the panels wait
-// in the pile; once it starts the sequence plays on its own clock; when the
-// moment resets (the scene has left the screen) everything goes back to the
-// pile, ready to replay. If the moment arrives already settled (reduced motion,
-// a failed setup) the panels stay in their grid with everything shown. Without
-// JavaScript nothing changes: the settled grid is the markup.
+// One paused GSAP timeline positioned by the scene's moment (src/lib/moments.ts),
+// like Cotrip and Campaign Tower, so replays and the settled state (reduced
+// motion, a failed setup) line up exactly. Without JavaScript the markup is the
+// settled layout.
 import gsap from 'gsap';
-import { Flip } from 'gsap/Flip';
-import { CustomEase } from 'gsap/CustomEase';
-import { ANIMAXXING_CURVE, EASE, KORA, SHIFT } from '../lib/motion';
+import { SplitText } from 'gsap/SplitText';
+import { TextPlugin } from 'gsap/TextPlugin';
+import { KORA } from '../lib/motion';
 import { onMoment } from '../lib/moments';
-import { revertTyping, typeIn } from '../lib/effects/typewriter';
-import { speakIn } from '../lib/effects/speak-in';
 
-gsap.registerPlugin(Flip, CustomEase);
-CustomEase.create('animaxxing', ANIMAXXING_CURVE);
+gsap.registerPlugin(SplitText, TextPlugin);
+
+const span = ([a, b]: [number, number]) => ({ at: a, duration: b - a });
 
 export function mountKora(root: HTMLElement): void {
-  const grid = root.querySelector<HTMLElement>('[data-kora-grid]');
-  const question = root.querySelector<HTMLElement>('[data-kora-question]');
-  const answer = root.querySelector<HTMLElement>('[data-kora-answer]');
-  const sources = root.querySelector<HTMLElement>('[data-kora-sources]');
+  const $ = <T extends Element>(sel: string) => root.querySelector<T>(sel);
   const id = root.closest<HTMLElement>('[data-scene]')?.id;
-  if (!grid || !question || !answer || !sources || !id) return;
-  const panels = Array.from(grid.querySelectorAll<HTMLElement>('[data-kora-panel]'));
-  const bars = Array.from(root.querySelectorAll<HTMLElement>('[data-kora-bar]'));
-  const hours = Array.from(root.querySelectorAll<HTMLElement>('[data-kora-hour]'));
+  const screen = $<HTMLElement>('[data-kora-screen]');
+  const mark = $<HTMLElement>('[data-kora-mark]');
+  const ask = $<HTMLElement>('[data-kora-ask]');
+  const caret = $<HTMLElement>('[data-kora-caret]');
+  const question = $<HTMLElement>('[data-kora-question]');
+  const answer = $<HTMLElement>('[data-kora-answer]');
+  const sources = $<HTMLElement>('[data-kora-sources]');
+  if (!id || !screen || !mark || !ask || !caret || !question || !answer || !sources) return;
+  const text = question.textContent ?? '';
+  // The visual is aria-hidden, so the answer can stay split for good.
+  const words = SplitText.create(answer, { type: 'words' }).words as HTMLElement[];
 
-  let state: 'idle' | 'pile' | 'playing' | 'done' = 'idle';
-  let running: gsap.core.Timeline | null = null;
-  let spokenRevert: (() => void) | null = null;
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
 
-  /** Waiting: panels piled (the grid keeps its settled height), question and answer hidden, bars empty. */
-  const toPile = () => {
-    grid.style.minHeight = `${grid.offsetHeight}px`;
-    grid.dataset.layout = 'pile';
-    root.classList.add('is-moving');
-    gsap.set([question, answer, sources], { autoAlpha: 0 });
-    gsap.set(bars, { scaleX: 0, transformOrigin: '0% 50%' });
-    gsap.set(hours, { scaleY: 0, transformOrigin: '50% 100%' });
-    state = 'pile';
-  };
+  const sc = span(KORA.screen);
+  tl.fromTo(screen, { xPercent: 8, opacity: 0 }, { xPercent: 0, opacity: 1, duration: sc.duration, ease: 'power3.out' }, sc.at);
 
-  /** Stops a run in flight and puts its text back, without settling it. */
-  const stop = () => {
-    const tl = running;
-    running = null;
-    tl?.kill();
-    revertTyping(question);
-    spokenRevert?.();
-    spokenRevert = null;
-    gsap.killTweensOf([...panels, ...bars, ...hours, question, answer, sources]);
-    gsap.set(panels, { clearProps: 'transform,position,top,left,width,height,opacity,zIndex' });
-  };
+  const ap = span(KORA.askPop);
+  tl.fromTo(
+    ask,
+    { scale: 0.7, opacity: 0, transformOrigin: '0% 100%' },
+    { scale: 1, opacity: 1, duration: ap.duration, ease: 'back.out(2)' },
+    ap.at
+  );
 
-  /** Settled: the markup's own grid with everything shown. */
-  const settle = () => {
-    running?.progress(1);
-    delete grid.dataset.layout;
-    grid.style.removeProperty('min-height');
-    root.classList.remove('is-moving');
-    gsap.set([question, answer, sources], { clearProps: 'opacity,visibility,transform' });
-    gsap.set([...bars, ...hours], { clearProps: 'transform,transformOrigin' });
-    state = 'done';
-  };
+  const ty = span(KORA.type);
+  tl.fromTo(caret, { opacity: 0 }, { opacity: 1, duration: 0.005 }, ty.at);
+  tl.fromTo(question, { text: '' }, { text, duration: ty.duration }, ty.at);
+  tl.to(caret, { opacity: 0, duration: 0.005 }, ty.at + ty.duration + 0.02);
 
-  const play = () => {
-    state = 'playing';
-    const before = Flip.getState(panels);
-    delete grid.dataset.layout;
-    const tl = gsap.timeline({ onComplete: settle });
-    running = tl;
+  const an = span(KORA.answer);
+  tl.fromTo(
+    words,
+    { opacity: 0, y: 4 },
+    { opacity: 1, y: 0, duration: an.duration * 0.35, ease: 'power2.out', stagger: (an.duration * 0.65) / Math.max(1, words.length) },
+    an.at
+  );
 
-    tl.add(
-      Flip.from(before, {
-        targets: panels,
-        duration: KORA.flip.duration,
-        ease: 'animaxxing',
-        stagger: KORA.flip.stagger,
-        absolute: true,
-      }),
-      0
-    );
-    tl.to(bars, { scaleX: 1, duration: KORA.bars.duration, ease: EASE.entrance, stagger: KORA.bars.stagger }, KORA.bars.at);
-    tl.to(hours, { scaleY: 1, duration: KORA.bars.duration, ease: EASE.entrance, stagger: KORA.bars.stagger }, KORA.bars.at);
+  const so = span(KORA.sources);
+  tl.fromTo(sources, { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: so.duration, ease: 'power2.out' }, so.at);
 
-    // The question types itself, then the answer speaks in and its sources rise.
-    tl.add(typeIn(question, { speed: KORA.typeSpeed, blinks: 1 }), KORA.typeAt);
-    const spoken = speakIn(answer);
-    spokenRevert = spoken.revert;
-    tl.add(spoken.timeline, `>+${KORA.answerGap}`);
-    tl.fromTo(
-      sources,
-      { autoAlpha: 0, y: SHIFT.component },
-      { autoAlpha: 1, y: 0, duration: 0.3, ease: EASE.entrance },
-      '>+0.1'
-    );
-    tl.call(() => {
-      spoken.revert();
-      spokenRevert = null;
-    });
-  };
+  const mk = span(KORA.mark);
+  tl.fromTo(
+    mark,
+    { opacity: 0, scale: 1.25, transformOrigin: '50% 50%' },
+    { opacity: 1, scale: 1, duration: mk.duration, ease: 'back.out(2)' },
+    mk.at
+  );
+  tl.set({}, {}, 1);
 
-  onMoment(id, (p) => {
-    if (p <= 0) {
-      // Reset (the scene has left): back to the pile, ready to replay.
-      if (state === 'playing') stop();
-      if (state !== 'pile') toPile();
-      return;
-    }
-    if (state === 'playing' || state === 'done') return;
-    if (p >= 1) {
-      // Arrived settled without playing (reduced motion, or a failed scene setup).
-      if (state === 'pile') settle();
-      else state = 'done';
-      return;
-    }
-    if (state === 'idle') toPile();
-    play();
-  });
+  onMoment(id, (p) => tl.progress(p));
 }

@@ -1,83 +1,29 @@
 ---
-// Kora's interface panels in their settled grid, with Ask Kora's question and
-// answer. Stylised, not screenshots: they stand in for real Kora screens until
-// Nathan supplies them. Panels stay dark in both themes, like Kora's own UI.
-// src/scripts/kora-moment.ts plays the signature moment: the panels start as a
-// pile and Flip into this grid, the question types itself, the answer speaks in.
-const plan = [
-  { offset: 0, width: 55 },
-  { offset: 15, width: 35 },
-  { offset: 0, width: 75 },
-  { offset: 30, width: 45 },
-];
-const hours = [60, 80, 45, 90, 30];
-/** Where each panel sits in the pile before it Flips into the grid: x, y (px) and rotation (deg). */
-const pile = [
-  [-18, -14, -5],
-  [22, 8, 4],
-  [-10, 18, -2],
-  [16, -10, 6],
-  [2, 4, -1],
-];
-const panels = [
-  { label: 'Plans and resourcing', kind: 'plan' },
-  { label: 'Timesheets', kind: 'hours' },
-  { label: 'Scopes', kind: 'short' },
-  { label: 'Billing', kind: 'short' },
-  { label: 'Client portal', kind: 'short' },
-] as const;
+// Kora's visual, after kora-os.com's own hero: the overview screen large and
+// bleeding off the scene's edge, with Ask Kora floating over its corner asking
+// the site's own question. Without JavaScript this is the settled layout.
+// src/scripts/kora-moment.ts plays the signature moment: the screen slides in,
+// Ask Kora pops out, the question types itself, the answer arrives word by
+// word with its sources, and the off-track bar it describes is outlined.
+const base = `${import.meta.env.BASE_URL}assets/kora/`;
 ---
 
 <div class="kora" data-kora>
-  <div class="kora__ask">
+  <figure class="kora__screen" data-kora-screen>
+    <img src={`${base}overview.jpg`} alt="" width="1200" height="625" loading="lazy" decoding="async" />
+    <span class="kora__mark" data-kora-mark></span>
+  </figure>
+
+  <div class="kora__ask" data-kora-ask>
     <div class="kora__ask-row">
       <span class="kora__ask-label">Ask Kora</span>
-      <span class="kora__ask-q" data-kora-question>Which projects need more people next week?</span>
       <span class="kora__caret" data-kora-caret></span>
     </div>
+    <p class="kora__question" data-kora-question>Which projects are off track?</p>
     <p class="kora__answer" data-kora-answer>
-      Two. The spring campaign is 30 design hours short, and the website rebuild has no developer booked after
-      Wednesday.
+      3 need you this week: Brand Guidelines, Website Redesign and Internal Dashboard.
     </p>
-    <span class="kora__sources" data-kora-sources>From Plans · Timesheets</span>
-  </div>
-
-  <div class="kora__grid" data-kora-grid>
-    {
-      panels.map((panel, i) => (
-        <div
-          class:list={['panel', { 'panel--plan': panel.kind === 'plan', 'panel--short': panel.kind === 'short' }]}
-          data-kora-panel
-          style={`--pile-x:${pile[i]![0]}px;--pile-y:${pile[i]![1]}px;--pile-r:${pile[i]![2]}deg`}
-        >
-          <span class="panel__label">{panel.label}</span>
-          {panel.kind === 'plan' && (
-            <div class="plan">
-              {plan.map((b, j) => (
-                <div class="plan__row">
-                  <span class="plan__who" />
-                  <span class="plan__track">
-                    <span
-                      class="plan__bar"
-                      data-alt={j % 2 === 1}
-                      data-kora-bar
-                      style={`margin-left:${b.offset}%;width:${b.width}%`}
-                    />
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-          {panel.kind === 'hours' && (
-            <div class="hours">
-              {hours.map((h, j) => (
-                <span data-empty={j === hours.length - 1} data-kora-hour style={`height:${h}%`} />
-              ))}
-            </div>
-          )}
-        </div>
-      ))
-    }
+    <span class="kora__sources" data-kora-sources>From Overview · Plans</span>
   </div>
 </div>
 
@@ -87,46 +33,73 @@ const panels = [
     try {
       mountKora(root);
     } catch (error) {
-      console.error('[kora] moment failed, keeping the settled panels', error);
+      console.error('[kora] moment failed, keeping the settled screen', error);
     }
   });
 </script>
 
 <style>
   .kora {
-    --panel: #0a0a0a;
-    --panel-text: #ededed;
-    --panel-muted: #a3a3a3;
-    --panel-empty: #262626;
     --violet: #8b7cff;
-    --violet-deep: #5b4be0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    max-width: 720px;
-    margin-left: auto;
+    position: relative;
+    padding-bottom: 72px;
   }
 
+  /* The overview, large, running off the scene's right edge like a product shot. */
+  .kora__screen {
+    position: relative;
+    margin: 0;
+    /* Out past the content column and the page margin, off the viewport edge (the scene clips it). */
+    width: calc(100% + max(var(--pad), (100vw - 1280px) / 2) + 8vw);
+    aspect-ratio: 1200 / 625;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: #ffffff;
+    border: var(--border-hairline) solid rgba(10, 10, 10, 0.2);
+  }
+
+  .kora__screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Around the "4 off track" bar (percentages of the screenshot's own pixels; it is never cropped). */
+  .kora__mark {
+    position: absolute;
+    left: 18.4%;
+    top: 40%;
+    width: 29.8%;
+    height: 5.6%;
+    border: 2px solid var(--violet);
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  /* Ask Kora, floating over the screen's lower-left corner. */
   .kora__ask {
+    position: absolute;
+    left: -5%;
+    bottom: 0;
+    z-index: 1;
+    width: min(380px, 64%);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 18px 20px;
+    gap: 6px;
+    padding: 16px 18px;
     border-radius: var(--radius-xl);
-    background: var(--panel);
-    color: var(--panel-text);
+    background: #0a0a0a;
+    color: #ededed;
   }
 
   .kora__ask-row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    min-height: 28px;
+    gap: 8px;
   }
 
   .kora__ask-label,
-  .kora__sources,
-  .panel__label {
+  .kora__sources {
     font-family: var(--font-mono);
     font-size: 11px;
     line-height: 16px;
@@ -136,154 +109,51 @@ const panels = [
 
   .kora__ask-label {
     color: var(--violet);
-    flex: none;
-  }
-
-  .kora__ask-q {
-    font-size: clamp(15px, 2.6cqi, 18px);
-    line-height: 24px;
   }
 
   .kora__caret {
-    flex: none;
     width: 2px;
-    height: 24px;
+    height: 14px;
     background: var(--violet);
+    opacity: 0;
   }
 
-  /* The typewriter's own caret, in Kora's violet. */
-  .kora__ask-q :global([data-caret]) {
-    display: inline-block;
-    width: 2px;
-    height: 1.05em;
-    margin-left: 3px;
-    vertical-align: -0.15em;
-    background: var(--violet);
-  }
-
-  /* While the moment runs, the typewriter brings its own caret. */
-  .kora:global(.is-moving) .kora__caret {
-    display: none;
+  .kora__question {
+    margin: 0;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .kora__answer {
     margin: 0;
-    font-size: 15px;
-    line-height: 22px;
-    max-width: 56ch;
+    font-size: 14px;
+    line-height: 20px;
+    color: #d4d4d4;
   }
 
   .kora__sources {
-    color: var(--panel-muted);
+    margin-top: 4px;
+    color: #a3a3a3;
   }
 
-  .kora__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-4);
-  }
-
-  /* Before the moment: every panel in one cell, a loose pile in the middle. */
-  .kora__grid:global([data-layout='pile']) {
-    grid-template-columns: minmax(0, 1fr);
-    place-items: center;
-  }
-
-  .kora__grid:global([data-layout='pile']) .panel {
-    grid-area: 1 / 1;
-    width: 62%;
-    transform: translate(var(--pile-x), var(--pile-y)) rotate(var(--pile-r));
-  }
-
-  .panel {
-    min-height: 220px;
-    padding: 20px;
-    border-radius: var(--radius-xl);
-    background: var(--panel);
-    color: var(--panel-text);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .panel__label {
-    color: var(--panel-muted);
-  }
-
-  .panel--plan {
-    grid-column: span 2;
-  }
-
-  .panel--short {
-    min-height: 150px;
-  }
-
-  .plan {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .plan__row {
-    display: flex;
-    gap: 6px;
-  }
-
-  .plan__who {
-    flex: none;
-    width: 22%;
-    height: 14px;
-    border-radius: var(--radius-xs);
-    background: var(--panel-empty);
-  }
-
-  .plan__track {
-    flex: 1;
-    display: flex;
-  }
-
-  .plan__bar {
-    height: 14px;
-    border-radius: var(--radius-xs);
-    background: var(--violet);
-  }
-
-  .plan__bar[data-alt='true'] {
-    background: var(--violet-deep);
-  }
-
-  .hours {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 6px;
-    align-items: end;
-  }
-
-  .hours span {
-    border-radius: var(--radius-xs);
-    background: var(--violet);
-  }
-
-  .hours span[data-empty='true'] {
-    background: var(--panel-empty);
-  }
-
+  /* Narrow columns: the screen fits the column and Ask Kora tucks under its corner. */
   @container (max-width: 559px) {
-    .kora__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .kora {
+      padding-bottom: 0;
     }
 
-    .panel {
-      min-height: 160px;
+    .kora__screen {
+      width: 100%;
     }
 
-    .panel--short {
-      min-height: 110px;
-    }
-
-    .panel--plan {
-      grid-column: 1 / -1;
+    .kora__ask {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      width: auto;
+      margin: -20px 12px 0;
     }
   }
 </style>

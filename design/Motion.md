@@ -43,7 +43,7 @@ On wide screens the browser's own CSS scroll snapping stops on each scene (`scro
 | Project | Accent | Signature moment (plays once the scene is in view) |
 |---|---|---|
 | **Tavren** | `tavren` | The hex board tilts from flat to 3D (CSS 3D or a small Three.js scene). Hexes rise in a ripple from the centre; one village lights up gold. |
-| **Kora** | `kora` | The violet wash arrives, then interface panels slide into a grid with Flip (projects, timesheets, Ask Kora). A typewriter line asks Kora a question and the answer speaks in. |
+| **Kora** | `kora` | The violet wash arrives, then the real overview screen (from kora-os.com) slides in, bleeding off the edge. Ask Kora pops out over its corner, the question types itself, the answer arrives word by word with its sources, and the off-track bar it describes is outlined. (Replaced the earlier Flip panels.) |
 | **Cotrip** | `cotrip` | A route line draws itself across a stylised map (SVG `strokeDashoffset`), dropping pins at each stop; phone screenshots stack beside it. |
 | **Campaign Tower** | `tower` | The tower builds itself floor by floor in pixel blocks (stepped ease, no smoothing). A small pixel lift rides up the side as the scroll indicator. |
 

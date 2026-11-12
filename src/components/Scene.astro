@@ -17,7 +17,23 @@ const totalLabel = String(total).padStart(2, '0');
   <slot name="backdrop" />
   <div class="shell scene__inner">
     <div class="scene__top t-caption" data-ink data-scene-rise>
-      <span>{p.number} · {p.name}</span>
+      {
+        p.logo ? (
+          <span class="scene__mark">
+            <span>{p.number} ·</span>
+            <span
+              class="scene__logo"
+              role="img"
+              aria-label={`${p.name} logo`}
+              style={`--logo:url(${import.meta.env.BASE_URL}${p.logo.src});--ratio:${p.logo.ratio}`}
+            />
+          </span>
+        ) : (
+          <span>
+            {p.number} · {p.name}
+          </span>
+        )
+      }
       <span class="scene__count">Scene {p.number} / {totalLabel}</span>
     </div>
 
@@ -143,6 +159,22 @@ const totalLabel = String(total).padStart(2, '0');
     flex-direction: column;
     gap: var(--gutter);
     container-type: inline-size;
+  }
+
+  /* The project's own logo in the top row, drawn in the scene's ink so it never adds a second accent. */
+  .scene__mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .scene__logo {
+    display: inline-block;
+    height: 20px;
+    aspect-ratio: var(--ratio);
+    background: currentColor;
+    -webkit-mask: var(--logo) center / contain no-repeat;
+    mask: var(--logo) center / contain no-repeat;
   }
 
   .scene__name {
