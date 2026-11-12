@@ -61,6 +61,11 @@ html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data
   visibility: hidden;
 }
 
+/* Scroll reveals wait transparent, not hidden, so they stay in the tab order. */
+html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data-scroll-reveal] {
+  opacity: 0;
+}
+
 /* Smooth anchor jumps (the hero button), except under reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   html {

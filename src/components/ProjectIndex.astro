@@ -4,7 +4,7 @@ import { projects } from '../data/projects';
 
 <section class="index" id="projects" aria-labelledby="index-title">
   <div class="shell">
-    <div class="index__head">
+    <div class="index__head" data-scroll-reveal>
       <h2 class="t-caption" id="index-title">Index</h2>
       <span class="index__hint t-annotation muted">Hover to preview · click to jump</span>
     </div>
@@ -12,7 +12,7 @@ import { projects } from '../data/projects';
     <ol class="ledger" role="list">
       {
         projects.map((p) => (
-          <li>
+          <li data-scroll-reveal>
             <a class="ledger-row" href={`#${p.id}`} data-project={p.id}>
               <span class="ledger-row__meta t-annotation">
                 <span class="ledger-row__num">
@@ -20,7 +20,7 @@ import { projects } from '../data/projects';
                 </span>
                 <span class="ledger-row__stack">{p.indexStack}</span>
               </span>
-              <span class="ledger-row__name t-statement">{p.name}</span>
+              <span class="ledger-row__name t-statement" data-ledger-name>{p.name}</span>
               <span class="ledger-row__line">{p.indexLine}</span>
               <span class="ledger-row__stack ledger-row__stack--wide t-annotation">{p.indexStack}</span>
             </a>
@@ -102,6 +102,12 @@ import { projects } from '../data/projects';
     justify-content: space-between;
     gap: var(--space-4);
     color: var(--color-muted);
+  }
+
+  /* Stable typography for the hover wave: kerning would snap on split and revert. */
+  .ledger-row__name {
+    font-kerning: none;
+    text-rendering: optimizeSpeed;
   }
 
   .ledger-row__num,

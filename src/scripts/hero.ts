@@ -1,5 +1,6 @@
-// Hero motion controller: owns the phases (initial -> intro -> settled), the
-// boot handoff and recovery, the pause control, and the scroll blast-off.
+// Page motion controller: owns the phases (initial -> intro -> settled), the
+// boot handoff and recovery, the pause control, the hero's scroll blast-off,
+// and starts the project index motion (src/scripts/ledger.ts).
 // The effects it calls live in src/lib/effects; timings live in src/lib/motion.ts.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -12,6 +13,7 @@ import { startWave, type WaveStop } from '../lib/effects/wave';
 import { blastOff, type BlastOff } from '../lib/effects/blast-off';
 import { attachParticleEffect, type ParticleEffectControls } from '../lib/effects/particles/attach';
 import { reactor } from '../lib/effects/particles/reactor';
+import { ledgerRevealItems, setupLedgerHover, startLedgerReveal } from './ledger';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -238,6 +240,7 @@ function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectCo
 function introFull(els: Elements) {
   const ctx = gsap.context(() => {});
   let particles: ParticleEffectControls | null = null;
+  let ledgerTeardown: (() => void) | null = null;
   let master: gsap.core.Timeline | null = null;
   let words: HTMLElement[] = [];
   let failure: unknown;
@@ -252,6 +255,7 @@ function introFull(els: Elements) {
       particles = attachParticleEffect(els.particleRoot, els.canvas, els.cta, reactor);
       particles.enter(HERO.buttonDelay);
       if (readPaused()) particles.pause();
+      ledgerTeardown = startLedgerReveal(ledgerRevealItems());
       master = gsap.timeline({ paused: true }).add(mark, 0).add(page, 0).add(spoken.timeline, 0);
     } catch (error) {
       failure = error;
@@ -260,6 +264,7 @@ function introFull(els: Elements) {
 
   if (failure || !master) {
     (particles as ParticleEffectControls | null)?.destroy();
+    (ledgerTeardown as (() => void) | null)?.();
     ctx.revert();
     throw failure ?? new Error('hero intro did not build');
   }
@@ -276,8 +281,12 @@ function introFull(els: Elements) {
 
 /** Reduced motion: no scatter, wave, speak-in, particles or blast. Everything fades in. */
 function introReduced(els: Elements) {
+  const ledger = ledgerRevealItems();
   gsap.set(els.intro, { autoAlpha: 0 });
+  // Opacity only for the index, so its rows stay in the tab order.
+  gsap.set(ledger, { opacity: 0 });
   owner.dataset.phase = 'intro';
+  gsap.to(ledger, { opacity: 1, duration: DURATION.component, ease: EASE.entrance, clearProps: 'opacity' });
   gsap.to(els.intro, {
     autoAlpha: 1,
     duration: DURATION.component,
@@ -310,6 +319,9 @@ async function main() {
   }
 
   await Promise.race([document.fonts.ready, wait(FONT_WAIT_MS)]);
+
+  // Index name waves on hover and keyboard focus. A no-op under reduced motion.
+  setupLedgerHover();
 
   if (!claimBoot()) {
     lateSettle(els);
