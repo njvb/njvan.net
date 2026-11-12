@@ -79,3 +79,31 @@ export const HERO = {
   /** The hero blasts off when this point of the hero reaches the top of the viewport. */
   blastStart: '25% top',
 } as const;
+
+/**
+ * Project scenes. Timeline positions are fractions of the pinned scroll
+ * (0 = the scene reaches the top, 1 = it unpins). Signature moments use the
+ * span after `settledAt`.
+ */
+export const SCENE = {
+  /** Scenes pin only where they have their frame layout and fit the viewport. */
+  pinQuery: '(min-width: 1024px) and (min-height: 600px)',
+  /** Pinned scroll distance, as a fraction of the viewport (1.5 screens). */
+  pinLength: 1.5,
+  /** The wash starts and ends as a rule this many px tall. */
+  rulePx: 2,
+  /** The wash grows from the top rule to fill the scene. */
+  washIn: { at: 0, duration: 0.3 },
+  /** How long a block takes to change ink as the wash passes it. */
+  inkSwitch: 0.03,
+  /** The name rises line by line behind its mask. */
+  nameIn: { at: 0.08, duration: 0.2, stagger: 0.04 },
+  /** Labels, copy and links rise in. */
+  riseIn: { at: 0.14, duration: 0.16, stagger: 0.025 },
+  /** The visual rises in (the signature moments take over here later). */
+  visualIn: { at: 0.2, duration: 0.2 },
+  /** Index links land here, so a jump shows the scene washed and settled. */
+  settledAt: 0.45,
+  /** Where scenes reveal once, when not pinned (stacked layouts). */
+  revealStart: 'top 80%',
+} as const;

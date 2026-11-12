@@ -14,6 +14,8 @@ import { blastOff, type BlastOff } from '../lib/effects/blast-off';
 import { attachParticleEffect, type ParticleEffectControls } from '../lib/effects/particles/attach';
 import { reactor } from '../lib/effects/particles/reactor';
 import { ledgerRevealItems, setupLedgerHover, startLedgerReveal } from './ledger';
+import { setupScenes } from './scenes';
+import { setupProgress } from './progress';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -322,6 +324,13 @@ async function main() {
 
   // Index name waves on hover and keyboard focus. A no-op under reduced motion.
   setupLedgerHover();
+  // Scenes are staged before the boot gate releases, so their pre-paint colours hand over cleanly.
+  try {
+    setupScenes();
+  } catch (error) {
+    console.error('[scenes] setup failed, scenes stay static fields', error);
+  }
+  setupProgress();
 
   if (!claimBoot()) {
     lateSettle(els);

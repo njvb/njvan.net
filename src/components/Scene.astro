@@ -4,24 +4,28 @@ import type { Project } from '../data/projects';
 interface Props {
   project: Project;
   total: number;
+  /** The first scene shows its wash's starting rule before the page scrolls to it. */
+  first?: boolean;
 }
 
-const { project: p, total } = Astro.props;
+const { project: p, total, first = false } = Astro.props;
 const totalLabel = String(total).padStart(2, '0');
 ---
 
-<section class="scene" id={p.id} data-project={p.id} aria-labelledby={`${p.id}-title`}>
+<section class="scene" id={p.id} data-project={p.id} data-scene data-scene-first={first ? '' : undefined} aria-labelledby={`${p.id}-title`}>
+  <!-- The accent wash. Hidden until the scene is staged for pinning; the section itself is the field otherwise. -->
+  <div class="scene__wash" aria-hidden="true" data-scene-wash></div>
   <div class="shell scene__inner">
-    <div class="scene__top t-caption">
+    <div class="scene__top t-caption" data-ink data-scene-rise>
       <span>{p.number} · {p.name}</span>
       <span class="scene__count">Scene {p.number} / {totalLabel}</span>
     </div>
 
     <div class="scene__copy">
-      <h2 class="scene__name" id={`${p.id}-title`}>{p.name}</h2>
-      <p class="scene__line">{p.line}</p>
-      <p class="scene__more t-body">{p.more}</p>
-      <div class="scene__links">
+      <h2 class="scene__name" id={`${p.id}-title`} data-ink data-scene-name>{p.name}</h2>
+      <p class="scene__line" data-ink data-scene-rise>{p.line}</p>
+      <p class="scene__more t-body" data-ink data-scene-rise>{p.more}</p>
+      <div class="scene__links" data-ink data-scene-rise>
         {
           p.links.map((l) =>
             l.href ? (
@@ -47,11 +51,11 @@ const totalLabel = String(total).padStart(2, '0');
       </div>
     </div>
 
-    <div class="scene__visual" aria-hidden="true">
+    <div class="scene__visual" aria-hidden="true" data-ink data-scene-visual>
       <slot />
     </div>
 
-    <div class="scene__notes t-annotation">
+    <div class="scene__notes t-annotation" data-ink data-scene-rise>
       {p.notes.map((n) => <span>{n}</span>)}
     </div>
   </div>
@@ -61,10 +65,44 @@ const totalLabel = String(total).padStart(2, '0');
   .scene {
     --field: var(--color-foreground);
     --on: var(--color-canvas);
+    position: relative;
     background: var(--field);
     color: var(--on);
     padding-block: 48px;
     overflow: hidden;
+  }
+
+  /* Each block carries its own ink, so the wash can change it block by block. */
+  .scene [data-ink] {
+    color: var(--on);
+  }
+
+  .scene__wash {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: var(--field);
+    pointer-events: none;
+  }
+
+  .scene__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Staged for pinning by src/scripts/scenes.ts: canvas ground, the wash grows over it. */
+  .scene:global(.is-staged) {
+    background: var(--color-canvas);
+  }
+
+  .scene:global(.is-staged) .scene__wash {
+    display: block;
+  }
+
+  /* Room for ascenders and descenders inside the name's line masks (tight 0.84 line height). */
+  .scene__name :global(.scene-line-mask) {
+    padding-block: 0.12em;
+    margin-block: -0.12em;
   }
 
   .scene[data-project='tavren'] { --field: var(--color-tavren); --on: var(--color-on-tavren); }

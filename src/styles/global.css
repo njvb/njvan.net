@@ -66,6 +66,28 @@ html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data
   opacity: 0;
 }
 
+/*
+ * Scenes that will pin start staged: canvas ground, foreground ink, the wash
+ * as a rule along the top. Mirrors SCENE.pinQuery and the staging in
+ * src/scripts/scenes.ts. Only colours change here; nothing is hidden.
+ */
+@media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene] {
+    background: var(--color-canvas);
+  }
+  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene] [data-ink] {
+    --on: var(--color-foreground);
+  }
+  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene-wash] {
+    display: block;
+    clip-path: inset(0 0 100% 0);
+  }
+  /* Only the first scene shows its starting rule; later rules arrive with the previous wash. */
+  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene-first] [data-scene-wash] {
+    clip-path: inset(0 0 calc(100% - 2px) 0);
+  }
+}
+
 /* Smooth anchor jumps (the hero button), except under reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -115,6 +137,32 @@ main {
   :root {
     --pad: var(--gutter-lg);
   }
+}
+
+/* ---------- Page progress ---------- */
+
+.progress {
+  --progress-ink: var(--color-foreground);
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: var(--border-hairline);
+  pointer-events: none;
+}
+
+.progress.is-on-field {
+  height: var(--border-strong);
+}
+
+.progress[hidden] {
+  display: none;
+}
+
+.progress__bar {
+  height: 100%;
+  background: var(--progress-ink);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }
 
 /* ---------- Type roles ---------- */

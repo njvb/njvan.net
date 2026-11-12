@@ -69,6 +69,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </script>
   </head>
   <body data-motion-owner data-phase="initial">
+    <!-- Page progress. Shown and driven by src/scripts/progress.ts; it duplicates the scrollbar, so hidden from assistive tech. -->
+    <div class="progress" data-progress hidden aria-hidden="true"><div class="progress__bar" data-progress-bar></div></div>
     <Header />
     <main id="main">
       <slot />
