@@ -17,7 +17,7 @@ import { CustomEase } from 'gsap/CustomEase';
 import { ANIMAXXING_CURVE, EASE, SCENE, SHIFT } from '../lib/motion';
 import { prefersReducedMotion } from '../lib/effects/util';
 import { revealOnScroll } from '../lib/effects/reveal';
-import { setMoment } from '../lib/moments';
+import { momentReady, setMoment } from '../lib/moments';
 import { pageTo, setupPager } from './pager';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
@@ -89,8 +89,6 @@ function splitName(name: HTMLElement): SplitText {
   return split;
 }
 
-/** Scenes whose moment has already played this visit. Survives rebuilds. */
-const momentDone = new Set<string>();
 
 /* ---------- Wide screens: paged, then play ---------- */
 
@@ -141,20 +139,39 @@ function buildPaged(p: SceneParts) {
     );
   }
 
-  // The signature moment, once per visit: it stays settled when the scene comes back.
-  const moment = { p: momentDone.has(id) ? 1 : 0 };
-  setMoment(id, moment.p);
+  // The signature moment plays every time the scene becomes active, and resets
+  // once the scene has left. It waits for its visual if that loads late; if the
+  // visitor has moved on by then, it simply doesn't play.
+  const moment = { p: 0 };
+  setMoment(id, 0);
   let momentTween: gsap.core.Tween | null = null;
+  let disposed = false;
+  let visit = 0;
   const playMoment = () => {
-    if (momentDone.has(id)) return;
-    momentDone.add(id);
-    momentTween = gsap.to(moment, {
-      p: 1,
-      duration: SCENE.moment.duration,
-      ease: 'none',
-      delay: SCENE.moment.at,
-      onUpdate: () => setMoment(id, moment.p),
+    const ticket = ++visit;
+    momentTween?.kill();
+    moment.p = 0;
+    setMoment(id, 0);
+    const asked = performance.now();
+    void momentReady(id, SCENE.momentWait * 1000).then(() => {
+      if (disposed || !active || ticket !== visit) return;
+      const waited = (performance.now() - asked) / 1000;
+      momentTween = gsap.to(moment, {
+        p: 1,
+        duration: SCENE.moment.duration,
+        ease: 'none',
+        delay: Math.max(0, SCENE.moment.at - waited),
+        onUpdate: () => setMoment(id, moment.p),
+      });
     });
+  };
+  /** Back to the start, out of sight, ready to replay. */
+  const resetMoment = () => {
+    visit++;
+    momentTween?.kill();
+    momentTween = null;
+    moment.p = 0;
+    setMoment(id, 0);
   };
 
   // Out: the wash retracts down, ink reverts as it passes, the name slides up.
@@ -170,6 +187,9 @@ function buildPaged(p: SceneParts) {
     { yPercent: -110, duration: SCENE.nameOut, ease: EASE.exit, stagger: SCENE.nameIn.stagger / 2, immediateRender: false },
     0
   );
+  outro.eventCallback('onComplete', () => {
+    if (!active) resetMoment();
+  });
 
   let active = false;
   const activate = () => {
@@ -204,6 +224,7 @@ function buildPaged(p: SceneParts) {
   });
 
   return () => {
+    disposed = true;
     momentTween?.kill();
     intro.kill();
     outro.kill();
@@ -219,35 +240,60 @@ function buildStacked(p: SceneParts) {
   const id = p.scene.id;
   const split = splitName(p.name);
   gsap.set(split.lines, { yPercent: 110 });
-  const moment = { p: momentDone.has(id) ? 1 : 0 };
-  setMoment(id, moment.p);
-  ScrollTrigger.create({
-    trigger: p.scene,
-    start: SCENE.revealStart,
-    once: true,
-    onEnter: () => {
-      gsap.to(split.lines, {
-        yPercent: 0,
-        duration: 0.5,
-        ease: 'power3.out',
-        stagger: 0.05,
-        onComplete: () => split.revert(),
-      });
-      if (momentDone.has(id)) return;
-      momentDone.add(id);
-      gsap.to(moment, {
+  const moment = { p: 0 };
+  setMoment(id, 0);
+  let momentTween: gsap.core.Tween | null = null;
+  let visit = 0;
+  let inView = false;
+
+  // Every time the scene comes into view: the name rises and the moment plays.
+  // Once it has left the viewport entirely, both reset, out of sight.
+  const enter = () => {
+    if (inView) return;
+    inView = true;
+    const ticket = ++visit;
+    gsap.to(split.lines, { yPercent: 0, duration: 0.5, ease: 'power3.out', stagger: 0.05, overwrite: 'auto' });
+    void momentReady(id, SCENE.momentWait * 1000).then(() => {
+      if (!inView || ticket !== visit) return;
+      momentTween = gsap.to(moment, {
         p: 1,
         duration: SCENE.momentOnce,
         ease: 'none',
         delay: 0.3,
         onUpdate: () => setMoment(id, moment.p),
       });
-    },
+    });
+  };
+  const reset = () => {
+    inView = false;
+    visit++;
+    momentTween?.kill();
+    momentTween = null;
+    moment.p = 0;
+    setMoment(id, 0);
+    gsap.set(split.lines, { yPercent: 110, overwrite: 'auto' });
+  };
+  ScrollTrigger.create({
+    trigger: p.scene,
+    start: SCENE.revealStart,
+    end: 'bottom top',
+    onEnter: enter,
+    onEnterBack: enter,
   });
+  // Reset only once the scene is fully out of view, so nothing visibly snaps back.
+  ScrollTrigger.create({
+    trigger: p.scene,
+    start: 'top bottom',
+    end: 'bottom top',
+    onLeave: reset,
+    onLeaveBack: reset,
+  });
+
   const stopReveal = revealOnScroll([...p.rise, ...(p.visual ? [p.visual] : [])], {
     start: SCENE.revealStart,
     y: SHIFT.page,
     stagger: 0.06,
+    repeat: true,
   });
   probes.push({
     scene: p.scene,
@@ -257,7 +303,10 @@ function buildStacked(p: SceneParts) {
     },
     ink: () => on,
   });
-  return stopReveal;
+  return () => {
+    momentTween?.kill();
+    stopReveal();
+  };
 }
 
 /* ---------- Setup and rebuilds ---------- */

@@ -1,18 +1,27 @@
-// Scene paging, adapted from the Animaxxing `section-pager` recipe for a page
-// that also scrolls: the hero and index scroll freely; from one screen above the
-// first scene down to the footer, each wheel flick, swipe or key moves exactly
-// one stop (index, each scene, footer). Trackpad momentum and long swipes are
-// absorbed until the gesture rests, so nothing is ever skipped. Scrolling up
-// from the index stop hands back to native scrolling.
+// Scene paging on GSAP's own tools, adapted from the Animaxxing `section-pager`
+// recipe for a page that also scrolls:
+//   ScrollTrigger  decides where paging applies. Capture (the Observer) is on
+//                  only from the first scene's top down to the footer; above it
+//                  (hero, index) the page scrolls natively in both directions.
+//                  Scrolling down through the last SCENE.pageEnter of a screen
+//                  above the first scene, GSAP finishes the move into it.
+//   Observer       turns wheel and touch input into one move per gesture.
+//                  Trackpad momentum and long swipes are absorbed until the
+//                  gesture rests (onStop), so nothing is ever skipped.
+//   ScrollToPlugin glides to each stop: each scene's top, then the footer.
+// Scrolling up out of the first scene glides to the screen above it and hands
+// back to native scrolling once that gesture rests.
 //
-// Wide screens only (SCENE.pageQuery), and never under reduced motion: there
-// the page scrolls normally. Without JavaScript the page scrolls normally too.
+// Wide screens only (SCENE.pageQuery) and never under reduced motion. Without
+// JavaScript the page scrolls normally.
 import gsap from 'gsap';
+import { Observer } from 'gsap/Observer';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { SCENE } from '../lib/motion';
 import { prefersReducedMotion } from '../lib/effects/util';
 
-gsap.registerPlugin(ScrollToPlugin);
+gsap.registerPlugin(Observer, ScrollTrigger, ScrollToPlugin);
 
 /** Wheels, swipes and keys inside these never page. */
 const IGNORE = 'input, textarea, select, [contenteditable], [data-pager-ignore]';
@@ -29,35 +38,56 @@ const STEP: Record<string, 1 | -1> = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, P
 let moving: gsap.core.Tween | null = null;
 /** A gesture already moved a stop; the next move waits for it to rest. */
 let spent = false;
-let restTimer = 0;
+let observer: Observer | null = null;
+let zone: ScrollTrigger | null = null;
 let settleTimer = 0;
+/** When the Observer last saw wheel or touch input. */
+let lastInput = 0;
 
-const query = window.matchMedia(SCENE.pageQuery);
-const enabled = () => query.matches && !prefersReducedMotion();
+const enabled = () => window.matchMedia(SCENE.pageQuery).matches && !prefersReducedMotion();
+const scenes = () => Array.from(document.querySelectorAll<HTMLElement>('[data-scene]'));
+const maxScroll = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
 
-/** The stops, in document order: the screen above the first scene, each scene's top, the bottom of the page. */
+/** The stops, top to bottom: each scene's top, then the bottom of the page. */
 function stops(): number[] {
-  const scenes = Array.from(document.querySelectorAll<HTMLElement>('[data-scene]'));
-  if (scenes.length === 0) return [];
   const y = window.scrollY;
-  const max = document.documentElement.scrollHeight - window.innerHeight;
-  const tops = scenes.map((s) => Math.round(s.getBoundingClientRect().top + y));
-  const list = [Math.max(0, tops[0]! - window.innerHeight), ...tops, Math.max(0, Math.round(max))].sort((a, b) => a - b);
+  const list = [...scenes().map((s) => Math.round(s.getBoundingClientRect().top + y)), Math.round(maxScroll())].sort(
+    (a, b) => a - b
+  );
   return list.filter((v, i) => i === 0 || v - list[i - 1]! > 2);
 }
 
-const inRegion = (s = stops()) => s.length > 0 && window.scrollY >= s[0]! - 1;
-
-/** The next stop in a direction, or null to let the browser scroll. */
-function nextStop(dir: 1 | -1, s = stops()): number | null {
-  if (!inRegion(s)) return null;
+/** Where one step goes: the next stop down, the previous stop up, or the screen above the first scene. */
+function nextStop(dir: 1 | -1): number {
+  const s = stops();
   const y = window.scrollY;
-  if (dir > 0) return s.find((v) => v > y + 1) ?? null;
+  if (dir > 0) return s.find((v) => v > y + 1) ?? y;
   for (let i = s.length - 1; i >= 0; i--) if (s[i]! < y - 1) return s[i]!;
-  return null;
+  // Above the first scene: one screen up, after which scrolling is native again.
+  return Math.max(0, (s[0] ?? 0) - window.innerHeight);
 }
 
-/** Moves to a scroll position on the pager's ease. Used by in-page links too. */
+/**
+ * Whether a glide is really running. A tween that was killed or interrupted
+ * never calls onComplete, so trust its state, not the reference.
+ */
+function isMoving(): boolean {
+  if (moving && !moving.isActive()) moving = null;
+  return moving !== null;
+}
+
+/**
+ * Marks wheel and touch input, before the Observer sees it. Input after a quiet
+ * gap of SCENE.pageRest is a new gesture, whatever the Observer's onStop did or
+ * didn't report, so a gesture can never stay spent for good.
+ */
+function markInput() {
+  const now = performance.now();
+  if (now - lastInput > SCENE.pageRest * 1000) spent = false;
+  lastInput = now;
+}
+
+/** Glides to a scroll position. Also used by in-page links. */
 export function pageTo(y: number, duration: number = SCENE.pageDuration): void {
   window.clearTimeout(settleTimer);
   moving?.kill();
@@ -69,63 +99,41 @@ export function pageTo(y: number, duration: number = SCENE.pageDuration): void {
     scrollTo: { y, autoKill: false },
     duration,
     ease: SCENE.pageEase,
+    onInterrupt: () => {
+      if (moving === tween) moving = null;
+    },
     onComplete: () => {
       if (moving === tween) moving = null;
+      // A move with no gesture behind it (scrollbar, find, a link) has no onStop
+      // to end it: free the next gesture once input has been quiet for pageRest.
+      window.setTimeout(() => {
+        if (!isMoving() && performance.now() - lastInput >= SCENE.pageRest * 1000) {
+          spent = false;
+          release();
+        }
+      }, SCENE.pageRest * 1000);
+      release();
     },
   });
   moving = tween;
 }
 
-/** Holds `spent` until no input arrives for SCENE.pageRest. */
-function rest() {
-  window.clearTimeout(restTimer);
-  restTimer = window.setTimeout(() => {
-    spent = false;
-  }, SCENE.pageRest * 1000);
+/** Hands back to native scrolling once outside the zone, with no move or gesture in flight. */
+function release() {
+  if (!observer || isMoving() || spent) return;
+  if (!zone?.isActive) observer.disable();
 }
 
-/** Pages one stop if allowed. Returns whether the event belongs to the pager (and so must not scroll natively). */
-function intent(dir: 1 | -1, start: boolean): boolean {
-  if (!enabled()) return false;
-  const s = stops();
-  if (moving || spent) return inRegion(s);
-  const target = nextStop(dir, s);
-  if (target === null) return false;
-  if (start) {
-    spent = true;
-    pageTo(target);
-  }
-  return true;
-}
-
-function onWheel(e: WheelEvent) {
-  if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
-  if (e.target instanceof Element && e.target.closest(IGNORE)) return;
-  const dir = e.deltaY > 0 ? 1 : -1;
-  if (intent(dir, Math.abs(e.deltaY) >= SCENE.pageTolerance)) {
-    e.preventDefault();
-    rest();
-  }
-}
-
-let touchY: number | null = null;
-function onTouchStart(e: TouchEvent) {
-  touchY = e.touches.length === 1 ? e.touches[0]!.clientY : null;
-  if (!moving) spent = false;
-}
-function onTouchMove(e: TouchEvent) {
-  if (touchY === null || e.touches.length !== 1) return;
-  if (e.target instanceof Element && e.target.closest(IGNORE)) return;
-  const dy = touchY - e.touches[0]!.clientY;
-  if (Math.abs(dy) < 2) return;
-  if (intent(dy > 0 ? 1 : -1, Math.abs(dy) >= SCENE.swipeDistance)) e.preventDefault();
-}
-function onTouchEnd() {
-  touchY = null;
-  rest();
+function intent(dir: 1 | -1) {
+  if (isMoving() || spent) return;
+  const target = nextStop(dir);
+  if (Math.abs(target - window.scrollY) < 2) return;
+  spent = true;
+  pageTo(target);
 }
 
 function onKey(e: KeyboardEvent) {
+  if (!zone?.isActive || !enabled()) return;
   if (e.defaultPrevented || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return;
   const target = e.target instanceof Element ? e.target : null;
   if (target?.closest(IGNORE) || target?.closest(COMPOSITE)) return;
@@ -135,34 +143,106 @@ function onKey(e: KeyboardEvent) {
     dir = e.shiftKey ? -1 : 1;
   } else dir = STEP[e.key];
   if (dir === undefined) return;
-  if (moving) {
-    if (inRegion()) e.preventDefault();
-    return;
-  }
+  e.preventDefault();
+  if (isMoving()) return;
   spent = false;
-  if (intent(dir, true)) e.preventDefault();
+  intent(dir);
+  spent = false;
 }
 
 /** Scrolled off a stop some other way (scrollbar, find in page, focus)? Settle onto the nearest. */
 function onScroll() {
-  if (moving || !enabled()) return;
+  if (isMoving() || spent || !zone?.isActive || !enabled()) return;
   window.clearTimeout(settleTimer);
   settleTimer = window.setTimeout(() => {
-    if (moving || touchY !== null) return;
+    if (isMoving() || spent || !zone?.isActive) return;
     const s = stops();
-    if (!inRegion(s)) return;
     const y = window.scrollY;
-    const nearest = s.reduce((a, b) => (Math.abs(b - y) < Math.abs(a - y) ? b : a));
+    const nearest = s.reduce((a, b) => (Math.abs(b - y) < Math.abs(a - y) ? b : a), s[0] ?? y);
     if (Math.abs(nearest - y) > 2) pageTo(nearest, SCENE.pageDuration * 0.6);
   }, SCENE.settleDelay * 1000);
 }
 
 export function setupPager(): void {
-  window.addEventListener('wheel', onWheel, { passive: false });
-  window.addEventListener('touchstart', onTouchStart, { passive: true });
-  window.addEventListener('touchmove', onTouchMove, { passive: false });
-  window.addEventListener('touchend', onTouchEnd, { passive: true });
-  window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+  const first = scenes()[0];
+  if (!first) return;
+
+  observer = Observer.create({
+    target: window,
+    type: 'wheel,touch',
+    // With wheelSpeed -1, scrolling down and swiping up both report "up".
+    wheelSpeed: -1,
+    tolerance: SCENE.pageTolerance,
+    preventDefault: true,
+    ignoreCheck: (event) => event.target instanceof Element && !!event.target.closest(IGNORE),
+    onChange: () => {
+      lastInput = performance.now();
+    },
+    onUp: () => intent(1),
+    onDown: () => intent(-1),
+    // Each touch starts a new gesture.
+    onPress: () => {
+      if (!isMoving()) spent = false;
+    },
+    onStop: () => {
+      spent = false;
+      release();
+    },
+    onStopDelay: SCENE.pageRest,
+  });
+  observer.disable();
+
+  // Capture: on a scene or below. Jumping in some other way (scrollbar, find)
+  // settles on the nearest stop via onScroll.
+  zone = ScrollTrigger.create({
+    trigger: first,
+    start: 'top 2px',
+    end: 'max',
+    onToggle: (self) => {
+      if (!enabled()) return;
+      if (self.isActive) observer?.enable();
+      else release();
+    },
+  });
+
+  // Entry: scrolling down through the last stretch above the first scene, GSAP
+  // finishes the move into it and absorbs the rest of that gesture. Scrolling up
+  // here is left alone, so the way back to the top stays free.
+  ScrollTrigger.create({
+    trigger: first,
+    start: () => `top ${100 - SCENE.pageEnter * 100}%`,
+    end: 'top 2px',
+    onUpdate: (self) => {
+      // Only while actually inside this stretch: a jump straight past it (scrollbar,
+      // a link, a #hash) also reports progress, and must not be pulled back.
+      if (!enabled() || isMoving() || self.direction <= 0 || !self.isActive) return;
+      observer?.enable();
+      spent = true;
+      pageTo(Math.round(first.getBoundingClientRect().top + window.scrollY));
+    },
+  });
+  // Loaded inside the zone (a reload, a #hash): page from here.
+  if (zone.isActive && enabled()) observer.enable();
+
+  // Capture phase, so the mark lands before the Observer handles the same event.
+  window.addEventListener('wheel', markInput, { capture: true, passive: true });
+  window.addEventListener('touchstart', markInput, { capture: true, passive: true });
+  window.addEventListener('touchmove', markInput, { capture: true, passive: true });
   window.addEventListener('keydown', onKey);
+  if (import.meta.env.DEV) {
+    // Dev only: inspect the pager's state from the console.
+    (window as unknown as { __pager: () => object }).__pager = () => ({
+      moving: isMoving(),
+      spent,
+      capturing: observer?.isEnabled ?? false,
+      zone: zone?.isActive ?? false,
+      y: Math.round(window.scrollY),
+      sinceInput: Math.round(performance.now() - lastInput),
+    });
+  }
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.matchMedia(SCENE.pageQuery).addEventListener('change', () => {
+    if (!enabled()) observer?.disable();
+    else if (zone?.isActive) observer?.enable();
+  });
 }

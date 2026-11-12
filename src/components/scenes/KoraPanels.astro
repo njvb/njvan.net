@@ -1,7 +1,9 @@
 ---
-// Kora's interface panels in their settled grid. Stylised, not screenshots:
-// they stand in for real Kora screens until Nathan supplies them.
-// Panels stay dark in both themes, like Kora's own UI chrome.
+// Kora's interface panels in their settled grid, with Ask Kora's question and
+// answer. Stylised, not screenshots: they stand in for real Kora screens until
+// Nathan supplies them. Panels stay dark in both themes, like Kora's own UI.
+// src/scripts/kora-moment.ts plays the signature moment: the panels start as a
+// pile and Flip into this grid, the question types itself, the answer speaks in.
 const plan = [
   { offset: 0, width: 55 },
   { offset: 15, width: 35 },
@@ -9,48 +11,86 @@ const plan = [
   { offset: 30, width: 45 },
 ];
 const hours = [60, 80, 45, 90, 30];
+/** Where each panel sits in the pile before it Flips into the grid: x, y (px) and rotation (deg). */
+const pile = [
+  [-18, -14, -5],
+  [22, 8, 4],
+  [-10, 18, -2],
+  [16, -10, 6],
+  [2, 4, -1],
+];
+const panels = [
+  { label: 'Plans and resourcing', kind: 'plan' },
+  { label: 'Timesheets', kind: 'hours' },
+  { label: 'Scopes', kind: 'short' },
+  { label: 'Billing', kind: 'short' },
+  { label: 'Client portal', kind: 'short' },
+] as const;
 ---
 
-<div class="kora">
+<div class="kora" data-kora>
   <div class="kora__ask">
-    <span class="kora__ask-label">Ask Kora</span>
-    <span class="kora__ask-q">Which projects need more people next week?</span>
-    <span class="kora__caret"></span>
+    <div class="kora__ask-row">
+      <span class="kora__ask-label">Ask Kora</span>
+      <span class="kora__ask-q" data-kora-question>Which projects need more people next week?</span>
+      <span class="kora__caret" data-kora-caret></span>
+    </div>
+    <p class="kora__answer" data-kora-answer>
+      Two. The spring campaign is 30 design hours short, and the website rebuild has no developer booked after
+      Wednesday.
+    </p>
+    <span class="kora__sources" data-kora-sources>From Plans · Timesheets</span>
   </div>
 
-  <div class="kora__grid">
-    <div class="panel panel--plan">
-      <span class="panel__label">Plans and resourcing</span>
-      <div class="plan">
-        {
-          plan.map((b, i) => (
-            <div class="plan__row">
-              <span class="plan__who" />
-              <span class="plan__track">
-                <span
-                  class="plan__bar"
-                  data-alt={i % 2 === 1}
-                  style={`margin-left:${b.offset}%;width:${b.width}%`}
-                />
-              </span>
+  <div class="kora__grid" data-kora-grid>
+    {
+      panels.map((panel, i) => (
+        <div
+          class:list={['panel', { 'panel--plan': panel.kind === 'plan', 'panel--short': panel.kind === 'short' }]}
+          data-kora-panel
+          style={`--pile-x:${pile[i]![0]}px;--pile-y:${pile[i]![1]}px;--pile-r:${pile[i]![2]}deg`}
+        >
+          <span class="panel__label">{panel.label}</span>
+          {panel.kind === 'plan' && (
+            <div class="plan">
+              {plan.map((b, j) => (
+                <div class="plan__row">
+                  <span class="plan__who" />
+                  <span class="plan__track">
+                    <span
+                      class="plan__bar"
+                      data-alt={j % 2 === 1}
+                      data-kora-bar
+                      style={`margin-left:${b.offset}%;width:${b.width}%`}
+                    />
+                  </span>
+                </div>
+              ))}
             </div>
-          ))
-        }
-      </div>
-    </div>
-
-    <div class="panel">
-      <span class="panel__label">Timesheets</span>
-      <div class="hours">
-        {hours.map((h, i) => <span data-empty={i === hours.length - 1} style={`height:${h}%`} />)}
-      </div>
-    </div>
-
-    <div class="panel panel--short"><span class="panel__label">Scopes</span></div>
-    <div class="panel panel--short"><span class="panel__label">Billing</span></div>
-    <div class="panel panel--short"><span class="panel__label">Client portal</span></div>
+          )}
+          {panel.kind === 'hours' && (
+            <div class="hours">
+              {hours.map((h, j) => (
+                <span data-empty={j === hours.length - 1} data-kora-hour style={`height:${h}%`} />
+              ))}
+            </div>
+          )}
+        </div>
+      ))
+    }
   </div>
 </div>
+
+<script>
+  import { mountKora } from '../../scripts/kora-moment';
+  document.querySelectorAll<HTMLElement>('[data-kora]').forEach((root) => {
+    try {
+      mountKora(root);
+    } catch (error) {
+      console.error('[kora] moment failed, keeping the settled panels', error);
+    }
+  });
+</script>
 
 <style>
   .kora {
@@ -69,16 +109,23 @@ const hours = [60, 80, 45, 90, 30];
 
   .kora__ask {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 64px;
-    padding: 12px 20px;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 20px;
     border-radius: var(--radius-xl);
     background: var(--panel);
     color: var(--panel-text);
   }
 
+  .kora__ask-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 28px;
+  }
+
   .kora__ask-label,
+  .kora__sources,
   .panel__label {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -104,10 +151,48 @@ const hours = [60, 80, 45, 90, 30];
     background: var(--violet);
   }
 
+  /* The typewriter's own caret, in Kora's violet. */
+  .kora__ask-q :global([data-caret]) {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-left: 3px;
+    vertical-align: -0.15em;
+    background: var(--violet);
+  }
+
+  /* While the moment runs, the typewriter brings its own caret. */
+  .kora:global(.is-moving) .kora__caret {
+    display: none;
+  }
+
+  .kora__answer {
+    margin: 0;
+    font-size: 15px;
+    line-height: 22px;
+    max-width: 56ch;
+  }
+
+  .kora__sources {
+    color: var(--panel-muted);
+  }
+
   .kora__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-4);
+  }
+
+  /* Before the moment: every panel in one cell, a loose pile in the middle. */
+  .kora__grid:global([data-layout='pile']) {
+    grid-template-columns: minmax(0, 1fr);
+    place-items: center;
+  }
+
+  .kora__grid:global([data-layout='pile']) .panel {
+    grid-area: 1 / 1;
+    width: 62%;
+    transform: translate(var(--pile-x), var(--pile-y)) rotate(var(--pile-r));
   }
 
   .panel {
@@ -185,10 +270,6 @@ const hours = [60, 80, 45, 90, 30];
   }
 
   @container (max-width: 559px) {
-    .kora__ask {
-      flex-wrap: wrap;
-    }
-
     .kora__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

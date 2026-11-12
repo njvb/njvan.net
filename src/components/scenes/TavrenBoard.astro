@@ -32,8 +32,14 @@ const rows = counts.map((n, r) =>
 </div>
 
 <script>
-  // Load the 3D board only as Tavren approaches, so the hero never waits on Three.js.
+  import { holdMoment } from '../../lib/moments';
+
+  // Load the 3D board as the visitor nears the project index, so the hero never
+  // waits on Three.js but the board is ready by the time Tavren is on screen.
+  // The scene holds its moment until the board has mounted (or failed), so the
+  // tiles always play their entrance rather than arriving settled.
   const stage = document.querySelector<HTMLElement>('[data-tavren-stage]');
+  const id = stage?.closest<HTMLElement>('[data-scene]')?.id;
   const gl = (() => {
     try {
       return Boolean(document.createElement('canvas').getContext('webgl2'));
@@ -41,16 +47,19 @@ const rows = counts.map((n, r) =>
       return false;
     }
   })();
-  if (stage && gl) {
+  if (stage && id && gl) {
+    let ready!: () => void;
+    holdMoment(id, new Promise<void>((resolve) => (ready = resolve)));
     const io = new IntersectionObserver(
       (entries) => {
         if (!entries.some((e) => e.isIntersecting)) return;
         io.disconnect();
         import('../../scripts/tavren-3d')
           .then((m) => m.mountTavren(stage))
-          .catch((error) => console.error('[tavren] 3D board failed, keeping the CSS board', error));
+          .catch((error) => console.error('[tavren] 3D board failed, keeping the CSS board', error))
+          .finally(ready);
       },
-      { rootMargin: '150% 0px' }
+      { rootMargin: '400% 0px' }
     );
     io.observe(stage);
   }

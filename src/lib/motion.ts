@@ -90,17 +90,21 @@ export const SCENE = {
   /** Scenes page and play where they have their frame layout and fit the viewport. */
   pageQuery: '(min-width: 1024px) and (min-height: 600px)',
   /**
-   * Paging (src/scripts/pager.ts): from one screen above the first scene to the
-   * footer, each wheel flick, swipe or arrow key moves exactly one stop.
+   * Paging (src/scripts/pager.ts, GSAP Observer + ScrollTrigger + ScrollToPlugin):
+   * once the first scene is SCENE.pageEnter in view, each wheel flick, swipe or
+   * arrow key moves exactly one stop, through the scenes to the footer.
    */
   pageDuration: 0.8,
   pageEase: 'power3.inOut',
   /** A gesture has ended once no wheel events arrive for this long (seconds); trackpad momentum is absorbed until then. */
   pageRest: 0.2,
-  /** Wheel deltas smaller than this (px) never start a move. */
-  pageTolerance: 4,
-  /** A swipe pages once it has travelled this far (px). */
-  swipeDistance: 30,
+  /** Wheel or swipe travel (px) before a gesture counts (GSAP Observer tolerance). */
+  pageTolerance: 10,
+  /**
+   * Scrolling down the index stays free until this much of the first scene is
+   * in view (fraction of the viewport); then GSAP finishes the move into it.
+   */
+  pageEnter: 0.25,
   /** Scrolled off a stop by other means (scrollbar, find, focus)? Settle onto the nearest after this pause (seconds). */
   settleDelay: 0.18,
   /** A scene is active while its middle band holds the viewport's middle. */
@@ -121,6 +125,8 @@ export const SCENE = {
   visualIn: { at: 0.55, duration: 0.5 },
   /** The signature moment plays once, the first time the scene is active. */
   moment: { at: 0.7, duration: 2.8 },
+  /** A moment whose visual loads late waits for it, up to this many seconds. */
+  momentWait: 4,
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
   washOut: 0.55,
   nameOut: 0.35,
@@ -152,4 +158,20 @@ export const TAVREN = {
   dress: [0.45, 0.82] as [number, number],
   /** The village drops in and the gold ring lights across this span. */
   village: [0.8, 0.97] as [number, number],
+} as const;
+
+/**
+ * Kora's signature moment (src/scripts/kora-moment.ts). It starts when the
+ * scene's moment starts and runs on its own clock; times are seconds from then.
+ */
+export const KORA = {
+  /** The pile of panels Flips into the grid on the animaxxing curve. */
+  flip: { duration: 0.9, stagger: 0.07 },
+  /** Resourcing bars and timesheet columns grow in as the panels land. */
+  bars: { at: 0.55, duration: 0.5, stagger: 0.05 },
+  /** The question types itself, at about this many characters a second. */
+  typeAt: 0.95,
+  typeSpeed: 26,
+  /** The answer starts speaking this long after the question is typed. */
+  answerGap: 0.25,
 } as const;

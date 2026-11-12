@@ -31,3 +31,26 @@ export function onMoment(id: string, fn: Listener): () => void {
   fn(m.p);
   return () => m.listeners.delete(fn);
 }
+
+/**
+ * A moment whose visual loads late (Tavren's 3D board) can hold its start
+ * until it is ready. Scenes wait for the hold, up to a timeout, before playing.
+ */
+const holds = new Map<string, Promise<void>>();
+
+export function holdMoment(id: string, ready: Promise<unknown>): void {
+  holds.set(
+    id,
+    ready.then(
+      () => undefined,
+      () => undefined
+    )
+  );
+}
+
+/** Resolves when the moment's visual is ready, or after `timeoutMs`, whichever comes first. */
+export function momentReady(id: string, timeoutMs: number): Promise<void> {
+  const hold = holds.get(id);
+  if (!hold) return Promise.resolve();
+  return Promise.race([hold, new Promise<void>((resolve) => setTimeout(resolve, timeoutMs))]);
+}

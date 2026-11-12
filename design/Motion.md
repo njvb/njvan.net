@@ -38,7 +38,7 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 
 ## Project scenes: one signature moment each
 
-On wide screens the scenes page: from one screen above the first scene to the footer, each wheel flick, swipe or arrow key moves exactly one scene, each filling the viewport, and trackpad momentum never skips ahead (adapted from the Animaxxing section pager). The scene then plays on its own time (Nathan's call, replacing the earlier pinned, scroll-scrubbed version). A rule draws along the top and the accent grows from it to fill the scene on the `animaxxing` curve; text switches to the `on-` token as the wash passes under it; the name and copy rise in; then the signature moment plays. When the visitor scrolls on, the wash retracts down and the name slides up. The hero and index scroll freely; scrolling up from the index stop hands back to normal scrolling.
+On wide screens the scenes page, on GSAP's Observer, ScrollTrigger and ScrollToPlugin (adapted from the Animaxxing section pager): the hero and index scroll freely until a quarter of the first scene is in view, GSAP then finishes the move into it, and from there each wheel flick, swipe or arrow key moves exactly one scene, through to the footer. Trackpad momentum never skips ahead. The scene then plays on its own time (Nathan's call, replacing the earlier pinned, scroll-scrubbed version). A rule draws along the top and the accent grows from it to fill the scene on the `animaxxing` curve; text switches to the `on-` token as the wash passes under it; the name and copy rise in; then the signature moment plays. When the visitor scrolls on, the wash retracts down and the name slides up. Scrolling up out of the first scene glides to the screen above it and hands back to normal scrolling.
 
 | Project | Accent | Signature moment (plays once the scene is in view) |
 |---|---|---|
@@ -50,12 +50,12 @@ On wide screens the scenes page: from one screen above the first scene to the fo
 Rules for project moments:
 
 - **One signature moment per scene.** Everything else in the scene uses frame motion.
-- Moments play once the scene is in view, once per visit; returning to a scene replays the wash and name but leaves the moment settled.
+- Moments play every time the scene comes into view, along with the wash and name, and reset once it has left the screen, so they replay on each return.
 - Campaign Tower is the one place stepped, unsmoothed motion is allowed, to match its pixel art.
 
 ## Mobile
 
-- No pinning under 768px. Scenes become stacked sections; the signature moment plays once on entering view.
+- No pinning or paging below the wide layout. Scenes become stacked sections; the name and contents rise and the signature moment plays each time the scene enters view.
 - Hover effects have a tap or in-view equivalent; nothing important hides behind hover.
 - The letter wave pauses when the hero leaves the viewport.
 
