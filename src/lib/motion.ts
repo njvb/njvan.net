@@ -182,18 +182,19 @@ export const COTRIP = {
 } as const;
 
 /**
- * Campaign Tower's signature moment (src/scripts/tower-moment.ts). The one place
- * stepped, unsmoothed motion is allowed, to match the pixel art. Spans are
- * fractions of the moment's progress (0 to 1).
+ * Campaign Tower's signature moment (src/scripts/tower-moment.ts): the game's
+ * own gameplay in a phone. Stepped, unsmoothed motion, the one place it is
+ * allowed, to match the pixel art. Spans are fractions of the moment's progress.
  */
 export const TOWER = {
-  /** Floors build bottom to top across this span, one slot each. */
-  build: [0.04, 0.88] as [number, number],
-  /** Share of a floor's slot its cells take to fill in, left to right. */
-  cellsShare: 0.7,
-  /** Pixel steps for a floor's drop into place and for each lift hop. */
-  dropSteps: 2,
-  liftSteps: 4,
-  /** The lift's height as a share of a floor's (32 / 44 drawing units), for whole-floor hops. */
-  liftPerFloor: 44 / 32,
+  /** The phone rises into place in this many pixel steps. */
+  rise: [0, 0.25] as [number, number],
+  riseSteps: 6,
+  /** The screen reveals bottom to top, a floor at a time. */
+  reveal: [0.2, 0.75] as [number, number],
+  floors: 9,
+  /** Once the moment passes this point, the gameplay video plays. */
+  playAt: 0.75,
+  /** Start loading the video when the scene is this close (viewport heights). */
+  preloadMargin: '400%',
 } as const;
