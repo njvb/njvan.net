@@ -81,11 +81,6 @@ import { projects } from '../data/projects';
   .ledger-row[data-project='tower'] { --accent: var(--color-tower); }
 
   /* Light theme: accents are fields, not text, so every name stays ink on hover and only the rule takes the accent. */
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme='dark']) .ledger-row {
-      --accent-text: var(--color-foreground);
-    }
-  }
   :root[data-theme='light'] .ledger-row {
     --accent-text: var(--color-foreground);
   }

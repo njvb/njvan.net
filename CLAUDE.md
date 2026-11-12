@@ -21,7 +21,7 @@ The live versions are on claude.ai: the njvan design system (https://claude.ai/a
 - **No GitHub links anywhere.** The repos are private.
 - **Contact:** njvanderbyl@gmail.com and LinkedIn in the footer.
 - **Accents:** Tavren #FFD34D, Kora #5B4BE0 / #8B7CFF dark, Cotrip #F95C30 (coral, not its brand violet), Campaign Tower #3FBF5F. One accent on screen at a time.
-- **Dark is the primary theme;** light follows the OS setting or the footer toggle.
+- **Dark is the default theme,** whatever the OS prefers. Light is only a manual choice from the footer toggle, remembered on the device.
 - **Campaign Tower's landing page** stays at https://njvb.github.io/campaigntower-site/ and is linked from its scene. Do not touch the `njvb.github.io` or `campaigntower-site` repos (they host its AdMob app-ads.txt).
 
 ## Stack

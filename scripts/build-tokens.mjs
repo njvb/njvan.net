@@ -1,7 +1,7 @@
 // Generates src/styles/tokens.css from design/tokens.json.
 // tokens.json is the source of truth: edit it, not the generated CSS.
-// Dark is the default theme. Light applies when the OS asks for it (unless the
-// visitor chose dark) or when <html data-theme="light"> is set by the toggle.
+// Dark is the default theme whatever the OS prefers. Light applies only when
+// <html data-theme="light"> is set by the footer toggle (remembered on the device).
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -57,13 +57,6 @@ ${simple('spacing', '')}
 ${simple('radius', '')}
 
 ${simple('borderWidth', 'border-')}
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme='dark']) {
-    color-scheme: light;
-${colors('light').replaceAll('\n  ', '\n    ').replace(/^  /, '    ')}
-  }
 }
 
 :root[data-theme='light'] {
