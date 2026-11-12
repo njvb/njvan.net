@@ -7,6 +7,7 @@ import TavrenBoard from '../components/scenes/TavrenBoard.astro';
 import KoraPanels from '../components/scenes/KoraPanels.astro';
 import CotripRoute from '../components/scenes/CotripRoute.astro';
 import TowerFloors from '../components/scenes/TowerFloors.astro';
+import TowerBackdrop from '../components/scenes/TowerBackdrop.astro';
 import { projects } from '../data/projects';
 
 const visuals = {
@@ -28,6 +29,7 @@ const visuals = {
       const Visual = visuals[p.id];
       return (
         <Scene project={p} total={projects.length}>
+          {p.id === 'tower' && <TowerBackdrop slot="backdrop" />}
           <Visual />
         </Scene>
       );

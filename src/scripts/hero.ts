@@ -147,6 +147,12 @@ function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectCo
   let blast: BlastOff | null = null;
 
   const running = () => !paused && heroVisible;
+  // Exposed on <html> so CSS loops elsewhere (Campaign Tower's drifting city) pause too.
+  const markPaused = () => {
+    if (paused) html.dataset.motionPaused = 'true';
+    else delete html.dataset.motionPaused;
+  };
+  markPaused();
   const applyRunning = () => {
     if (running()) {
       wave?.resume();
@@ -174,6 +180,7 @@ function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectCo
   els.pause.addEventListener('click', () => {
     paused = !paused;
     writePaused(paused);
+    markPaused();
     syncPause();
     applyRunning();
   });

@@ -52,6 +52,8 @@ function renderWash(el: HTMLElement, w: WashState) {
 type SceneParts = {
   scene: HTMLElement;
   wash: HTMLElement;
+  /** A backdrop that belongs to the field (Campaign Tower's city): clipped with the wash. */
+  backdrop: HTMLElement | null;
   name: HTMLElement;
   ink: HTMLElement[];
   rise: HTMLElement[];
@@ -65,6 +67,7 @@ function parts(scene: HTMLElement): SceneParts | null {
   return {
     scene,
     wash,
+    backdrop: scene.querySelector<HTMLElement>('[data-scene-backdrop]'),
     name,
     ink: Array.from(scene.querySelectorAll<HTMLElement>('[data-ink]')),
     rise: Array.from(scene.querySelectorAll<HTMLElement>('[data-scene-rise]')),
@@ -100,7 +103,10 @@ function buildPaged(p: SceneParts) {
 
   p.scene.classList.add('is-staged');
   const wash: WashState = { cover: 0, top: 0, rule: 0 };
-  const draw = () => renderWash(p.wash, wash);
+  const draw = () => {
+    renderWash(p.wash, wash);
+    if (p.backdrop) renderWash(p.backdrop, wash);
+  };
   draw();
   gsap.set(p.ink, { '--on': fg });
   const split = splitName(p.name);
@@ -230,6 +236,7 @@ function buildPaged(p: SceneParts) {
     outro.kill();
     p.scene.classList.remove('is-staged');
     p.wash.style.removeProperty('clip-path');
+    p.backdrop?.style.removeProperty('clip-path');
   };
 }
 

@@ -13,6 +13,8 @@ const totalLabel = String(total).padStart(2, '0');
 <section class="scene" id={p.id} data-project={p.id} data-scene aria-labelledby={`${p.id}-title`}>
   <!-- The accent wash. Hidden until the scene is staged for pinning; the section itself is the field otherwise. -->
   <div class="scene__wash" aria-hidden="true" data-scene-wash></div>
+  <!-- An optional backdrop (Campaign Tower's drifting city), clipped with the wash when staged. -->
+  <slot name="backdrop" />
   <div class="shell scene__inner">
     <div class="scene__top t-caption" data-ink data-scene-rise>
       <span>{p.number} · {p.name}</span>

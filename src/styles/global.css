@@ -79,7 +79,8 @@ html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data
   html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene] [data-ink] {
     --on: var(--color-foreground);
   }
-  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene-wash] {
+  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene-wash],
+  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene-backdrop] {
     display: block;
     clip-path: inset(0 0 100% 0);
   }

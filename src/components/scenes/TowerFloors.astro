@@ -1,6 +1,8 @@
 ---
 // The tower in its settled state: every floor built, the lift parked at the top.
 // Colours are Campaign Tower's own pixel palette, scoped to this drawing.
+// src/scripts/tower-moment.ts plays the signature moment: the tower builds
+// itself floor by floor in pixel steps while the lift rides up the shaft.
 const FLOORS = 12;
 const CELLS = 6;
 const palette = ['#82c9f2', '#f4f1ea', '#f2c94c', '#82c9f2', '#c89b6a', '#f4f1ea'];
@@ -11,16 +13,16 @@ const floors = Array.from({ length: FLOORS }, (_, k) => {
 });
 ---
 
-<div class="tower" style={`--floors:${FLOORS}`}>
+<div class="tower" style={`--floors:${FLOORS}`} data-tower>
   <div class="tower__shaft">
-    <div class="tower__lift"></div>
+    <div class="tower__lift" data-tower-lift></div>
   </div>
   <div class="tower__body">
     {
       floors.map((cells) => (
-        <div class="tower__floor">
+        <div class="tower__floor" data-tower-floor>
           {cells.map((c) => (
-            <span style={`background:${c}`} />
+            <span style={`background:${c}`} data-tower-cell />
           ))}
         </div>
       ))
@@ -28,6 +30,17 @@ const floors = Array.from({ length: FLOORS }, (_, k) => {
     <div class="tower__base"></div>
   </div>
 </div>
+
+<script>
+  import { mountTower } from '../../scripts/tower-moment';
+  document.querySelectorAll<HTMLElement>('[data-tower]').forEach((root) => {
+    try {
+      mountTower(root);
+    } catch (error) {
+      console.error('[tower] moment failed, keeping the built tower', error);
+    }
+  });
+</script>
 
 <style>
   .tower {

@@ -194,3 +194,20 @@ export const COTRIP = {
   phoneBack: [0.35, 0.62] as [number, number],
   phoneFront: [0.45, 0.72] as [number, number],
 } as const;
+
+/**
+ * Campaign Tower's signature moment (src/scripts/tower-moment.ts). The one place
+ * stepped, unsmoothed motion is allowed, to match the pixel art. Spans are
+ * fractions of the moment's progress (0 to 1).
+ */
+export const TOWER = {
+  /** Floors build bottom to top across this span, one slot each. */
+  build: [0.04, 0.88] as [number, number],
+  /** Share of a floor's slot its cells take to fill in, left to right. */
+  cellsShare: 0.7,
+  /** Pixel steps for a floor's drop into place and for each lift hop. */
+  dropSteps: 2,
+  liftSteps: 4,
+  /** The lift's height as a share of a floor's (32 / 44 drawing units), for whole-floor hops. */
+  liftPerFloor: 44 / 32,
+} as const;
