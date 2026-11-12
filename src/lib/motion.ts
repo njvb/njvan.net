@@ -175,3 +175,22 @@ export const KORA = {
   /** The answer starts speaking this long after the question is typed. */
   answerGap: 0.25,
 } as const;
+
+/**
+ * Cotrip's signature moment (src/scripts/cotrip-moment.ts). Spans are fractions
+ * of the moment's progress (0 to 1), as with Tavren.
+ */
+export const COTRIP = {
+  /** The map grid fades in. */
+  grid: [0, 0.15] as [number, number],
+  /** The route draws itself from Day 1 to Day 3; each pin drops as the line reaches it. */
+  route: [0.08, 0.6] as [number, number],
+  /** How long a pin's drop takes, and its label's rise just after. */
+  pinDrop: 0.08,
+  /** The dotted leg to the destination draws on, then the destination ring opens. */
+  ahead: [0.6, 0.78] as [number, number],
+  destination: [0.76, 0.84] as [number, number],
+  /** The phones stack in beside the map: the back one slides and tilts, the front one rises. */
+  phoneBack: [0.35, 0.62] as [number, number],
+  phoneFront: [0.45, 0.72] as [number, number],
+} as const;

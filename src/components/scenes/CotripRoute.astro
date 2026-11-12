@@ -1,6 +1,8 @@
 ---
 // The route map in its settled state (drawn to Day 3) and the phone screenshot slot.
-// Positions come from the 520 x 580 map in the Cotrip frame.
+// Positions come from the 520 x 580 map in the Cotrip frame. The settled state is
+// the markup; src/scripts/cotrip-moment.ts plays the signature moment: the route
+// draws itself, pins drop as it reaches them, and the phones stack in.
 const W = 520;
 const H = 580;
 const pct = (x: number, y: number) => `left:${(x / W) * 100}%;top:${(y / H) * 100}%`;
@@ -11,10 +13,17 @@ const stops = [
 ];
 ---
 
-<div class="cotrip">
+<div class="cotrip" data-cotrip>
   <div class="cotrip__map">
     <svg viewBox={`0 0 ${W} ${H}`} fill="none">
+      <defs>
+        <!-- Reveals the dotted leg along its length without losing its dots. -->
+        <mask id="cotrip-ahead-mask" maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={H}>
+          <path d="M320 250 S 360 140, 470 90" stroke="#fff" stroke-width="10" stroke-linecap="round" data-cotrip-ahead-reveal></path>
+        </mask>
+      </defs>
       <path
+        data-cotrip-grid
         class="cotrip__grid"
         d="M0 116H520M0 232H520M0 348H520M0 464H520M104 0V580M208 0V580M312 0V580M416 0V580"
         stroke="currentColor"
@@ -22,12 +31,15 @@ const stops = [
         stroke-width="1"
         vector-effect="non-scaling-stroke"></path>
       <path
+        data-cotrip-route
         class="cotrip__route"
         d="M40 500 C 120 470, 140 380, 200 350 S 300 330, 320 250"
         stroke="currentColor"
         stroke-width="4"
         stroke-linecap="round"></path>
       <path
+        data-cotrip-ahead
+        mask="url(#cotrip-ahead-mask)"
         class="cotrip__ahead"
         d="M320 250 S 360 140, 470 90"
         stroke="currentColor"
@@ -35,14 +47,18 @@ const stops = [
         stroke-linecap="round"
         stroke-dasharray="2 12"
         stroke-opacity="0.45"></path>
-      <circle cx="40" cy="500" r="10" fill="currentColor"></circle>
-      <circle cx="200" cy="350" r="10" fill="currentColor"></circle>
-      <circle cx="320" cy="250" r="14" fill="#fbf6ea" stroke="currentColor" stroke-width="4"></circle>
-      <circle cx="470" cy="90" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.45"></circle>
+      <circle cx="40" cy="500" r="10" fill="currentColor" data-cotrip-pin="0"></circle>
+      <circle cx="200" cy="350" r="10" fill="currentColor" data-cotrip-pin="1"></circle>
+      <circle cx="320" cy="250" r="14" fill="#fbf6ea" stroke="currentColor" stroke-width="4" data-cotrip-pin="2"></circle>
+      <circle cx="470" cy="90" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.45" data-cotrip-destination></circle>
     </svg>
     {
-      stops.map((s) => (
-        <span class:list={['cotrip__label', 't-annotation', { 'is-current': s.current }]} style={pct(s.x, s.y)}>
+      stops.map((s, i) => (
+        <span
+          class:list={['cotrip__label', 't-annotation', { 'is-current': s.current }]}
+          style={pct(s.x, s.y)}
+          data-cotrip-label={i}
+        >
           {s.label}
         </span>
       ))
@@ -50,12 +66,23 @@ const stops = [
   </div>
 
   <div class="cotrip__phones">
-    <div class="cotrip__phone-back"></div>
-    <div class="cotrip__phone">
+    <div class="cotrip__phone-back" data-cotrip-phone-back></div>
+    <div class="cotrip__phone" data-cotrip-phone>
       <span class="t-annotation">[Cotrip iPhone screenshot]</span>
     </div>
   </div>
 </div>
+
+<script>
+  import { mountCotrip } from '../../scripts/cotrip-moment';
+  document.querySelectorAll<HTMLElement>('[data-cotrip]').forEach((root) => {
+    try {
+      mountCotrip(root);
+    } catch (error) {
+      console.error('[cotrip] moment failed, keeping the settled map', error);
+    }
+  });
+</script>
 
 <style>
   .cotrip {
