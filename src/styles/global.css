@@ -67,10 +67,43 @@ html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data
 }
 
 /*
- * Scenes that will page and play start staged: canvas ground, foreground ink,
+ * Scene snapping: the browser's own CSS scroll snap, so wheels, trackpad
+ * momentum, keys, touch and the scrollbar all behave natively and nothing in
+ * JavaScript ever holds the scroll. Matches SCENE.pageQuery in motion.ts.
+ *   - The hero and index form one snap area taller than the screen, so they
+ *     scroll freely; its scroll margin reaches over the header to the page top.
+ *   - Each scene snaps to the top, and scroll-snap-stop keeps a hard flick
+ *     from skipping past one.
+ *   - The footer snaps to the bottom, so it can always be reached.
+ */
+@media (min-width: 1024px) and (min-height: 600px) {
+  html {
+    scroll-snap-type: y mandatory;
+  }
+  [data-snap-intro] {
+    scroll-snap-align: start;
+    scroll-margin-top: 50vh;
+  }
+  [data-scene] {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .site-footer {
+    scroll-snap-align: end;
+  }
+}
+
+/* In-page links glide, except under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/*
+ * Scenes that will snap and play start staged: canvas ground, foreground ink,
  * no wash yet. Mirrors SCENE.pageQuery and the staging in src/scripts/scenes.ts.
- * Only colours change here; nothing is hidden. (In-page links glide via script:
- * CSS smooth scrolling would fight the paging.)
+ * Only colours change here; nothing is hidden.
  */
 @media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
   html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene] {

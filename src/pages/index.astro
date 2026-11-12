@@ -22,8 +22,11 @@ const visuals = {
   title="Nathan VanderByl · Games, tools and apps"
   description="Games, tools and apps I've built: Tavren, Kora, Cotrip and Campaign Tower."
 >
-  <Hero />
-  <ProjectIndex />
+  <!-- One snap area for the hero and index, taller than the screen, so they scroll freely (global.css). -->
+  <div data-snap-intro>
+    <Hero />
+    <ProjectIndex />
+  </div>
   {
     projects.map((p) => {
       const Visual = visuals[p.id];

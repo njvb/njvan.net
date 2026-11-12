@@ -1,9 +1,9 @@
 // Project scenes: the accent wash, ink change, entrances, and the
 // signature moments' clock. Timings live in src/lib/motion.ts (SCENE).
 //
-// Wide screens (SCENE.pageQuery): src/scripts/pager.ts moves one scene per
-// gesture, each filling the viewport. When a scene becomes active its sequence
-// plays on its own time:
+// Wide screens (SCENE.pageQuery): the browser's own CSS scroll snapping stops
+// on each scene (see global.css); nothing here moves the scroll. When a scene
+// becomes active its sequence plays on its own time:
 // a rule draws along the top, the accent grows from it to fill the scene,
 // each block's ink changes as the wash passes, the name rises behind its mask,
 // the rest rises in, then the signature moment plays (once per visit). When
@@ -18,7 +18,6 @@ import { ANIMAXXING_CURVE, EASE, SCENE, SHIFT } from '../lib/motion';
 import { prefersReducedMotion } from '../lib/effects/util';
 import { revealOnScroll } from '../lib/effects/reveal';
 import { momentReady, setMoment } from '../lib/moments';
-import { pageTo, setupPager } from './pager';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
 CustomEase.create('animaxxing', ANIMAXXING_CURVE);
@@ -334,21 +333,6 @@ function build() {
   ScrollTrigger.refresh();
 }
 
-/** In-page links glide on the pager's ease (CSS smooth scrolling would fight the paging). */
-function onAnchorClick(e: MouseEvent) {
-  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  const link = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
-  const id = link?.getAttribute('href')?.slice(1);
-  const target = id ? document.getElementById(id) : null;
-  if (!link || !target) return;
-  e.preventDefault();
-  history.pushState(null, '', `#${id}`);
-  pageTo(target.getBoundingClientRect().top + window.scrollY);
-  // Move focus as a native jump would, without a second scroll.
-  if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
-  target.focus({ preventScroll: true });
-}
-
 /** Starts the scene motion. Under reduced motion the scenes stay static fields. */
 export function setupScenes(): void {
   if (prefersReducedMotion()) {
@@ -356,8 +340,6 @@ export function setupScenes(): void {
     return;
   }
   build();
-  setupPager();
-  document.addEventListener('click', onAnchorClick);
 
   // Colours are read from the theme, and block positions from the layout: rebuild when either changes.
   const rebuild = () => build();

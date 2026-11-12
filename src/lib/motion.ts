@@ -81,32 +81,18 @@ export const HERO = {
 } as const;
 
 /**
- * Project scenes. On wide screens the page moves one scene per gesture, each
- * filling the viewport, then its sequence plays on its own time: wash, ink,
- * name, copy, then the signature moment. Times are seconds from the scene
- * becoming active.
+ * Project scenes. On wide screens the browser snaps each scene to fill the
+ * viewport, then its sequence plays on its own time: wash, ink, name, copy,
+ * then the signature moment. Times are seconds from the scene becoming active.
  */
 export const SCENE = {
-  /** Scenes page and play where they have their frame layout and fit the viewport. */
+  /**
+   * Where scenes snap and play: their frame layout, fitting the viewport. The
+   * snapping itself is native CSS scroll snap (global.css), which handles
+   * wheels, trackpad momentum, keys, touch and the scrollbar; keep that media
+   * query in step with this one.
+   */
   pageQuery: '(min-width: 1024px) and (min-height: 600px)',
-  /**
-   * Paging (src/scripts/pager.ts, GSAP Observer + ScrollTrigger + ScrollToPlugin):
-   * once the first scene is SCENE.pageEnter in view, each wheel flick, swipe or
-   * arrow key moves exactly one stop, through the scenes to the footer.
-   */
-  pageDuration: 0.8,
-  pageEase: 'power3.inOut',
-  /** A gesture has ended once no wheel events arrive for this long (seconds); trackpad momentum is absorbed until then. */
-  pageRest: 0.2,
-  /** Wheel or swipe travel (px) before a gesture counts (GSAP Observer tolerance). */
-  pageTolerance: 10,
-  /**
-   * Scrolling down the index stays free until this much of the first scene is
-   * in view (fraction of the viewport); then GSAP finishes the move into it.
-   */
-  pageEnter: 0.25,
-  /** Scrolled off a stop by other means (scrollbar, find, focus)? Settle onto the nearest after this pause (seconds). */
-  settleDelay: 0.18,
   /** A scene is active while its middle band holds the viewport's middle. */
   activeStart: 'top 55%',
   activeEnd: 'bottom 45%',
@@ -130,7 +116,7 @@ export const SCENE = {
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
   washOut: 0.55,
   nameOut: 0.35,
-  /** Stacked layouts (no paging): contents rise once, and the moment plays, on entering view. */
+  /** Stacked layouts (no snapping): contents rise, and the moment plays, on entering view. */
   revealStart: 'top 80%',
   momentOnce: 2.4,
 } as const;
