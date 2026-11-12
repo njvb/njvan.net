@@ -89,7 +89,7 @@ export const projects: Project[] = [
     name: 'Campaign Tower',
     kind: 'Game',
     indexLine: 'Build an ad agency one floor at a time. Pixel art, for iPhone.',
-    indexStack: 'iOS · Pixel art',
+    indexStack: 'SwiftUI · SpriteKit · StoreKit',
     // From the game's landing page (njvb.github.io/campaigntower-site).
     line: "Your ad agency starts in one room above a shop. It won't stay there.",
     more: "A pixel-art tower game for iPhone. Build new floors, hire creatives who all think they're the next big thing, and drive the lift yourself, because nobody budgeted for a lift operator.",
