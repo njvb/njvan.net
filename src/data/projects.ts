@@ -64,12 +64,16 @@ export const projects: Project[] = [
     number: '03',
     name: 'Cotrip',
     kind: 'App',
-    indexLine: 'Plan trips together, with AI. Native on iPhone.',
+    indexLine: 'Your whole trip, in one place. Planned with your crew, with AI.',
     indexStack: 'SwiftUI · Firebase',
-    line: 'Plan trips together, with AI.',
-    more: 'Days, places, stays and flights in one shared plan, with a group chat, packing lists and an AI planner that knows your trip. Native on iPhone.',
-    notes: ['SwiftUI · Vue 3 · Firebase', 'iPhone and web'],
-    links: [{ label: 'App Store', external: true, variant: 'solid' }],
+    // From the app's landing page (cotrip.app).
+    line: 'Your whole trip, in one place.',
+    more: "Find a place and let AI draft the days. Plan it with your crew, ask TripTalk to change it, split what you spend, and on the day see what's next and how to get there.",
+    notes: ['SwiftUI · Vue 3 · Firebase', 'Free · iPhone, iPad and web'],
+    links: [
+      { label: 'App Store', href: 'https://apps.apple.com/app/id1536158484', external: true, variant: 'solid' },
+      { label: 'Visit cotrip.app', href: 'https://cotrip.app', external: true, variant: 'outline' },
+    ],
   },
   {
     id: 'tower',

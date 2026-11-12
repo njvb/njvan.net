@@ -163,7 +163,7 @@ function buildPaged(p: SceneParts) {
       const waited = (performance.now() - asked) / 1000;
       momentTween = gsap.to(moment, {
         p: 1,
-        duration: SCENE.moment.duration,
+        duration: SCENE.momentLength[id] ?? SCENE.moment.duration,
         ease: 'none',
         delay: Math.max(0, SCENE.moment.at - waited),
         onUpdate: () => setMoment(id, moment.p),
@@ -263,7 +263,7 @@ function buildStacked(p: SceneParts) {
       if (!inView || ticket !== visit) return;
       momentTween = gsap.to(moment, {
         p: 1,
-        duration: SCENE.momentOnce,
+        duration: SCENE.momentLength[id] ?? SCENE.momentOnce,
         ease: 'none',
         delay: 0.3,
         onUpdate: () => setMoment(id, moment.p),

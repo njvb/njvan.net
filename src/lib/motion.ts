@@ -111,6 +111,8 @@ export const SCENE = {
   visualIn: { at: 0.55, duration: 0.5 },
   /** The signature moment plays once, the first time the scene is active. */
   moment: { at: 0.7, duration: 2.8 },
+  /** Scenes whose moment tells a longer story get their own length, in seconds. */
+  momentLength: { cotrip: 5 } as Record<string, number>,
   /** A moment whose visual loads late waits for it, up to this many seconds. */
   momentWait: 4,
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
@@ -163,22 +165,28 @@ export const KORA = {
 } as const;
 
 /**
- * Cotrip's signature moment (src/scripts/cotrip-moment.ts). Spans are fractions
- * of the moment's progress (0 to 1), as with Tavren.
+ * Cotrip's signature moment (src/scripts/cotrip-moment.ts): ask TripTalk to
+ * change the plan, and watch the plan change. Spans are fractions of the
+ * moment's progress (0 to 1); the moment runs SCENE.momentLength.cotrip seconds.
  */
 export const COTRIP = {
   /** The map grid fades in. */
-  grid: [0, 0.15] as [number, number],
-  /** The route draws itself from Day 1 to Day 3; each pin drops as the line reaches it. */
-  route: [0.08, 0.6] as [number, number],
-  /** How long a pin's drop takes, and its label's rise just after. */
-  pinDrop: 0.08,
-  /** The dotted leg to the destination draws on, then the destination ring opens. */
-  ahead: [0.6, 0.78] as [number, number],
-  destination: [0.76, 0.84] as [number, number],
+  grid: [0, 0.08] as [number, number],
+  /** The route draws itself, a traveller dot riding its tip; each pin drops as the line reaches it. */
+  route: [0.04, 0.4] as [number, number],
+  pinDrop: 0.05,
   /** The phones stack in beside the map: the back one slides and tilts, the front one rises. */
-  phoneBack: [0.35, 0.62] as [number, number],
-  phoneFront: [0.45, 0.72] as [number, number],
+  phoneBack: [0.18, 0.36] as [number, number],
+  phoneFront: [0.24, 0.42] as [number, number],
+  /** A question to TripTalk pops out, then types itself. */
+  askPop: [0.44, 0.48] as [number, number],
+  askType: [0.48, 0.62] as [number, number],
+  /** TripTalk answers, and the plan changes: the dotted leg draws on to the new stop. */
+  reply: [0.66, 0.72] as [number, number],
+  ahead: [0.72, 0.84] as [number, number],
+  destination: [0.82, 0.88] as [number, number],
+  /** One ping from "you are here" to finish. */
+  ping: [0.9, 1] as [number, number],
 } as const;
 
 /**
