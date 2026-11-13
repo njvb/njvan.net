@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 
-// The site lives at njvan.net. Until the domain points at GitHub Pages, the deploy
-// workflow builds it for njvb.github.io/njvan.net/ by setting SITE and BASE.
+// The site lives at njvan.net, served by GitHub Pages (custom domain set in
+// public/CNAME). SITE and BASE can still be overridden from the environment.
 export default defineConfig({
   site: process.env.SITE ?? 'https://njvan.net',
   base: process.env.BASE ?? '/',
