@@ -276,6 +276,16 @@ updateLift();
     scroll-snap-type: none !important;
   }
 
+  /*
+   * Fix on this copy only: in the original, the bar's link colour (paper) also
+   * catches its yellow button, leaving white text on yellow. Ink, like every
+   * other yellow button on the page.
+   */
+  .ct .bar nav a.ct-btn,
+  .ct .bar nav a.ct-btn:hover {
+    color: var(--ink);
+  }
+
   /* The site header sits on the canvas above the game's own sticky bar. */
   .site-header {
     position: static !important;
