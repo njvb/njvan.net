@@ -1,0 +1,330 @@
+/* Generated from Campaign Tower's landing page (docs/style.css in ~/Projects/CampaignTower), scoped under .ct. Regenerate rather than edit. */
+.ct{
+  --ink:#1B1B24;--ink2:#14141B;--plate:#2A2733;--plate2:#3A3644;--paper:#F4F1EA;--muted:rgba(244,241,234,.74);
+  --gold:#F2C94C;--green:#3FBF5F;--red:#E04B4B;--blue:#3B82F6;--orange:#F28C28;--purple:#8B5CF6;--tan:#C89B6A;
+  --sky:#82C9F2;--sky2:#C2E7FA;--pave:#8E8C98;--kerb:#6E6E7A;--road:#494853;
+  --pixel:"Silkscreen",ui-monospace,Menlo,monospace;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.ct,.ct *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+.ct{font-family:var(--sans);background:var(--ink);color:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+.ct a{color:var(--gold)}
+.ct img,.ct video{max-width:100%;height:auto;display:block}
+.ct .px{image-rendering:pixelated;image-rendering:crisp-edges}
+.ct .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.ct .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Header (shared with privacy/support) */
+.ct .bar{position:sticky;top:0;z-index:20;background:var(--plate);border-bottom:3px solid var(--ink2);box-shadow:0 3px 0 rgba(0,0,0,.5)}
+.ct .bar .wrap{display:flex;align-items:center;gap:12px;height:60px}
+.ct .bar img{width:36px;height:36px;border:2px solid var(--ink2)}
+.ct .bar b{font-family:var(--pixel);font-size:15px;letter-spacing:.5px;white-space:nowrap}
+.ct .bar nav{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:13px}
+.ct .bar nav a{color:var(--paper);text-decoration:none;opacity:.85}.ct .bar nav a:hover{opacity:1;color:var(--gold)}
+.ct .bar nav .ct-btn{opacity:1;padding:8px 12px;font-size:12px;white-space:nowrap}
+@media (max-width:480px){.ct .bar nav .ct-btn .wide{display:none}}
+
+/* Buttons */
+.ct .ct-btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--pixel);font-size:15px;color:var(--ink);background:var(--gold);padding:14px 20px;border:3px solid var(--ink2);box-shadow:4px 4px 0 var(--ink2);text-decoration:none;transition:transform .08s,box-shadow .08s;cursor:pointer}
+.ct .ct-btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink2)}
+.ct .ct-btn:focus-visible{outline:3px solid var(--paper);outline-offset:3px}
+/* Apple's official badge, used as supplied: no recolouring, effects or animation (Apple's rules).
+   Clear space of at least a quarter of its height on every side. */
+.ct .store-badge{display:inline-block;padding:14px;margin:-14px;line-height:0;border-radius:12px}
+.ct .store-badge img{height:56px;width:auto}
+.ct .store-badge:focus-visible{outline:3px solid var(--paper);outline-offset:-4px}
+.ct .hero .store-badge:focus-visible{outline-color:var(--ink2)}
+
+/* Hero */
+.ct .hero{padding:0;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 100%);color:var(--ink)}
+.ct .hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;grid-template-areas:"top phone" "cta phone";column-gap:48px;align-items:end;padding-top:36px}
+.ct .hero-top{grid-area:top;align-self:end}
+.ct .hero-cta{grid-area:cta;align-self:start;padding-bottom:236px}
+.ct .hero .phone-wrap{grid-area:phone;align-self:end}
+.ct .wordmark{width:min(300px,72%);height:auto;margin:0 0 20px}
+.ct .hero h1{font-family:var(--sans);font-weight:800;font-size:clamp(30px,4vw,46px);line-height:1.05;letter-spacing:-1.2px}
+.ct .hero h1 em{font-style:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone;background:var(--ink);color:var(--gold);padding:0 .18em;box-shadow:4px 4px 0 rgba(0,0,0,.18)}
+.ct .hero .lead{font-size:18px;margin:18px 0 24px;max-width:520px;color:#26252f}
+.ct .hero .cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.ct .hero .note{font-family:var(--pixel);font-size:12px;margin-top:18px;color:rgba(27,27,36,.75)}
+.ct .phone{width:300px;margin:0 auto;border:8px solid var(--ink2);border-bottom:none;border-radius:40px 40px 0 0;overflow:hidden;background:#000;box-shadow:10px 0 0 rgba(0,0,0,.18)}
+.ct .phone video{width:100%;height:auto;aspect-ratio:430/932}
+.ct .phone-wrap{position:relative}
+.ct .phone-wrap .tag{position:absolute;left:-18px;top:40%;font-family:var(--pixel);font-size:12px;background:var(--gold);border:3px solid var(--ink2);padding:6px 10px;box-shadow:3px 3px 0 var(--ink2);transform:rotate(-4deg)}
+.ct .street{position:relative;z-index:3;height:120px;background:var(--road)}   /* above the phone, so passers-by walk in front of it */
+.ct .street::before{content:"";position:absolute;left:0;right:0;top:0;height:44px;background:var(--pave);border-bottom:6px solid var(--kerb)}
+.ct .street::after{content:"";position:absolute;left:0;right:0;top:78px;height:6px;background:repeating-linear-gradient(90deg,#D9C65A 0 34px,transparent 34px 70px);animation:lines 5.1s linear infinite}
+/* Road markings scroll at the street's pace (321 art px × scale per 70 s) */
+@keyframes lines{to{background-position-x:-70px}}
+/* Hero scenery: flattened strips composed from the game's own city sprites
+   (scripts/make-site-scene.swift), each panning at its own speed for depth. */
+.ct .hero{--s:3}
+.ct .scene{position:absolute;left:0;right:0;top:0;bottom:120px;z-index:0;pointer-events:none;overflow:hidden}
+.ct .layer{position:absolute;left:0;width:calc(100% + var(--w));background-repeat:repeat-x;image-rendering:pixelated;image-rendering:crisp-edges;animation:pan var(--t) linear infinite}
+.ct .layer.clouds-far{--k:calc(var(--s) * 2 / 3);--w:calc(600px * var(--k));--t:240s;top:6px;height:calc(90px * var(--k));background-image:url(/campaign-tower/img/scene/scene-clouds-far.png);background-size:var(--w) 100%}
+.ct .layer.clouds{--w:calc(520px * var(--s));--t:150s;top:14px;height:calc(80px * var(--s));background-image:url(/campaign-tower/img/scene/scene-clouds.png);background-size:var(--w) 100%}
+.ct .layer.flyers{--w:calc(520px * var(--s));--t:95s;top:70px;height:calc(40px * var(--s));background-image:url(/campaign-tower/img/scene/scene-flyers.png);background-size:var(--w) 100%;animation-direction:reverse}
+.ct .layer.far{--k:calc(var(--s) * 5 / 3);--w:calc(301px * var(--k));--t:120s;bottom:0;height:calc(42px * var(--k));background-image:url(/campaign-tower/img/scene/scene-far.png);background-size:var(--w) 100%}
+.ct .layer.near{--w:calc(321px * var(--s));--t:70s;bottom:0;height:calc(66px * var(--s));background-image:url(/campaign-tower/img/scene/scene-near.png);background-size:var(--w) 100%}
+/* Passers-by on the pavement: each group walks at its own pace, stepping through four walk frames */
+.ct .layer.walk{height:calc(16px * var(--s));background-size:var(--w) calc(64px * var(--s));animation:pan var(--t) linear infinite,walkcycle .64s steps(4) infinite}
+.ct .layer.walk.back{--w:calc(520px * var(--s));--t:34s;top:calc(-9px * var(--s));background-image:url(/campaign-tower/img/scene/scene-walk-left.png)}
+.ct .layer.walk.front{--w:calc(480px * var(--s));--t:80s;top:calc(-4px * var(--s));background-image:url(/campaign-tower/img/scene/scene-walk-right.png);animation-direction:reverse,normal}
+@keyframes pan{to{transform:translateX(calc(var(--w) * -1))}}
+@keyframes walkcycle{to{background-position-y:calc(-64px * var(--s))}}
+
+/* Floors: section headers styled as the game's floor nameplates */
+.ct section{padding:84px 0}
+.ct .floor{border-top:6px solid var(--ink2)}
+.ct .floor.alt{background:var(--plate)}
+.ct .plate{display:inline-flex;align-items:stretch;margin-bottom:22px;border:3px solid var(--ink2);box-shadow:4px 4px 0 var(--ink2);background:var(--ink)}
+.ct .plate .n{font-family:var(--pixel);font-size:13px;background:var(--gold);color:var(--ink);padding:6px 10px;display:flex;align-items:center}
+.ct .plate .t{font-family:var(--pixel);font-size:13px;padding:6px 12px;color:var(--paper);display:flex;align-items:center;letter-spacing:.5px}
+.ct h2{font-family:var(--sans);font-weight:800;font-size:clamp(26px,3.4vw,38px);line-height:1.12;letter-spacing:-.8px;margin-bottom:12px;max-width:760px}
+.ct h2+p,.ct .intro{color:var(--muted);font-size:17px;max-width:640px;margin-bottom:36px}
+.ct h3{font-family:var(--pixel);font-size:16px;font-weight:700;letter-spacing:.3px;margin-bottom:8px}
+
+/* Tour carousel */
+.ct .tour{padding:64px 0 72px;background:var(--ink2)}
+.ct .tour .head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:24px}
+.ct .tour h2{margin:0}
+.ct .arrows{display:flex;gap:10px}
+.ct .arrows button{font-family:var(--pixel);font-size:18px;width:46px;height:46px;background:var(--plate2);color:var(--paper);border:3px solid #000;box-shadow:3px 3px 0 #000;cursor:pointer}
+.ct .arrows button:hover{background:var(--gold);color:var(--ink)}
+.ct .track{display:grid;grid-auto-flow:column;grid-auto-columns:250px;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 22px;max-width:1120px;margin:0 auto;scrollbar-color:var(--plate2) transparent}
+.ct .card{scroll-snap-align:start;background:var(--plate);border:3px solid #000;box-shadow:5px 5px 0 #000}
+.ct .card p{font-family:var(--pixel);font-size:13px;line-height:1.35;padding:12px 12px 10px;min-height:62px;color:var(--paper)}
+.ct .card img{width:100%;height:auto;border-top:3px solid #000}
+
+/* The loop */
+.ct .beats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.ct .beat{background:var(--plate);border:3px solid var(--ink2);box-shadow:5px 5px 0 var(--ink2);display:flex;flex-direction:column}
+.ct .beat img{width:100%;height:220px;object-fit:cover;object-position:top;border-bottom:3px solid var(--ink2)}
+.ct .beat div{padding:18px 18px 20px}
+.ct .beat h3{color:var(--gold)}
+.ct .beat p{color:var(--muted);font-size:15px}
+.ct .facts{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:36px;border:3px solid var(--ink2);background:var(--ink2)}
+.ct .facts div{background:var(--ink);padding:16px 10px;text-align:center;border-right:3px solid var(--ink2)}
+.ct .facts div:last-child{border-right:0}
+.ct .facts b{display:block;font-family:var(--pixel);font-size:28px;color:var(--gold);line-height:1.1}
+.ct .facts span{font-size:13px;color:var(--muted)}
+
+/* Staff: lanyard ID badges */
+.ct .badges{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;padding-top:30px}
+.ct .badge{position:relative;background:var(--paper);color:var(--ink);border:3px solid var(--ink2);box-shadow:5px 5px 0 #000;padding:30px 16px 18px;text-align:center}
+.ct .badge::before{content:"";position:absolute;left:50%;top:-34px;width:14px;height:40px;transform:translateX(-50%);background:var(--c,var(--red));border:3px solid var(--ink2)}
+.ct .badge::after{content:"";position:absolute;left:50%;top:10px;width:30px;height:8px;transform:translateX(-50%);background:var(--plate2);border-radius:4px}
+.ct .badge{--r:-1.4deg;transform-origin:50% -34px;animation:swing 4.5s ease-in-out infinite alternate}
+.ct .badge:nth-child(even){--r:1.6deg;animation-delay:-1.8s;animation-duration:5.2s}
+.ct .badge:hover{animation-duration:.7s}
+.ct .face{width:64px;height:64px;margin:6px auto 12px;background:var(--c,var(--red));border:3px solid var(--ink2);display:grid;place-items:center;font-family:var(--pixel);font-size:24px;color:var(--ink)}
+.ct .badge h3{font-size:15px;margin-bottom:2px}
+.ct .badge .role{font-size:12px;color:#5a5866;margin-bottom:12px}
+.ct .badge .quirk{font-size:14px;font-weight:600;line-height:1.4;border-top:2px dashed #c9c4b8;padding-top:12px}
+
+/* Clients */
+.ct .marquee{overflow:hidden;margin:6px 0 40px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ct .marquee .row{display:flex;gap:14px;width:max-content;animation:scroll 60s linear infinite;margin-bottom:14px}
+.ct .marquee .row.r2{animation-duration:75s;animation-direction:reverse}
+.ct .marquee span{font-family:var(--pixel);font-size:15px;white-space:nowrap;padding:10px 16px;border:3px solid var(--ink2);box-shadow:3px 3px 0 var(--ink2);background:var(--plate2)}
+.ct .marquee span:nth-child(5n+1){background:var(--red)}.ct .marquee span:nth-child(5n+2){background:var(--blue)}
+.ct .marquee span:nth-child(5n+3){background:var(--green);color:var(--ink)}.ct .marquee span:nth-child(5n+4){background:var(--gold);color:var(--ink)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.ct .roster{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.ct .panel{background:var(--plate);border:3px solid var(--ink2);box-shadow:4px 4px 0 var(--ink2);padding:18px 18px 18px 24px;position:relative}
+.ct .panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--accent,var(--plate2))}
+.ct .floor.alt .panel{background:var(--ink)}
+.ct .panel p{color:var(--muted);font-size:15px}
+
+/* Between floors */
+.ct .split{display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:start}
+.ct .shot{border:4px solid #000;box-shadow:6px 6px 0 #000;background:#000}
+.ct .stack{display:grid;gap:20px}
+.ct .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ct .chips span{font-family:var(--pixel);font-size:12px;padding:5px 9px;background:var(--plate2);border:2px solid var(--ink2)}
+.ct .dash{margin-top:56px;display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center}
+.ct .dash video{width:100%;height:auto;aspect-ratio:640/570;border:4px solid #000;box-shadow:6px 6px 0 #000;background:#82C9F2}
+
+/* Fair and free */
+.ct .promises{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+/* Rooftop */
+.ct .rooftop{background:linear-gradient(180deg,#2C2148 0%,#6B3F7A 55%,#E0855A 100%);text-align:center;padding:96px 0 0;border-top:6px solid var(--ink2)}
+.ct .rooftop h2{margin:0 auto 12px}
+.ct .rooftop p{color:rgba(244,241,234,.85);margin:0 auto 30px;max-width:560px;font-size:17px}
+.ct .rooftop .skyline{margin-top:70px;height:90px;background:
+ linear-gradient(var(--ink2),var(--ink2)) 4% 100%/7% 60px no-repeat,
+ linear-gradient(var(--ink2),var(--ink2)) 13% 100%/5% 82px no-repeat,
+ linear-gradient(var(--ink2),var(--ink2)) 22% 100%/9% 46px no-repeat,
+ linear-gradient(var(--ink2),var(--ink2)) 50% 100%/12% 90px no-repeat,
+ linear-gradient(var(--ink2),var(--ink2)) 71% 100%/6% 66px no-repeat,
+ linear-gradient(var(--ink2),var(--ink2)) 80% 100%/9% 50px no-repeat,
+ linear-gradient(var(--ink2),var(--ink2)) 93% 100%/8% 74px no-repeat}
+
+/* Footer (shared) */
+.ct .ct-foot{padding:30px 0 40px;font-size:13px;color:var(--muted);background:var(--ink2)}
+.ct .ct-foot .wrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.ct .ct-foot nav{margin-left:auto;display:flex;gap:16px}
+
+/* Privacy / support pages */
+.ct .doc{max-width:760px;margin:0 auto;padding:50px 20px}
+.ct .doc h1{font-family:var(--pixel);font-size:28px;margin-bottom:6px}.ct .doc .meta{color:var(--muted);font-size:13px;margin-bottom:30px}
+.ct .doc h2{font-family:var(--pixel);font-size:18px;margin:30px 0 8px;color:var(--gold);letter-spacing:0}.ct .doc p,.ct .doc li{font-size:15px;margin-bottom:10px;color:var(--paper)}.ct .doc ul{padding-left:20px}
+.ct .doc .panel{margin:18px 0}
+
+@media (max-width:980px){
+  .ct .badges,.ct .roster{grid-template-columns:repeat(2,1fr)}
+  .ct .split,.ct .dash{grid-template-columns:1fr}.ct .split .shot{max-width:360px}
+  .ct .beats,.ct .promises{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .ct section{padding:60px 0}
+  .ct .hero .wrap{grid-template-columns:1fr;grid-template-areas:"top" "cta" "phone";padding-top:34px}
+  .ct .hero{--s:2}
+  .ct .street::after{animation-duration:7.6s}
+  .ct .wordmark{width:240px;margin-bottom:18px}
+  .ct .hero-cta{padding:22px 0 8px}
+  .ct .hero .phone{width:250px;margin-top:24px}
+  .ct .phone-wrap .tag{left:4px}
+  .ct .beats,.ct .promises,.ct .roster{grid-template-columns:1fr}
+  .ct .badges{grid-template-columns:1fr 1fr;gap:20px 14px}
+  .ct .badge{padding:26px 10px 14px}.ct .badge .quirk{font-size:13px}
+  .ct .facts{grid-template-columns:repeat(2,1fr)}.ct .facts div{border-right:0!important;border-top:3px solid var(--ink2)}.ct .facts div:first-child,.ct .facts div:nth-child(2){border-top:0}
+  .ct .facts div:nth-child(odd){border-right:3px solid var(--ink2)!important}
+  .ct .facts div:last-child{grid-column:1/-1;border-right:0!important}
+  .ct .track{grid-auto-columns:220px}
+  .ct .arrows{display:none}
+  .ct .bar nav a:not(.ct-btn){display:none}
+}
+/* ---------- Motion ---------- */
+@keyframes swing{from{transform:rotate(var(--r))}to{transform:rotate(calc(var(--r) * -1))}}
+@keyframes drop{from{opacity:0;transform:translateY(-46px) scale(.96)}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}}
+@keyframes rise-big{from{opacity:0;transform:translateY(160px)}}
+@keyframes wipe{to{background-size:100% 100%;color:var(--gold)}}
+@keyframes pop{from{transform:rotate(-4deg) scale(0)}to{transform:rotate(-4deg) scale(1)}}
+@keyframes nudge{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(-1deg) translateY(-4px)}}
+@keyframes drive{to{translate:calc(100vw + 200px) 0}}
+@keyframes drive-back{to{translate:calc(-100vw - 200px) 0}}
+@keyframes ding{0%,100%{background:var(--gold)}50%{background:#fff}}
+@keyframes twinkle{from{opacity:.35}to{opacity:1}}
+
+/* Hero entrance */
+html.js .ct .wordmark{animation:drop .9s cubic-bezier(.34,1.56,.64,1) both}
+html.js .ct .hero h1{animation:rise .8s .15s cubic-bezier(.2,.7,.2,1) both}
+html.js .ct .hero h1 em{background:linear-gradient(var(--ink),var(--ink)) no-repeat 0 0/0% 100%;color:var(--ink);animation:wipe .7s 1s cubic-bezier(.7,0,.2,1) forwards}
+html.js .ct .hero-cta{animation:rise .8s .35s cubic-bezier(.2,.7,.2,1) both}
+html.js .ct .phone-wrap{animation:rise-big 1.1s .2s cubic-bezier(.2,.8,.2,1) both}
+html.js .ct .phone-wrap .tag{animation:pop .5s 1.4s cubic-bezier(.34,1.56,.64,1) both,nudge 3.2s 2s ease-in-out infinite}
+
+/* Scroll reveals */
+html.js .ct :is(.plate,.floor h2,.floor .intro,.beat,.facts,.roster .panel,.split>*,.stack>.panel,.dash>*,.promises .panel,.tour .card,#get .wrap>:not(.store-badge)){opacity:0;translate:0 34px;transition:opacity .8s cubic-bezier(.2,.7,.2,1) var(--d,0s),translate .8s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+html.js .ct .badge{opacity:0;translate:0 -60px;transition:opacity .5s var(--d,0s),translate .9s cubic-bezier(.34,1.56,.64,1) var(--d,0s)}
+html.js .ct .in{opacity:1!important;translate:0 0!important}
+.ct .plate.in .n{animation:ding .3s .5s steps(1) 3}
+
+/* Lift progress indicator */
+.ct .liftbar{position:fixed;right:18px;top:50%;z-index:15;display:flex;flex-direction:column;align-items:center;gap:8px;translate:0 -50%;opacity:0;pointer-events:none;transition:opacity .4s}
+.ct .liftbar.show{opacity:1}
+.ct .liftbar .lf{font-family:var(--pixel);font-size:14px;background:var(--gold);color:var(--ink);border:3px solid #000;min-width:42px;text-align:center;padding:4px 6px;box-shadow:3px 3px 0 #000}
+.ct .liftbar .lf.ding{animation:ding .25s steps(1) 3}
+.ct .liftbar .shaft{position:relative;width:28px;height:200px;background:var(--plate) repeating-linear-gradient(0deg,transparent 0 30px,rgba(0,0,0,.45) 30px 33px);border:3px solid #000;box-shadow:3px 3px 0 #000}
+.ct .liftbar .car{position:absolute;left:2px;right:2px;bottom:2px;height:26px;background:var(--gold);border:2px solid #000;box-shadow:inset 0 -8px 0 #c79a2a;translate:0 calc(var(--p,0) * -164px);transition:translate .15s linear}
+.ct .liftbar .car::before{content:"";position:absolute;left:4px;right:4px;top:3px;height:7px;background:#2a2733}
+@media (max-width:1100px){.ct .liftbar{display:none}}
+
+/* Hover and ambient touches */
+.ct .card{transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
+.ct .card:hover{transform:translateY(-8px) rotate(-1deg);box-shadow:9px 14px 0 #000}
+.ct .beat{overflow:hidden;transition:transform .25s,box-shadow .25s}
+.ct .beat img{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.ct .beat:hover{transform:translateY(-6px);box-shadow:8px 11px 0 var(--ink2)}
+.ct .beat:hover img{transform:scale(1.06)}
+.ct .panel{transition:transform .2s,box-shadow .2s}
+.ct .panel:hover{transform:translate(-3px,-3px);box-shadow:7px 7px 0 var(--ink2)}
+.ct .marquee:hover .row{animation-play-state:paused}
+.ct .marquee span{transition:transform .2s}
+.ct .marquee span:hover{transform:translateY(-4px) rotate(-2deg)}
+.ct .shot{transition:transform .3s}
+.ct .split .shot:hover{transform:rotate(-1.2deg) scale(1.02)}
+.ct .rooftop{position:relative;overflow:hidden}
+.ct .rooftop::before{content:"";position:absolute;inset:0 0 45% 0;pointer-events:none;animation:twinkle 1.6s steps(2) infinite alternate;background:
+ linear-gradient(#fff,#fff) 8% 22%/3px 3px no-repeat,linear-gradient(#fff,#fff) 17% 60%/3px 3px no-repeat,
+ linear-gradient(#fff,#fff) 26% 15%/4px 4px no-repeat,linear-gradient(#fff,#fff) 39% 42%/3px 3px no-repeat,
+ linear-gradient(#fff,#fff) 61% 18%/3px 3px no-repeat,linear-gradient(#fff,#fff) 72% 55%/4px 4px no-repeat,
+ linear-gradient(#fff,#fff) 83% 28%/3px 3px no-repeat,linear-gradient(#fff,#fff) 92% 66%/3px 3px no-repeat}
+.ct .rooftop::after{content:"";position:absolute;inset:0 0 45% 0;pointer-events:none;animation:twinkle 2.3s steps(2) infinite alternate-reverse;background:
+ linear-gradient(#ffe9a8,#ffe9a8) 12% 40%/3px 3px no-repeat,linear-gradient(#fff,#fff) 33% 70%/3px 3px no-repeat,
+ linear-gradient(#fff,#fff) 48% 12%/3px 3px no-repeat,linear-gradient(#ffe9a8,#ffe9a8) 66% 36%/3px 3px no-repeat,
+ linear-gradient(#fff,#fff) 78% 10%/3px 3px no-repeat,linear-gradient(#fff,#fff) 95% 38%/4px 4px no-repeat}
+.ct .rooftop .wrap{position:relative;z-index:1}
+
+/* ---------- Full motion (html.motion, set unless reduced motion is on; driven by motion.js) ---------- */
+.ct .fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}
+
+/* Hero headline: letters stack in, the punchline slams down and shakes the street */
+html.motion .ct .hero h1:not(.kinetic){visibility:hidden}
+html.motion .ct .hero h1.kinetic{animation:none}
+.ct .hero h1 .w{display:inline-block;white-space:nowrap}
+.ct .hero h1 .ch{display:inline-block;animation:stack .55s cubic-bezier(.34,1.56,.64,1) both;animation-delay:var(--delay,calc(200ms + var(--i) * 18ms))}
+.ct .hero h1 em .ch{animation-name:slamin;animation-duration:.33s;animation-timing-function:cubic-bezier(.55,0,1,.45)}
+html.motion .ct .hero h1 em{animation:none}
+html.motion .ct .hero h1 em:not(.slam){box-shadow:none}
+html.motion .ct .hero h1 em.slam{animation:wipe .3s .04s cubic-bezier(.7,0,.2,1) forwards}
+.ct .hero h1.done .ch{animation:none;transition:transform .35s cubic-bezier(.34,1.8,.64,1)}
+.ct .hero h1.done .ch:hover{transform:translateY(-.22em) rotate(-10deg) scale(1.18)}
+.ct .hero.shake .wrap,.ct .hero.shake .scene{animation:shake .4s steps(8)}
+@keyframes stack{from{opacity:0;transform:translateY(-1.6em) rotate(var(--rot))}}
+@keyframes slamin{from{opacity:0;transform:translateY(-3.2em) scale(1.5) rotate(-6deg)}}
+@keyframes shake{0%,100%{translate:0 0}20%{translate:-6px 4px}40%{translate:5px -3px}60%{translate:-4px 2px}80%{translate:3px -1px}}
+
+/* Headings: each word slots up out of a slit */
+html.motion .ct .words .wd{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .06em .16em;margin:0 -.06em -.16em}
+html.motion .ct .words .wi{display:inline-block;transform:translateY(118%) rotate(12deg);transform-origin:0 100%;transition:transform .8s cubic-bezier(.2,1.3,.35,1) calc(var(--i) * 70ms)}
+html.motion .ct .words.in .wi{transform:none}
+
+/* Elevator doors part as each floor arrives */
+html.motion .ct .floor{position:relative;overflow:hidden}
+.ct .doors{position:absolute;inset:0;z-index:6;display:flex;pointer-events:none}
+.ct .doors i{flex:1;background:repeating-linear-gradient(90deg,#4A4656 0 10px,#423E4D 10px 20px);border-top:10px solid #2A2733;transition:transform 1s cubic-bezier(.75,0,.2,1) .3s}
+.ct .doors i:first-of-type{border-right:4px solid #000;box-shadow:inset -8px 0 0 rgba(0,0,0,.25)}
+.ct .doors i:last-of-type{border-left:4px solid #000;box-shadow:inset 8px 0 0 rgba(0,0,0,.25)}
+.ct .doors b{position:absolute;left:50%;top:70px;translate:-50% 0;font-family:var(--pixel);font-size:44px;line-height:1;padding:10px 18px;background:var(--gold);color:var(--ink);border:4px solid #000;box-shadow:5px 5px 0 #000;transition:opacity .2s .25s,scale .3s .1s cubic-bezier(.34,1.56,.64,1)}
+.ct .doors.open i:first-of-type{transform:translateX(-101%)}
+.ct .doors.open i:last-of-type{transform:translateX(101%)}
+.ct .doors.open b{opacity:0;scale:1.4}
+.ct .doors.open{visibility:hidden;transition:visibility 0s 1.4s}
+
+/* Facts: slot-machine reels */
+.ct .facts .reel,.ct .facts .reel>span{font-size:inherit;color:inherit}
+.ct .reel{display:inline-block;height:1.1em;overflow:hidden;vertical-align:top}
+.ct .reel>span{display:block;line-height:1.1;transition:transform 1.7s cubic-bezier(.15,.85,.2,1) calc(var(--i) * .22s)}
+.ct .facts.in .reel>span{transform:translateY(calc(var(--to) * -1.1em))}
+
+/* Marching ants round the buttons */
+.ct .ct-btn{position:relative}
+.ct .ct-btn::before{content:"";position:absolute;inset:-9px;pointer-events:none;opacity:0;transition:opacity .15s;--a:var(--ant,var(--gold));
+ background:linear-gradient(90deg,var(--a) 50%,transparent 0) 0 0/12px 3px repeat-x,linear-gradient(90deg,var(--a) 50%,transparent 0) 0 100%/12px 3px repeat-x,
+ linear-gradient(0deg,var(--a) 50%,transparent 0) 0 0/3px 12px repeat-y,linear-gradient(0deg,var(--a) 50%,transparent 0) 100% 0/3px 12px repeat-y;animation:ants .5s linear infinite}
+.ct .ct-btn:hover::before,.ct .ct-btn:focus-visible::before{opacity:1}
+.ct .hero .ct-btn{--ant:var(--ink2)}
+@keyframes ants{to{background-position:12px 0,-12px 100%,0 -12px,100% 12px}}
+
+/* Pixel wipe on the floor pictures, glare on tilted cards, a leaning marquee */
+html.motion .ct .beat img{clip-path:inset(0 0 100% 0);transition:clip-path .7s steps(8) calc(var(--d,0s) + .3s),transform .6s cubic-bezier(.2,.7,.2,1)}
+html.motion .ct .beat.in img{clip-path:inset(0)}
+html.motion .ct :is(.tour .card,.beat){transition:transform .2s ease-out,box-shadow .25s,opacity .8s cubic-bezier(.2,.7,.2,1) var(--d,0s),translate .8s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.ct .tour .card{position:relative}
+.ct .tour .card::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.25),transparent 55%);opacity:0;transition:opacity .2s}
+.ct .tour .card:hover::after{opacity:1}
+html.motion .ct .marquee{transform:skewX(var(--sk,0deg))}
+html.motion .ct .badge{cursor:pointer}
+html.motion .ct #get{cursor:crosshair}
+
+@media (prefers-reduced-motion:reduce){
+  .ct,.ct *,.ct *::before,.ct *::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  html.js .ct :is(.plate,.floor h2,.floor .intro,.beat,.facts,.badge,.roster .panel,.split>*,.stack>.panel,.dash>*,.promises .panel,.tour .card,#get .wrap>:not(.store-badge)){opacity:1;translate:none}
+  html.js .ct .hero h1 em{background-size:100% 100%;color:var(--gold)}
+}

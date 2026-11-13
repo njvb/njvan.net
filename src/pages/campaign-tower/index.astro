@@ -1,47 +1,54 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Campaign Tower: build an ad agency one floor at a time</title>
-<meta name="description" content="A pixel-art tower game for iPhone. Build an ad agency floor by floor, hire creatives with strange habits, drive the lift yourself and win briefs from sixty made-up brands.">
-<link rel="canonical" href="https://njvan.net/campaign-tower/">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://njvan.net/campaign-tower/">
-<meta property="og:title" content="Campaign Tower">
-<meta property="og:description" content="Your ad agency starts in one room above a shop. A pixel-art tower game for iPhone.">
-<meta property="og:image" content="https://njvan.net/campaign-tower/img/share.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#2A2733">
-<link rel="icon" href="img/icon.png">
-<link rel="apple-touch-icon" href="img/icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<script src="motion.js" defer></script>
-<script>
-  document.documentElement.classList.add('js');
-  // Full motion unless the visitor asked for less; motion.js clears it if it never loads.
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.documentElement.classList.add('motion');
-    setTimeout(() => { if (!window.__motion) document.documentElement.classList.remove('motion'); }, 3000);
-  }
-  // The App Store link. Every download button uses it.
-  window.APP_STORE_URL = "https://apps.apple.com/app/id6804446974";
-</script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Campaign Tower","operatingSystem":"iOS 17 or later","applicationCategory":"GameApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"A pixel-art idle game about stacking a one-room startup into a global ad agency."}
-</script>
-</head>
-<body>
+---
+// Campaign Tower's landing page, inside njvan.net's header and footer. The
+// markup is the game's own landing page (docs/index.html in
+// ~/Projects/CampaignTower), wrapped in .ct; its stylesheet is scoped to .ct
+// in src/styles/campaign-tower.css, and its images, videos, motion.js and
+// support and privacy pages are in public/campaign-tower/. The original stays
+// live at njvb.github.io/campaigntower-site, where App Review links.
+import Base from '../../layouts/Base.astro';
+import '../../styles/campaign-tower.css';
+---
+
+<Base
+  title="Campaign Tower: build an ad agency one floor at a time"
+  description="A pixel-art tower game for iPhone. Build an ad agency floor by floor, hire creatives with strange habits, drive the lift yourself and win briefs from sixty made-up brands."
+>
+  <Fragment slot="head">
+    <meta property="og:image" content="https://njvan.net/campaign-tower/img/share.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+    <script is:inline src="/campaign-tower/motion.js" defer></script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Full motion unless the visitor asked for less; motion.js clears it if it never loads.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('motion');
+        setTimeout(() => { if (!window.__motion) document.documentElement.classList.remove('motion'); }, 3000);
+      }
+      // The App Store link. Every download button uses it.
+      window.APP_STORE_URL = "https://apps.apple.com/app/id6804446974";
+    </script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({"@context":"https://schema.org","@type":"SoftwareApplication","name":"Campaign Tower","operatingSystem":"iOS 17 or later","applicationCategory":"GameApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"A pixel-art idle game about stacking a one-room startup into a global ad agency."})} />
+    <script is:inline>
+      // njvan.net's header has no intro on this page: show it settled at once.
+      (function () {
+        clearTimeout(window.__motionBootTimer);
+        document.documentElement.dataset.motionBoot = 'settled';
+        document.addEventListener('DOMContentLoaded', function () { document.body.dataset.phase = 'settled'; });
+      })();
+    </script>
+  </Fragment>
+
+  <div class="ct">
 <header class="bar"><div class="wrap">
-  <img src="img/icon.png" alt="" width="36" height="36"><b>CAMPAIGN TOWER</b>
+  <img src="/campaign-tower/img/icon.png" alt="" width="36" height="36"><b>CAMPAIGN TOWER</b>
   <nav aria-label="Sections">
     <a href="#loop">The game</a><a href="#staff">Staff</a><a href="#clients">Clients</a><a href="#league">League</a>
-    <a class="btn js-store" href="#get">Get it<span class="wide"> on iPhone</span></a>
+    <a class="ct-btn js-store" href="#get">Get it<span class="wide"> on iPhone</span></a>
   </nav>
 </div></header>
 
@@ -58,19 +65,19 @@
   </div>
   <div class="wrap">
     <div class="hero-top">
-      <img class="wordmark px" src="img/wordmark.png" alt="Campaign Tower" width="664" height="328">
+      <img class="wordmark px" src="/campaign-tower/img/wordmark.png" alt="Campaign Tower" width="664" height="328">
       <h1 id="hero-title">Your ad agency starts in one room above a shop. <em>It&nbsp;won't stay there.</em></h1>
     </div>
     <div class="phone-wrap">
       <div class="phone">
-        <video src="media/lift.mp4" poster="media/lift-poster.jpg" autoplay muted loop playsinline preload="metadata" width="430" height="932" aria-label="Gameplay: a visitor rides the lift up the tower"></video>
+        <video src="/campaign-tower/media/lift.mp4" poster="/campaign-tower/media/lift-poster.jpg" autoplay muted loop playsinline preload="metadata" width="430" height="932" aria-label="Gameplay: a visitor rides the lift up the tower"></video>
       </div>
       <span class="tag">Hold to go up</span>
     </div>
     <div class="hero-cta">
       <p class="lead">Build new floors, hire creatives who all think they're the next big thing, and drive the lift yourself because nobody budgeted for a lift operator. Clients walk in with briefs. You hand over the work. Mostly on time.</p>
       <div class="cta">
-        <a class="store-badge js-store" href="#get"><img src="img/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a>
+        <a class="store-badge js-store" href="#get"><img src="/campaign-tower/img/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a>
       </div>
       <p class="note">Free on iPhone · No energy meter · Nothing behind a paywall</p>
     </div>
@@ -84,14 +91,14 @@
     <div class="arrows"><button type="button" data-dir="-1" aria-label="Previous screenshots">‹</button><button type="button" data-dir="1" aria-label="Next screenshots">›</button></div>
   </div>
   <div class="track" tabindex="0" aria-label="Screenshots">
-    <figure class="card"><p>Every floor's a department. Keep stacking.</p><img src="img/shots/01-tower.jpg" alt="The tower from the lobby up: a Rush Hour crowd waits inside and a creative stands under the awning, ready for Deadline Dash" width="540" height="1170" loading="lazy"></figure>
-    <figure class="card"><p>A client! With a brief! Due Friday.</p><img src="img/shots/02-campaign.jpg" alt="A campaign brief: the client's quote, the work to deliver, and the choice to play it safe or go bold" width="540" height="1170" loading="lazy"></figure>
-    <figure class="card"><p>Beat the agency down the road.</p><img src="img/shots/03-league.jpg" alt="The New Business League table, seven agencies in a three-day season" width="540" height="1170" loading="lazy"></figure>
-    <figure class="card"><p>Give people the job they want.</p><img src="img/shots/04-floor.jpg" alt="The Copywriting floor: a writer in their dream role and an art director make a creative team" width="540" height="1170" loading="lazy"></figure>
-    <figure class="card"><p>The work has to get there somehow.</p><img src="img/shots/05-dash.jpg" alt="Deadline Dash: a creative running down the high street" width="540" height="1170" loading="lazy"></figure>
-    <figure class="card"><p>Something different every week.</p><img src="img/shots/06-agency.jpg" alt="The agency hub with this week's event, perks, missions and mini-games" width="540" height="1170" loading="lazy"></figure>
-    <figure class="card"><p>There's always another floor.</p><img src="img/shots/07-top.jpg" alt="The top of the tower with the next floor ready to build" width="540" height="1170" loading="lazy"></figure>
-    <figure class="card"><p>Keep the client sweet. Or re-pitch.</p><img src="img/shots/08-accounts.jpg" alt="The client roster: relationship bars, and one client in review with a re-pitch button" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>Every floor's a department. Keep stacking.</p><img src="/campaign-tower/img/shots/01-tower.jpg" alt="The tower from the lobby up: a Rush Hour crowd waits inside and a creative stands under the awning, ready for Deadline Dash" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>A client! With a brief! Due Friday.</p><img src="/campaign-tower/img/shots/02-campaign.jpg" alt="A campaign brief: the client's quote, the work to deliver, and the choice to play it safe or go bold" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>Beat the agency down the road.</p><img src="/campaign-tower/img/shots/03-league.jpg" alt="The New Business League table, seven agencies in a three-day season" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>Give people the job they want.</p><img src="/campaign-tower/img/shots/04-floor.jpg" alt="The Copywriting floor: a writer in their dream role and an art director make a creative team" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>The work has to get there somehow.</p><img src="/campaign-tower/img/shots/05-dash.jpg" alt="Deadline Dash: a creative running down the high street" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>Something different every week.</p><img src="/campaign-tower/img/shots/06-agency.jpg" alt="The agency hub with this week's event, perks, missions and mini-games" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>There's always another floor.</p><img src="/campaign-tower/img/shots/07-top.jpg" alt="The top of the tower with the next floor ready to build" width="540" height="1170" loading="lazy"></figure>
+    <figure class="card"><p>Keep the client sweet. Or re-pitch.</p><img src="/campaign-tower/img/shots/08-accounts.jpg" alt="The client roster: relationship bars, and one client in review with a re-pitch button" width="540" height="1170" loading="lazy"></figure>
   </div>
 </section>
 
@@ -101,9 +108,9 @@
     <h2 id="loop-title">How an agency gets tall</h2>
     <p class="intro">If you've played a tower game before, you know the drill. This one just has more status meetings.</p>
     <div class="beats">
-      <article class="beat"><img class="px" src="img/build.jpg" alt="The top of the tower, with floor 11 ready to build" width="640" height="570" loading="lazy"><div><h3>Build</h3><p>Pick a department and put a floor on top. Copywriting, Social, a Photo Studio, a Rooftop Bar if morale's looking shaky. Each floor makes work, from a humble Tagline up to a Full Ad Suite, and sells it while you're off doing something else.</p></div></article>
-      <article class="beat"><img class="px" src="img/hire.jpg" alt="A department's team of three, each with skills and a dream role" width="640" height="616" loading="lazy"><div><h3>Hire</h3><p>Three people per floor. Everyone has a dream job, and if you actually give it to them, they try harder. Funny how that works. Level them up and sort out their gear. A good chair goes a long way.</p></div></article>
-      <article class="beat"><img class="px" src="img/win.jpg" alt="A brief from Blockchain Bagels, with the units needed and the prize" width="640" height="684" loading="lazy"><div><h3>Win</h3><p>A client walks in with a brief. Hand over the work from your shelves and they sign on, paying you every hour after that. Some are worth keeping. Some really aren't.</p></div></article>
+      <article class="beat"><img class="px" src="/campaign-tower/img/build.jpg" alt="The top of the tower, with floor 11 ready to build" width="640" height="570" loading="lazy"><div><h3>Build</h3><p>Pick a department and put a floor on top. Copywriting, Social, a Photo Studio, a Rooftop Bar if morale's looking shaky. Each floor makes work, from a humble Tagline up to a Full Ad Suite, and sells it while you're off doing something else.</p></div></article>
+      <article class="beat"><img class="px" src="/campaign-tower/img/hire.jpg" alt="A department's team of three, each with skills and a dream role" width="640" height="616" loading="lazy"><div><h3>Hire</h3><p>Three people per floor. Everyone has a dream job, and if you actually give it to them, they try harder. Funny how that works. Level them up and sort out their gear. A good chair goes a long way.</p></div></article>
+      <article class="beat"><img class="px" src="/campaign-tower/img/win.jpg" alt="A brief from Blockchain Bagels, with the units needed and the prize" width="640" height="684" loading="lazy"><div><h3>Win</h3><p>A client walks in with a brief. Hand over the work from your shelves and they sign on, paying you every hour after that. Some are worth keeping. Some really aren't.</p></div></article>
     </div>
     <div class="facts">
       <div><b>32</b><span>floor types</span></div>
@@ -155,7 +162,7 @@
     <h2 id="league-title">Things to do while the tower builds</h2>
     <p class="intro">New floors take a while. Here's what fills the gaps.</p>
     <div class="split">
-      <img class="shot px" src="img/league.jpg" alt="The New Business League: your agency top of a seven-agency table" width="640" height="844" loading="lazy">
+      <img class="shot px" src="/campaign-tower/img/league.jpg" alt="The New Business League: your agency top of a seven-agency table" width="640" height="844" loading="lazy">
       <div class="stack">
         <div class="panel" style="--accent:var(--gold)"><h3>The New Business League</h3><p>Hit 10 floors and you're in a league with six rival agencies. Seasons last three days, and you score by winning briefs, finishing missions and opening floors. Beat a rival in a pitch and they lose points too, which never stops being satisfying. Finish near the top and you go up a division, from Local all the way to Global.</p></div>
         <div class="panel" style="--accent:var(--blue)"><h3>Every Monday, something new</h3><p>Each week has a theme that bends the rules a bit in your favour. The hub tells you what's coming next week, so you can plan ahead. Or not.</p>
@@ -164,7 +171,7 @@
       </div>
     </div>
     <div class="dash">
-      <video src="media/dash.mp4" poster="media/dash-poster.jpg" autoplay muted loop playsinline preload="none" width="640" height="570" aria-label="Deadline Dash: a creative runs down the high street, jumping obstacles"></video>
+      <video src="/campaign-tower/media/dash.mp4" poster="/campaign-tower/media/dash-poster.jpg" autoplay muted loop playsinline preload="none" width="640" height="570" aria-label="Deadline Dash: a creative runs down the high street, jumping obstacles"></video>
       <div>
         <h3 style="font-size:20px;color:var(--gold)">Deadline Dash</h3>
         <p class="intro" style="margin-bottom:0">Your best creative grabs the work and legs it across town. Hop the benches, the cones, the hydrant, and the bucket someone just left there. It gets faster the longer you last.</p>
@@ -190,18 +197,18 @@
   <div class="wrap">
     <h2 id="get-title">Free on iPhone</h2>
     <p>Download it, build your first floor, and hire someone who keeps a sourdough starter under their desk. Works on iOS 17 or later.</p>
-    <a class="store-badge js-store" href="#get"><img src="img/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a>
+    <a class="store-badge js-store" href="#get"><img src="/campaign-tower/img/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a>
   </div>
   <div class="skyline" aria-hidden="true"></div>
 </section>
 </main>
 
-<footer><div class="wrap">
+<div class="ct-foot"><div class="wrap">
   <span>© <span id="y"></span> Campaign Tower · Every brand, agency and creative in here is made up. Any resemblance to your last job is a coincidence.</span>
-  <nav><a href="support.html">Support</a><a href="privacy.html">Privacy</a><a href="mailto:njvanderbyl@gmail.com">Contact</a></nav>
-</div></footer>
+  <nav><a href="/campaign-tower/support.html">Support</a><a href="/campaign-tower/privacy.html">Privacy</a><a href="mailto:njvanderbyl@gmail.com">Contact</a></nav>
+</div></div>
 
-<script>
+<script is:inline>
 document.getElementById('y').textContent = new Date().getFullYear();
 if (window.APP_STORE_URL) document.querySelectorAll('.js-store').forEach(a => { a.href = window.APP_STORE_URL; });
 
@@ -260,5 +267,18 @@ const updateLift = () => {
 addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(updateLift); } }, { passive: true });
 updateLift();
 </script>
-</body>
-</html>
+  </div>
+</Base>
+
+<style is:global>
+  /* The homepage's panel snapping is for its scenes; this page scrolls freely. */
+  html {
+    scroll-snap-type: none !important;
+  }
+
+  /* The site header sits on the canvas above the game's own sticky bar. */
+  .site-header {
+    position: static !important;
+    padding-bottom: var(--gutter);
+  }
+</style>
