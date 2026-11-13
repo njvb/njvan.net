@@ -63,12 +63,17 @@ const rows = counts.map((n, r) =>
         io.disconnect();
         import('../../scripts/tavren-3d')
           .then((m) => m.mountTavren(stage))
-          .catch((error) => console.error('[tavren] 3D board failed, keeping the CSS board', error))
+          .catch((error) => {
+            console.error('[tavren] 3D board failed, keeping the CSS board', error);
+            stage.classList.add('is-fallback');
+          })
           .finally(ready);
       },
       { rootMargin: '400% 0px' }
     );
     io.observe(stage);
+  } else {
+    stage?.classList.add('is-fallback');
   }
 </script>
 
@@ -94,6 +99,15 @@ const rows = counts.map((n, r) =>
 
   .tavren-stage:global(.is-3d) :global(canvas) {
     opacity: 1;
+  }
+
+  /*
+   * Where the board opens a page (a `moment` prop, as on /tavren), it is on screen
+   * from the first paint, so the CSS board would flash before the tiles play. With
+   * JavaScript on (the head script marks <html>), hide it unless the 3D board fails.
+   */
+  :global(html[data-motion-boot]) .tavren-stage[data-moment]:not(:global(.is-fallback)) .tavren-board {
+    visibility: hidden;
   }
 
   .tavren-stage:global(.is-3d) .tavren-board {
