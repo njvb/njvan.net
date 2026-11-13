@@ -13,7 +13,7 @@
   /* ---------- Pixel particles: one fixed canvas, asleep when empty ---------- */
   const cv = document.createElement('canvas');
   cv.className = 'fx'; cv.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(cv);
+  (document.querySelector(".ct") || document.body).appendChild(cv);
   const ctx = cv.getContext('2d');
   let W = 0, H = 0;
   const resize = () => {
@@ -91,7 +91,7 @@
   });
 
   /* ---------- Buttons: sparks on hover, confetti on press ---------- */
-  document.querySelectorAll('.btn,.arrows button').forEach(b => {
+  document.querySelectorAll('.ct-btn,.arrows button').forEach(b => {
     b.addEventListener('pointerenter', () => {
       if (!fine) return;
       const r = b.getBoundingClientRect();

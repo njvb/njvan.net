@@ -69,6 +69,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         d.dataset.motionBoot = 'pending';
       })();
     </script>
+    <!-- Page-specific head content, after the motion boot so it can claim it (the Campaign Tower page). -->
+    <slot name="head" />
   </head>
   <body data-motion-owner data-phase="initial">
     <!-- Page progress. Shown and driven by src/scripts/progress.ts; it duplicates the scrollbar, so hidden from assistive tech. -->
