@@ -1,0 +1,407 @@
+---
+// Tavren's landing page: the App Store link, the browser game, how it plays,
+// the store screenshots, and the support and privacy pages Apple links to.
+// The hero reuses the homepage's 3D board; src/scripts/tavren-page.ts plays it.
+import Base from '../layouts/Base.astro';
+import TavrenBoard from '../components/scenes/TavrenBoard.astro';
+
+const APP_STORE = 'https://apps.apple.com/app/id6834014978';
+const PLAY = 'https://mac-mini.tail94f02c.ts.net/';
+const SUPPORT = 'https://mac-mini.tail94f02c.ts.net/support/';
+const PRIVACY = 'https://mac-mini.tail94f02c.ts.net/privacy/';
+const shots = `${import.meta.env.BASE_URL}assets/tavren/`;
+
+const steps = [
+  {
+    title: 'Settle',
+    text: 'Place your first two villages on corners where the land meets. Each one touches up to three hexes.',
+  },
+  {
+    title: 'Roll and harvest',
+    text: 'Every turn starts with a roll. Each hex showing that number pays its grain, timber, stone or wool to the villages beside it.',
+  },
+  {
+    title: 'Build and trade',
+    text: 'Spend goods on roads, villages and upgrades. Short of something? Trade with the other players, the bank or a harbour.',
+  },
+  {
+    title: 'Mind the bandits',
+    text: 'Roll a 7 and the bandits rob a rival and shut down a hex. Hold too many goods and some spoil. First to the target score wins.',
+  },
+];
+
+const gallery = [
+  { file: 'title.jpg', alt: 'The title screen over a fresh island: a fresh island every game' },
+  { file: 'build.jpg', alt: 'A game in progress, with roads and villages on the board: build roads to the best land' },
+  { file: 'trade.jpg', alt: 'The trade drawer: trade with rivals, the bank and harbours' },
+  { file: 'four.jpg', alt: 'A four-player game: up to four players, people or computers' },
+  { file: 'over.jpg', alt: 'The end of a game with the final scores: outbuild your rivals to win' },
+];
+
+const modes = [
+  { title: 'Against the computer', text: 'Easy, Normal or Hard, completely offline.' },
+  { title: 'Pass and play', text: 'Friends and family around one iPhone or iPad.' },
+  { title: 'Online with friends', text: 'Game Center turn-based matches. Invite through Messages and take your turn whenever it suits you.' },
+];
+
+const facts = [
+  'Free',
+  'No ads or in-app purchases',
+  'No account, no tracking',
+  'Plays offline',
+  'Five-minute guided tutorial',
+  'Game Center achievements and leaderboards',
+  'iPhone, iPad and Mac with Apple silicon',
+];
+---
+
+<Base
+  title="Tavren · A medieval hex-board strategy game"
+  description="Tavren is a free strategy board game for two to four players on iPhone, iPad and Mac. Settle an island, build, trade and hold off the bandits. No ads, no account."
+>
+  <section class="hero" aria-labelledby="tavren-title">
+    <div class="shell hero__inner">
+      <div class="hero__top t-caption" data-intro data-page-rise>
+        <a href={`${import.meta.env.BASE_URL}#tavren`}>01 · Tavren</a>
+        <span>Game · iPhone, iPad, Mac</span>
+      </div>
+
+      <div class="hero__copy">
+        <h1 class="hero__name" id="tavren-title" data-intro data-page-rise>Tavren</h1>
+        <p class="hero__line" data-intro data-page-rise>A medieval hex-board strategy game for two to four players.</p>
+        <p class="hero__more t-body" data-intro data-page-rise>
+          Roll the dice, gather the island's goods and build your way to victory. Play against the computer, pass one
+          device around, or play friends online.
+        </p>
+        <div class="hero__links" data-intro data-page-rise>
+          <a class="btn btn--lg hero-btn--solid" href={APP_STORE} target="_blank" rel="noopener">App Store ↗</a>
+          <a class="btn btn--lg hero-btn--outline" href={PLAY} target="_blank" rel="noopener">Play in the browser ↗</a>
+        </div>
+        <p class="hero__note t-annotation" data-intro data-page-rise>Free · No ads · No account</p>
+      </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <TavrenBoard moment="tavren-page" />
+      </div>
+    </div>
+  </section>
+
+  <section class="block shell" aria-labelledby="how-title">
+    <h2 class="block__title" id="how-title">How it plays</h2>
+    <ol class="steps">
+      {
+        steps.map((s, i) => (
+          <li class="step">
+            <span class="step__num t-annotation">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="step__title">{s.title}</h3>
+            <p class="t-body muted-copy">{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="look-title">
+    <h2 class="block__title shell" id="look-title">A look inside</h2>
+    <ul class="gallery" tabindex="0" aria-label="Screenshots from the iPhone app">
+      {
+        gallery.map((g) => (
+          <li>
+            <img src={`${shots}${g.file}`} alt={g.alt} width="660" height="1434" loading="lazy" decoding="async" />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="block shell" aria-labelledby="ways-title">
+    <h2 class="block__title" id="ways-title">Play your way</h2>
+    <div class="modes">
+      {
+        modes.map((m) => (
+          <div class="mode">
+            <h3 class="step__title">{m.title}</h3>
+            <p class="t-body muted-copy">{m.text}</p>
+          </div>
+        ))
+      }
+    </div>
+    <ul class="facts t-annotation">
+      {facts.map((f) => <li>{f}</li>)}
+    </ul>
+  </section>
+
+  <section class="block shell help" aria-labelledby="help-title">
+    <h2 class="block__title" id="help-title">Help</h2>
+    <div class="help__links">
+      <a class="btn btn--lg btn--inverse" href={APP_STORE} target="_blank" rel="noopener">Get Tavren ↗</a>
+      <a class="btn btn--lg" href={SUPPORT} target="_blank" rel="noopener">Support ↗</a>
+      <a class="btn btn--lg" href={PRIVACY} target="_blank" rel="noopener">Privacy ↗</a>
+    </div>
+    <p class="t-annotation muted-copy">3D tiles and models by KayKit (CC0).</p>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/tavren-page';
+</script>
+
+<style>
+  /* The homepage's panel snapping is for its full-screen scenes; this page scrolls freely. */
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  /* The header sits on the canvas above the hero, not over Tavren's field. */
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  /* ---------- Hero: Tavren's field, its ink, the 3D board ---------- */
+
+  .hero {
+    --field: var(--color-tavren);
+    --on: var(--color-on-tavren);
+    background: var(--field);
+    color: var(--on);
+    margin-top: var(--gutter);
+    padding-block: 48px;
+    overflow: hidden;
+  }
+
+  .hero ::selection {
+    background: var(--on);
+    color: var(--field);
+  }
+
+  .hero :focus-visible {
+    outline-color: var(--on);
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .hero__top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .hero__top a {
+    text-decoration: none;
+  }
+
+  .hero__top a:hover {
+    text-decoration: underline;
+  }
+
+  .hero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter);
+    container-type: inline-size;
+  }
+
+  .hero__name {
+    margin-left: -0.04em;
+    font-size: clamp(3.5rem, 20cqi, 10rem);
+    line-height: 0.84;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+  }
+
+  .hero__line {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .hero__more {
+    max-width: 42ch;
+  }
+
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hero-btn--solid {
+    background: var(--on);
+    border-color: var(--on);
+    color: var(--field);
+  }
+
+  .hero-btn--outline {
+    border-color: var(--on);
+    color: var(--on);
+  }
+
+  .hero-btn--outline:hover {
+    background: color-mix(in srgb, var(--on) 10%, transparent);
+  }
+
+  .hero__visual {
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding-block: 72px 56px;
+    }
+
+    .hero__line {
+      font-size: 28px;
+      line-height: 36px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero__inner {
+      min-height: calc(100svh - 160px);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto 1fr;
+      column-gap: var(--gutter);
+      row-gap: 56px;
+    }
+
+    .hero__top {
+      grid-column: 1 / -1;
+    }
+
+    .hero__copy {
+      grid-column: 1 / span 5;
+      align-self: center;
+    }
+
+    .hero__visual {
+      grid-column: 6 / -1;
+      align-self: center;
+    }
+  }
+
+  /* ---------- Content blocks on the canvas ---------- */
+
+  .block {
+    padding-block: 72px 0;
+  }
+
+  .block__title {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+  }
+
+  .muted-copy {
+    color: var(--color-muted);
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    gap: var(--gutter);
+  }
+
+  .step,
+  .mode {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    border-top: var(--border-hairline) solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .step__num {
+    color: var(--color-muted);
+  }
+
+  .step__title {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* Screenshots scroll sideways and snap; they run to the page edge on phones. */
+  .gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0 var(--pad) var(--space-4);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(62vw, 280px);
+    gap: var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--pad);
+    overscroll-behavior-x: contain;
+  }
+
+  .gallery li {
+    scroll-snap-align: start;
+  }
+
+  .gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+  }
+
+  .gallery:focus-visible {
+    outline-offset: -2px;
+  }
+
+  /* Wide screens fit all five without scrolling, inside the page shell. */
+  @media (min-width: 1280px) {
+    .gallery {
+      max-width: calc(1280px + 2 * var(--pad));
+      margin-inline: auto;
+      grid-auto-flow: row;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      overflow: visible;
+    }
+  }
+
+  .modes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: var(--gutter);
+  }
+
+  .facts {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: var(--space-4) 0 0;
+    border-top: var(--border-hairline) solid var(--color-border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--gutter);
+    color: var(--color-muted);
+  }
+
+  .facts li:not(:last-child)::after {
+    content: '·';
+    margin-left: var(--gutter);
+  }
+
+  .help {
+    padding-bottom: 96px;
+  }
+
+  .help__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: var(--gutter);
+  }
+</style>

@@ -303,7 +303,7 @@ export async function mountTavren(stage: HTMLElement): Promise<void> {
   new ResizeObserver(resize).observe(stage);
   resize();
 
-  onMoment(stage.closest<HTMLElement>('[data-scene]')?.id ?? 'tavren', (value) => {
+  onMoment(stage.closest<HTMLElement>('[data-scene]')?.id ?? stage.dataset.moment ?? 'tavren', (value) => {
     p = value;
     apply();
   });
