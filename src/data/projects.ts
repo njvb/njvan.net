@@ -90,15 +90,14 @@ export const projects: Project[] = [
     kind: 'Game',
     indexLine: 'Build an ad agency one floor at a time. Pixel art, for iPhone.',
     indexStack: 'SwiftUI · SpriteKit · StoreKit',
-    // From the game's landing page (njvb.github.io/campaigntower-site).
+    // From the game's landing page, copied to /campaign-tower (public/campaign-tower).
     line: "Your ad agency starts in one room above a shop. It won't stay there.",
     more: "A pixel-art tower game for iPhone. Build new floors, hire creatives who all think they're the next big thing, and drive the lift yourself, because nobody budgeted for a lift operator.",
     notes: ['Free on iPhone · iOS 17 or later', 'No energy meter · Nothing behind a paywall'],
     links: [
       {
         label: 'Visit the tower',
-        href: 'https://njvb.github.io/campaigntower-site/',
-        external: true,
+        href: '/campaign-tower/',
         variant: 'solid',
       },
     ],
