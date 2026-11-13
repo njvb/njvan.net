@@ -4,6 +4,13 @@
 // the signature moment. Without it (no JavaScript, no WebGL, or a failed
 // load) the CSS board below stays: tilted into 3D, one village lit, in
 // Tavren's paper, parchment and ink.
+//
+// On the homepage the moment is keyed by the surrounding scene's id. Elsewhere
+// (the /tavren page) pass `moment` and drive it with setMoment yourself.
+interface Props {
+  moment?: string;
+}
+const { moment } = Astro.props;
 const counts = [4, 5, 6, 5, 4];
 const lit = '2-3';
 const rows = counts.map((n, r) =>
@@ -15,7 +22,7 @@ const rows = counts.map((n, r) =>
 );
 ---
 
-<div class="tavren-stage" data-tavren-stage>
+<div class="tavren-stage" data-tavren-stage data-moment={moment}>
 <div class="tavren-board">
   <div class="tavren-board__plane">
     {
@@ -39,7 +46,7 @@ const rows = counts.map((n, r) =>
   // The scene holds its moment until the board has mounted (or failed), so the
   // tiles always play their entrance rather than arriving settled.
   const stage = document.querySelector<HTMLElement>('[data-tavren-stage]');
-  const id = stage?.closest<HTMLElement>('[data-scene]')?.id;
+  const id = stage?.closest<HTMLElement>('[data-scene]')?.id ?? stage?.dataset.moment;
   const gl = (() => {
     try {
       return Boolean(document.createElement('canvas').getContext('webgl2'));

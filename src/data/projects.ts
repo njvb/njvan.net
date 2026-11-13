@@ -43,10 +43,10 @@ export const projects: Project[] = [
     indexStack: 'Vue 3 · Three.js',
     line: 'A medieval hex-board strategy game for two to four players.',
     more: 'Settle an island, build roads and villages, trade, and hold off the bandits. Play on one device, online, or against the computer.',
-    notes: ['Vue 3 · TypeScript · Three.js', '2-4 players · plays in the browser'],
+    notes: ['Vue 3 · TypeScript · Three.js', '2-4 players · browser, iPhone, iPad and Mac'],
     links: [
-      { label: 'Play Tavren', external: true, variant: 'solid' },
-      { label: 'How it plays', variant: 'outline' },
+      { label: 'Play Tavren', href: 'https://mac-mini.tail94f02c.ts.net/', external: true, variant: 'solid' },
+      { label: 'Get the app', href: '/tavren/', variant: 'outline' },
     ],
   },
   {
