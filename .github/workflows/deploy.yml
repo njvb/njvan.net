@@ -20,10 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: withastro/action@v5
-        env:
-          # Remove these two once njvan.net points here (and add public/CNAME).
-          SITE: https://njvb.github.io
-          BASE: /njvan.net/
 
   deploy:
     needs: build
