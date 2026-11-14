@@ -103,6 +103,7 @@ export const projects: Project[] = [
     line: "Your ad agency starts in one room above a shop. It won't stay there.",
     more: "A pixel-art tower game for iPhone. Build new floors, hire creatives who all think they're the next big thing, and drive the lift yourself, because nobody budgeted for a lift operator.",
     notes: ['Free on iPhone · iOS 17 or later', 'No energy meter · Nothing behind a paywall'],
+    wordmark: { src: 'assets/tower/wordmark-{w}.webp', widths: [600, 1100, 1700], ratio: 1774 / 887 },
     links: [
       {
         label: 'Visit the tower',
