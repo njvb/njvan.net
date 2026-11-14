@@ -10,6 +10,7 @@ import { prefersReducedMotion } from '../lib/effects/util';
 import { buildPageIntro } from '../lib/effects/route-letters';
 import { speakIn } from '../lib/effects/speak-in';
 import { startWave, type WaveStop } from '../lib/effects/wave';
+import { cursorLetters, type CursorLetters } from '../lib/effects/cursor-letters';
 import { blastOff, type BlastOff } from '../lib/effects/blast-off';
 import { attachParticleEffect, type ParticleEffectControls } from '../lib/effects/particles/attach';
 import { reactor } from '../lib/effects/particles/reactor';
@@ -135,7 +136,7 @@ function wordmarkIntro(text: HTMLElement, rule: HTMLElement): gsap.core.Timeline
   return tl;
 }
 
-/* ---------- Settled: wave, embers, pause, blast-off ---------- */
+/* ---------- Settled: wave, cursor letters, embers, pause, blast-off ---------- */
 
 function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectControls | null) {
   owner.dataset.phase = 'settled';
@@ -144,6 +145,9 @@ function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectCo
   let heroVisible = true;
   let blasted = false;
   let wave: WaveStop | null = null;
+  let cursor: CursorLetters | null = null;
+  /** The cursor is working the letters: the wave holds off so the two never stack. */
+  let hovering = false;
   let blast: BlastOff | null = null;
 
   const running = () => !paused && heroVisible;
@@ -154,20 +158,30 @@ function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectCo
   };
   markPaused();
   const applyRunning = () => {
-    if (running()) {
-      wave?.resume();
-      particles?.play();
-    } else {
-      wave?.pause();
-      particles?.pause();
-    }
+    if (running() && !hovering) wave?.resume();
+    else wave?.pause();
+    if (running()) particles?.play();
+    else particles?.pause();
   };
+  // The cursor effect shares the wave's split, so it starts and ends with it.
   const beginWave = () => {
-    wave?.();
+    endWave();
     wave = startWave(els.heading, { period: HERO.wavePeriod });
+    cursor = cursorLetters({
+      area: els.hero,
+      heading: els.heading,
+      chars: wave.chars,
+      onEngage: (engaged) => {
+        hovering = engaged;
+        applyRunning();
+      },
+    });
     applyRunning();
   };
   const endWave = () => {
+    cursor?.destroy();
+    cursor = null;
+    hovering = false;
     wave?.();
     wave = null;
   };

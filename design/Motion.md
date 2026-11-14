@@ -26,7 +26,7 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 | Surface | Intro | Settled | Outro |
 |---|---|---|---|
 | Wordmark | letters spring in, 1px underline draws `scaleX 0 → 1` | still | none (shell persists) |
-| Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | letter wave every 4s, a different move each pass (hop, breathe, lean, flip, weight dips to 500 or 400, shear, squash, twist) | blast-off when the visitor scrolls past |
+| Hero poster "njvan" | route `letters`: scatter in from off screen, land from 0.75s | letter wave every 4s, a different move each pass (hop, breathe, lean, flip, weight dips to 500 or 400, shear, squash, twist); cursor letters on a fine pointer (below) | blast-off when the visitor scrolls past |
 | Hero lead line | speak-in, word by word, from 1.05s | words persist | thrown with the blast |
 | Index rows | rise, staggered 0.05s, on entering view | hover: name waves once, accent rule draws under it | standard exit |
 | Project names (statement) | masked split by line once the scene is in view | still | slide up behind the mask |
@@ -35,6 +35,10 @@ A coordinated sequence rarely runs past 500ms. Display effects (scatter, wave, p
 | Page progress | none | 1px rule along the top in `foreground`, in the project's accent inside a scene | none |
 | Primary button (one per page) | particle `reactor` assembles it | embers | `blast()` on press |
 | External links `↗` | `slipstream` | drifting hairlines | `blast()` on press |
+
+### Cursor letters (hero name)
+
+Once the intro has settled, the letters of "Nathan VanderByl" react to a mouse or trackpad. Letters within `HERO.cursorRadius` (in ems of the poster size) of the cursor are pushed away from it by up to `cursorPush`, swell by up to `cursorSwell` and thin from 800 towards `cursorWeight`, with a smoothstep falloff so there is no hard edge. They follow the cursor quickly (`cursorFollow`) and settle back more slowly (`cursorSettle`) when it leaves. While the cursor is working the letters the wave holds off, and the effect ends with the wave when the hero blasts off, coming back with it. It shares the wave's split and moves an inner span per letter, so it never writes the transform the wave animates; weight changes stay inside each letter's pinned width, so nothing reflows. Fine pointers only (no touch equivalent: it is decoration, the wave carries the motion there), and off under reduced motion.
 
 ## Project scenes: one signature moment each
 
