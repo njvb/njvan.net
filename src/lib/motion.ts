@@ -78,6 +78,20 @@ export const HERO = {
   wavePeriod: 4,
   /** The hero blasts off when this point of the hero reaches the top of the viewport. */
   blastStart: '25% top',
+  // Cursor letters (settled only, fine pointers only): letters near the cursor
+  // push away, swell and thin out, falling off smoothly with distance.
+  // Lengths are in ems of the poster size, so the effect scales with the name.
+  /** Reach of the cursor: letters farther than this are untouched. */
+  cursorRadius: 1.4,
+  /** How far a letter right under the cursor is pushed away from it. */
+  cursorPush: 0.14,
+  /** Extra scale right under the cursor (0.1 = 110%). */
+  cursorSwell: 0.12,
+  /** Weight right under the cursor; the name rests at WEIGHT.display (800). Keep inside 400-800. */
+  cursorWeight: 450,
+  /** Time constants in seconds: how quickly letters follow the cursor, and how slowly they settle back. */
+  cursorFollow: 0.08,
+  cursorSettle: 0.35,
 } as const;
 
 /**

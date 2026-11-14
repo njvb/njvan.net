@@ -79,11 +79,11 @@ function pinWidths(chars: HTMLElement[]): void {
 
 export type WaveOptions = { period?: number };
 
-/** Stops the wave and reverts its split. Carries `pause` and `resume`. */
-export type WaveStop = (() => void) & { pause: () => void; resume: () => void };
+/** Stops the wave and reverts its split. Carries `pause`, `resume` and the split's `chars` (for effects that share them). */
+export type WaveStop = (() => void) & { pause: () => void; resume: () => void; chars: HTMLElement[] };
 
 export function startWave(heading: HTMLElement, { period = HERO.wavePeriod }: WaveOptions = {}): WaveStop {
-  if (prefersReducedMotion()) return Object.assign(() => {}, { pause: () => {}, resume: () => {} });
+  if (prefersReducedMotion()) return Object.assign(() => {}, { pause: () => {}, resume: () => {}, chars: [] });
   const { split, chars } = guarded(() => {
     const split = SplitText.create(heading, { type: 'chars,words', aria: 'auto' });
     const chars = split.chars as HTMLElement[];
@@ -128,6 +128,7 @@ export function startWave(heading: HTMLElement, { period = HERO.wavePeriod }: Wa
     split.revert();
   };
   return Object.assign(stop, {
+    chars,
     pause: () => {
       if (!stopped) clock.pause();
     },

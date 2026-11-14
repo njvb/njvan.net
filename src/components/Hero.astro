@@ -57,6 +57,8 @@ const count = String(projects.length).padStart(2, '0');
   }
 
   .hero__name {
+    /* The cursor letters effect measures each letter's home against this box. */
+    position: relative;
     /* Stable typography for character animation: kerning would snap on split and revert. */
     font-kerning: none;
     text-rendering: optimizeSpeed;
