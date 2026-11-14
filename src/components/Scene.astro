@@ -8,6 +8,8 @@ interface Props {
 
 const { project: p, total } = Astro.props;
 const totalLabel = String(total).padStart(2, '0');
+const mark = p.wordmark;
+const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('{w}', String(w))}`;
 ---
 
 <section class="scene" id={p.id} data-project={p.id} data-scene aria-labelledby={`${p.id}-title`}>
@@ -38,7 +40,28 @@ const totalLabel = String(total).padStart(2, '0');
     </div>
 
     <div class="scene__copy">
-      <h2 class="scene__name" id={`${p.id}-title`} data-ink data-scene-name>{p.name}</h2>
+      {
+        mark ? (
+          <h2 class="scene__name scene__name--mark" id={`${p.id}-title`} data-ink data-scene-name>
+            {/* One mask, so the scene's name animation slides the image up like a line of text. */}
+            <span class="scene-line-mask scene__mark-mask">
+              <img
+                src={markUrl(mark.widths[1] ?? mark.widths[0]!)}
+                srcset={mark.widths.map((w) => `${markUrl(w)} ${w}w`).join(', ')}
+                sizes="(min-width: 1024px) 30rem, 90vw"
+                alt={p.name}
+                width="1100"
+                height={Math.round(1100 / mark.ratio)}
+                loading="lazy"
+                decoding="async"
+                data-scene-mark
+              />
+            </span>
+          </h2>
+        ) : (
+          <h2 class="scene__name" id={`${p.id}-title`} data-ink data-scene-name>{p.name}</h2>
+        )
+      }
       <p class="scene__line" data-ink data-scene-rise>{p.line}</p>
       <p class="scene__more t-body" data-ink data-scene-rise>{p.more}</p>
       <div class="scene__links" data-ink data-scene-rise>
@@ -183,6 +206,23 @@ const totalLabel = String(total).padStart(2, '0');
     line-height: 0.84;
     font-weight: 800;
     letter-spacing: -0.045em;
+  }
+
+  /* A wordmark name: the image is the name, sized like the text would be. */
+  .scene__name--mark {
+    margin-left: -0.5%;
+    line-height: 0;
+  }
+
+  .scene__mark-mask {
+    display: block;
+    overflow: hidden;
+  }
+
+  .scene__name--mark img {
+    display: block;
+    width: min(100%, 30rem);
+    height: auto;
   }
 
   .scene[data-project='tower'] .scene__name {

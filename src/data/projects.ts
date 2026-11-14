@@ -30,6 +30,14 @@ export interface Project {
   notes: string[];
   /** The project's own logo, shown in its scene's top row (drawn in the scene's ink). */
   logo?: { src: string; /** Width over height. */ ratio: number };
+  /** A full-colour wordmark shown as the scene's name instead of the text (the text becomes its alt). */
+  wordmark?: {
+    /** Path under BASE_URL, with {w} for the width. */
+    src: string;
+    widths: number[];
+    /** Width over height. */
+    ratio: number;
+  };
   links: ProjectLink[];
 }
 
@@ -44,6 +52,7 @@ export const projects: Project[] = [
     line: 'A medieval hex-board strategy game for two to four players.',
     more: 'Settle an island, build roads and villages, trade, and hold off the bandits. Play on one device, online, or against the computer.',
     notes: ['Vue 3 · TypeScript · Three.js', '2-4 players · browser, iPhone, iPad and Mac'],
+    wordmark: { src: 'assets/tavren/wordmark-{w}.webp', widths: [600, 1100, 1700], ratio: 1100 / 252 },
     links: [
       { label: 'Play Tavren', href: 'https://mac-mini.tail94f02c.ts.net/', external: true, variant: 'solid' },
       { label: 'Get the app', href: '/tavren/', variant: 'outline' },

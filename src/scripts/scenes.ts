@@ -85,7 +85,10 @@ function middles(p: SceneParts): Map<HTMLElement, number> {
   );
 }
 
-function splitName(name: HTMLElement): SplitText {
+function splitName(name: HTMLElement): { lines: Element[]; masks: Element[] } {
+  // A wordmark (an image, see Scene.astro) is already one line in its own mask.
+  const mark = name.querySelector<HTMLElement>('[data-scene-mark]');
+  if (mark) return { lines: [mark], masks: [mark.parentElement!] };
   const split = SplitText.create(name, { type: 'lines', mask: 'lines', aria: 'auto' });
   for (const mask of split.masks) (mask as HTMLElement).classList.add('scene-line-mask');
   return split;
