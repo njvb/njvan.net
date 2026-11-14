@@ -67,7 +67,17 @@ const facts = [
       </div>
 
       <div class="hero__copy">
-        <h1 class="hero__name" id="tavren-title" data-intro data-page-rise>Tavren</h1>
+        <h1 class="hero__name" id="tavren-title" data-intro data-page-rise>
+          <img
+            src={`${shots}wordmark-1100.webp`}
+            srcset={`${shots}wordmark-600.webp 600w, ${shots}wordmark-1100.webp 1100w, ${shots}wordmark-1700.webp 1700w`}
+            sizes="(min-width: 1024px) 30rem, 90vw"
+            alt="Tavren"
+            width="1100"
+            height="252"
+            fetchpriority="high"
+          />
+        </h1>
         <p class="hero__line" data-intro data-page-rise>A medieval hex-board strategy game for two to four players.</p>
         <p class="hero__more t-body" data-intro data-page-rise>
           Roll the dice, gather the island's goods and build your way to victory. Play against the computer, pass one
@@ -204,12 +214,15 @@ const facts = [
     container-type: inline-size;
   }
 
+  /* The game's painted-wood wordmark, with its own outline and shadow. */
   .hero__name {
-    margin-left: -0.04em;
-    font-size: clamp(3.5rem, 20cqi, 10rem);
-    line-height: 0.84;
-    font-weight: 800;
-    letter-spacing: -0.045em;
+    margin-left: -0.5%;
+    line-height: 0;
+  }
+
+  .hero__name img {
+    width: min(100%, 30rem);
+    height: auto;
   }
 
   .hero__line {
