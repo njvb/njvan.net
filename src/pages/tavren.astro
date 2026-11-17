@@ -53,11 +53,29 @@ const facts = [
   'Game Center achievements and leaderboards',
   'iPhone, iPad and Mac with Apple silicon',
 ];
+
+const description =
+  'Tavren is a free strategy board game for two to four players on iPhone, iPad and Mac. Settle an island, build, trade and hold off the bandits. No ads, no account.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Tavren',
+  applicationCategory: 'GameApplication',
+  operatingSystem: 'iOS, iPadOS, macOS',
+  description,
+  url: 'https://njvan.net/tavren/',
+  downloadUrl: APP_STORE,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  author: { '@type': 'Person', name: 'Nathan VanderByl', url: 'https://njvan.net/' },
+};
 ---
 
 <Base
   title="Tavren · A medieval hex-board strategy game"
-  description="Tavren is a free strategy board game for two to four players on iPhone, iPad and Mac. Settle an island, build, trade and hold off the bandits. No ads, no account."
+  description={description}
+  image="/og/tavren.jpg"
+  imageAlt="Tavren, a medieval hex-board strategy game"
+  jsonLd={jsonLd}
 >
   <section class="hero" aria-labelledby="tavren-title">
     <div class="shell hero__inner">
