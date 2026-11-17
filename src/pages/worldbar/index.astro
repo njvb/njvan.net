@@ -256,7 +256,7 @@ const jsonLd = {
                 </div>
               ))
             }
-            <span class="wb-ring" data-wb-ring></span>
+            <span class="wb-spot" data-wb-spot></span>
           </div>
         </div>
       </div>
@@ -484,13 +484,25 @@ const jsonLd = {
       0 0 0 1px rgba(255, 255, 255, 0.35);
   }
 
+  @property --st {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: 0%;
+  }
+
+  @property --sb {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: 100%;
+  }
+
   .wb-hero__name {
     font-size: clamp(3.4rem, 19cqw, 8.5rem);
     line-height: 0.92;
     font-weight: 800;
     letter-spacing: -0.02em;
-    /* The name is split into letters (no kerning between them), so switch kerning off from the start. */
-    font-kerning: none;
+    /* The name is split into letters, which loses the font's kerning. The script measures each pair
+       and puts the kerning back as a small margin, so the letters still animate one by one. */
     margin-left: -0.04em;
     display: flex;
     flex-wrap: nowrap;
@@ -566,8 +578,6 @@ const jsonLd = {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1.02;
-    perspective: 2400px;
-    perspective-origin: 50% 40%;
     touch-action: manipulation;
   }
 
@@ -587,23 +597,41 @@ const jsonLd = {
   .wb-iso__world {
     position: absolute;
     inset: 0;
-    transform-style: preserve-3d;
-    transform: rotateX(58deg) rotateZ(-34deg) translateY(-6%);
   }
 
-  /* One popover sliced into three plates. Each slab shows its band of the same capture. */
+  /* One popover sliced into three plates. Each slab shows its band of the same capture.
+     The isometric look is a flat 2D matrix per plate (no 3D context), set by the script on every
+     frame. The rule below is the same matrix for the resting pose, for when scripts are off:
+     rotate -34deg, squash by cos 58deg, lift each plate by its index. */
   .wb-slab {
+    --a: 0.829;
+    --b: -0.2963;
+    --c: 0.559;
+    --d: 0.4393;
+    --i: 0;
+    /* Where the plate's top-left sits in the box, relative to the box centre. */
+    --dx: calc(var(--w) / -2);
+    --dy: calc(var(--top) - 51cqw);
+    /* Square corners where plates meet, rounded where the plate is an outside edge. */
+    --ro: 1.6cqw;
+    --ri: calc(1.6cqw * var(--open, 1));
+    --lit: 1;
     position: absolute;
-    left: calc(50% - var(--w) / 2);
+    left: 0;
+    top: 0;
     width: var(--w);
     margin: 0;
     overflow: hidden;
-    border-radius: 2.4cqw;
-    transform-style: preserve-3d;
+    transform-origin: 0 0;
+    transform: translate(
+        calc(50cqw + var(--a) * var(--dx) + var(--c) * var(--dy)),
+        calc(51cqw + var(--b) * var(--dx) + var(--d) * var(--dy) - 6.12cqw - var(--i) * 7.2cqw)
+      )
+      matrix(0.829, -0.2963, 0.559, 0.4393, 0, 0);
     box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.22),
-      0 3.2cqw 5cqw -1.5cqw rgba(3, 30, 80, 0.55);
-    background: #1c1c1e;
+      0 0 0 1px rgba(255, 255, 255, calc(0.22 * var(--lit))),
+      0 3.2cqw 5cqw -1.5cqw rgba(3, 30, 80, calc(0.55 * var(--lit)));
+    background: #323234;
   }
 
   .wb-slab img {
@@ -621,17 +649,24 @@ const jsonLd = {
     font-size: clamp(7px, 1.35cqw, 11px);
     background: rgba(77, 163, 255, 0.92);
     color: var(--color-on-worldbar);
+    /* The labels fade as the plates close, so the assembled popover is the clean capture. */
+    opacity: var(--open, 1);
   }
 
-  /* Bands of the 756 x 1404 capture: clocks 0-640, travel 640-842, planner 842-1404. */
+  /* Bands of the 756 x 1404 capture: clocks 0-640, travel 640-842, planner 842-1404. Each plate is
+     1px taller than its band so neighbours overlap (same pixels) and no hairline shows between them. */
   .wb-slab--clocks {
-    top: var(--top0);
-    aspect-ratio: 756 / 640;
+    --top: var(--top0);
+    --i: 2;
+    height: calc(var(--w) * 640 / 756 + 1px);
+    border-radius: var(--ro) var(--ro) var(--ri) var(--ri);
   }
 
   .wb-slab--travel {
-    top: calc(var(--top0) + (var(--w) * 640 / 756));
-    aspect-ratio: 756 / 202;
+    --top: calc(var(--top0) + (var(--w) * 640 / 756));
+    --i: 1;
+    height: calc(var(--w) * 202 / 756 + 1px);
+    border-radius: var(--ri);
   }
 
   .wb-slab--travel img {
@@ -639,8 +674,10 @@ const jsonLd = {
   }
 
   .wb-slab--planner {
-    top: calc(var(--top0) + (var(--w) * 842 / 756));
-    aspect-ratio: 756 / 562;
+    --top: calc(var(--top0) + (var(--w) * 842 / 756));
+    --i: 0;
+    height: calc(var(--w) * 562 / 756);
+    border-radius: var(--ri) var(--ri) var(--ro) var(--ro);
   }
 
   .wb-slab--planner img {
@@ -1172,23 +1209,26 @@ const jsonLd = {
       transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* An outline that glides to the part of the screen being described. */
-    .wb-ring {
+    /* A spotlight: everything outside the part being described dims, with a soft lit edge. The band
+       comes from the capture's own pixel rows (see setupStory), so it sits right at any frame size. */
+    .wb-spot {
       position: absolute;
-      left: 3%;
-      width: 94%;
-      top: var(--ring-top, 6%);
-      height: var(--ring-h, 40%);
-      border-radius: 14px;
-      border: 2px solid var(--color-worldbar);
-      box-shadow:
-        0 0 0 6px color-mix(in srgb, var(--color-worldbar) 22%, transparent),
-        0 0 40px color-mix(in srgb, var(--color-worldbar) 55%, transparent);
-      opacity: var(--ring-o, 0);
+      inset: 0;
+      --feather: 2.4%;
+      background: linear-gradient(
+        to bottom,
+        rgba(4, 8, 18, 0.66) 0,
+        rgba(4, 8, 18, 0.66) calc(var(--st) - var(--feather)),
+        rgba(4, 8, 18, 0) var(--st),
+        rgba(4, 8, 18, 0) var(--sb),
+        rgba(4, 8, 18, 0.66) calc(var(--sb) + var(--feather)),
+        rgba(4, 8, 18, 0.66) 100%
+      );
+      opacity: var(--spot-o, 0);
       transition:
-        top 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        height 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.3s var(--ease-entrance);
+        --st 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        --sb 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.4s var(--ease-entrance);
       pointer-events: none;
     }
   }

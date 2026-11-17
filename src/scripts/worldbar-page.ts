@@ -115,26 +115,57 @@ function setupPause() {
 function setupHero() {
   const hero = $<HTMLElement>('[data-wb-hero]');
   const iso = $<HTMLElement>('[data-wb-iso]');
-  const world = $<HTMLElement>('[data-wb-world]');
   const floor = $<HTMLElement>('[data-wb-floor]');
   const slabs = $$<HTMLElement>('[data-wb-slab]');
-  if (!hero || !iso || !world || slabs.length === 0) return;
+  if (!hero || !iso || slabs.length === 0) return;
 
+  // The stack is flat 2D: each plate gets one matrix (rotate, squash, lift) written every frame.
+  // True 3D (preserve-3d) renders differently in Chrome and Safari once plates are clipped, so avoid it.
   const BASE = { rx: 58, rz: -34 };
+  const st = { rx: BASE.rx, rz: BASE.rz, y: 0 };
   // Gap between plates as a fraction of the stack's width; hover/tap assembles it, scroll explodes it.
   const gap: { base: number; scroll: number } = { base: WORLDBAR.stack.rest, scroll: 0 };
-  const width = () => iso.clientWidth;
+  const RAD = Math.PI / 180;
+  let last = '';
   const render = () => {
-    const g = (gap.base + gap.scroll) * width();
-    slabs.forEach((s, i) => gsap.set(s, { z: i * g }));
-    gsap.set(floor, { '--floor': 1 + (gap.base + gap.scroll) * 2.4 });
+    const W = iso.clientWidth;
+    const g = gap.base + gap.scroll;
+    const key = `${W}|${st.rx}|${st.rz}|${st.y}|${g}`;
+    if (key === last) return;
+    last = key;
+    const H = W * 1.02;
+    const cx = W / 2;
+    const cy = H / 2;
+    const th = st.rz * RAD;
+    const ph = st.rx * RAD;
+    const a = Math.cos(th);
+    const b = Math.sin(th) * Math.cos(ph);
+    const c = -Math.sin(th);
+    const d = Math.cos(th) * Math.cos(ph);
+    const lift = Math.sin(ph);
+    // Plan geometry, matching the CSS: plate width, and where each band of the capture starts.
+    const w = W * 0.54;
+    const top0 = (H - (w * 1404) / 756) / 2;
+    const tops = [top0 + (w * 842) / 756, top0 + (w * 640) / 756, top0];
+    const dx = -w / 2;
+    slabs.forEach((s, i) => {
+      const dy = tops[i] - cy;
+      const e = cx + a * dx + c * dy;
+      const f = cy + b * dx + d * dy + st.y - H * 0.06 - i * g * W * lift;
+      s.style.transform = `matrix(${a},${b},${c},${d},${e},${f})`;
+    });
+    // Square the inner corners as the plates close up, so the whole popover is one shape.
+    const open = Math.min(1, g / 0.02);
+    iso.style.setProperty('--open', String(open));
+    iso.style.setProperty('--lit', String(open));
+    gsap.set(floor, { '--floor': 1 + g * 2.4 });
   };
 
-  gsap.set(world, { rotationX: BASE.rx, rotationZ: BASE.rz, y: 0, transformOrigin: '50% 50%' });
   render();
   window.addEventListener('resize', render);
 
   if (reduced) return;
+  gsap.ticker.add(render);
 
   // Intro: the plates fall in from high above, bottom plate first.
   const from = WORLDBAR.stack.introFrom;
@@ -143,16 +174,12 @@ function setupHero() {
   render();
   const intro = gsap.timeline({ delay: WORLDBAR.stack.delay });
   intro.to(slabs, { autoAlpha: 1, duration: 0.5, stagger: WORLDBAR.stack.introStagger }, 0);
-  intro.to(
-    gap,
-    { base: WORLDBAR.stack.rest, duration: WORLDBAR.stack.introDuration, ease: 'animaxxing', onUpdate: render },
-    0.1,
-  );
-  intro.from(world, { rotationZ: BASE.rz - 50, duration: WORLDBAR.stack.introDuration + 0.4, ease: 'animaxxing' }, 0);
+  intro.to(gap, { base: WORLDBAR.stack.rest, duration: WORLDBAR.stack.introDuration, ease: 'animaxxing' }, 0.1);
+  intro.from(st, { rz: BASE.rz - 50, duration: WORLDBAR.stack.introDuration + 0.4, ease: 'animaxxing' }, 0);
   intro.from('[data-wb-chip]', { autoAlpha: 0, scale: 0.6, duration: 0.6, ease: 'back.out(2)', stagger: 0.12 }, 1.2);
 
   // Idle: the stack bobs, the chips drift. Both register for the pause control.
-  const bob = gsap.to(world, {
+  const bob = gsap.to(st, {
     y: WORLDBAR.float.amplitude,
     duration: WORLDBAR.float.duration,
     ease: 'sine.inOut',
@@ -177,8 +204,8 @@ function setupHero() {
 
   // Pointer parallax (fine pointers only).
   if (window.matchMedia('(pointer: fine)').matches) {
-    const rz = gsap.quickTo(world, 'rotationZ', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
-    const rx = gsap.quickTo(world, 'rotationX', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
+    const rz = gsap.quickTo(st, 'rz', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
+    const rx = gsap.quickTo(st, 'rx', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
     hero.addEventListener('pointermove', (e) => {
       const r = hero.getBoundingClientRect();
       const nx = (e.clientX - r.left) / r.width - 0.5;
@@ -200,7 +227,6 @@ function setupHero() {
       base: on ? WORLDBAR.stack.assemble : WORLDBAR.stack.rest,
       duration: WORLDBAR.assembleDuration,
       ease: 'animaxxing',
-      onUpdate: render,
       overwrite: 'auto',
     });
   };
@@ -219,9 +245,38 @@ function setupHero() {
     scrub: 0.6,
     onUpdate: (self) => {
       gap.scroll = self.progress * WORLDBAR.stack.scrollExplode;
-      render();
     },
   });
+}
+
+/**
+ * Splitting a word into letters loses the font's kerning between pairs. Measure each pair with and
+ * without kerning and put the difference back as a small margin on the second letter.
+ */
+function restoreKerning(title: HTMLElement, chars: Element[]) {
+  const apply = () => {
+    // Measure in the DOM (canvas fontKerning is not in every Safari): a hidden span in the same font.
+    const cs = getComputedStyle(title);
+    const probe = document.createElement('span');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = `position:absolute;left:-9999px;top:0;white-space:pre;visibility:hidden;font-family:${cs.fontFamily};font-weight:${cs.fontWeight};font-size:200px;letter-spacing:0`;
+    document.body.appendChild(probe);
+    const size = 200;
+    const width = (t: string, kern: 'normal' | 'none') => {
+      probe.style.fontKerning = kern;
+      probe.textContent = t;
+      return probe.getBoundingClientRect().width;
+    };
+    chars.forEach((el, i) => {
+      if (i === 0) return;
+      const pair = `${chars[i - 1].textContent}${el.textContent}`;
+      const k = width(pair, 'normal') - width(pair, 'none');
+      (el as HTMLElement).style.marginLeft = `${(k / size).toFixed(4)}em`;
+    });
+    probe.remove();
+  };
+  apply();
+  void document.fonts.ready.then(apply);
 }
 
 function setupHeroCopy() {
@@ -241,6 +296,7 @@ function setupHeroCopy() {
 
   if (!title) return;
   const split = SplitText.create(title, { type: 'chars', charsClass: 'wb-char', aria: 'auto' });
+  restoreKerning(title, split.chars);
   gsap.from(split.chars, {
     yPercent: WORLDBAR.letters.from,
     rotationX: -90,
@@ -362,7 +418,9 @@ function setupDemo() {
     .reduce<Record<string, number>>((o, p) => (p.type === 'literal' ? o : { ...o, [p.type]: Number(p.value) }), {});
   const utcMidnight = Date.UTC(parts.year, parts.month - 1, parts.day);
   const baseMs = utcMidnight - offsetMin(LONDON, utcMidnight + 12 * 3600000) * 60000;
-  const minutesNow = clamp(Math.round((now0 - baseMs) / 60000 / 15) * 15, 0, 1425);
+  // The real time of day in minutes (fractional), so live mode and the intro land exactly on now.
+  const exactNow = () => clamp((Date.now() - baseMs) / 60000, 0, 1425);
+  const minutesNow = exactNow();
 
   // Working-hours intervals for each city on this day, as London-midnight minutes.
   for (const r of rows) {
@@ -429,7 +487,7 @@ function setupDemo() {
 
   let live = true;
   function update(v: number) {
-    const ms = baseMs + v * 60000;
+    const ms = baseMs + Math.floor(v) * 60000;
     rangeEl.value = String(v);
     rangeEl.style.setProperty('--p', `${(v / 1425) * 100}%`);
     const head = pct(v);
@@ -443,6 +501,11 @@ function setupDemo() {
     if (nowBtn) nowBtn.hidden = live;
   }
 
+  // The slider is free while it follows the clock; as soon as the visitor grabs it, it snaps to 15 minutes.
+  rangeEl.step = 'any';
+  const snap = () => (rangeEl.step = '15');
+  rangeEl.addEventListener('pointerdown', snap);
+  rangeEl.addEventListener('keydown', snap);
   rangeEl.addEventListener('input', () => {
     live = false;
     sweep?.kill();
@@ -452,13 +515,17 @@ function setupDemo() {
   nowBtn?.addEventListener('click', () => {
     live = true;
     sweep?.kill();
-    const target = clamp(Math.round((Date.now() - baseMs) / 60000 / 15) * 15, 0, 1425);
+    const target = exactNow();
     const state = { v: Number(rangeEl.value) };
-    gsap.to(state, { v: target, duration: reduced ? 0 : 0.6, ease: 'animaxxing', onUpdate: () => update(Math.round(state.v)) });
+    gsap.to(state, { v: target, duration: reduced ? 0 : 0.6,
+      ease: 'animaxxing',
+      onStart: () => (rangeEl.step = 'any'),
+      onUpdate: () => update(state.v),
+    });
   });
   // Live mode follows the real clock.
   window.setInterval(() => {
-    if (live) update(clamp(Math.round((Date.now() - baseMs) / 60000 / 15) * 15, 0, 1425));
+    if (live) update(exactNow());
   }, 15000);
 
   analyse();
@@ -473,16 +540,19 @@ function setupDemo() {
       once: true,
       onEnter: () => {
         if (!live) return;
+        // One continuous slide from early morning to the real time now, at a steady pace: no 15 minute
+        // steps and no jump at the end, because it ends exactly where live mode starts.
         const s = { v: WORLDBAR.sweep.from };
+        const target = exactNow();
         live = false;
         sweep = gsap.to(s, {
-          v: WORLDBAR.sweep.to,
-          duration: WORLDBAR.sweep.duration,
+          v: target,
+          duration: clamp(Math.abs(target - s.v) / WORLDBAR.sweep.speed, 1.2, 6),
           ease: 'sine.inOut',
-          onUpdate: () => update(Math.round(s.v / 15) * 15),
+          onUpdate: () => update(s.v),
           onComplete: () => {
             live = true;
-            update(minutesNow);
+            update(exactNow());
           },
         });
       },
@@ -504,13 +574,18 @@ function setupStory() {
   const bar = $<HTMLElement>('[data-wb-story-bar]', story);
   const N = WORLDBAR.storySteps;
 
-  // Where each view sits: how far the capture slides up (share of its height), and the outline.
-  const focus: Record<string, { sy: number; ring?: [number, number] }> = {
+  // Where each view sits: how far the capture slides up (share of its height), and the band of the
+  // capture's own pixel rows to light (y0, y1 in the 756 x 1404 image).
+  const IMG_H = 1404;
+  const FRAME_SHARE = 1404 / 1000; // the image is 1.404 frames tall (frame aspect is 756 / 1000)
+  const focus: Record<string, { sy: number; band?: [number, number] }> = {
     all: { sy: 0 },
     // The add-city capture is shorter than the frame: centre it.
     picker: { sy: 7.47 },
-    top: { sy: 0, ring: [64, 20.2] },
-    bottom: { sy: -28.77, ring: [47.6, 38] },
+    // Time travel: its title row through the date line (rows 646 to 826).
+    top: { sy: 0, band: [646, 826] },
+    // Find a meeting time: its header through the Options row (rows 858 to 1276).
+    bottom: { sy: -28.77, band: [858, 1276] },
     nooverlap: { sy: -41.66 },
   };
 
@@ -523,10 +598,12 @@ function setupStory() {
     const key = shots[i]?.dataset.focus ?? 'all';
     const f = focus[key] ?? focus.all;
     shots[i]?.style.setProperty('--sy', `${f.sy}%`);
-    frame.style.setProperty('--ring-o', f.ring ? '1' : '0');
-    if (f.ring) {
-      frame.style.setProperty('--ring-top', `${f.ring[0]}%`);
-      frame.style.setProperty('--ring-h', `${f.ring[1]}%`);
+    frame.style.setProperty('--spot-o', f.band ? '1' : '0');
+    if (f.band) {
+      // Image row to a share of the frame: (row / height + slide) * how many frames tall the image is.
+      const pct = (y: number) => `${((y / IMG_H + f.sy / 100) * FRAME_SHARE * 100).toFixed(2)}%`;
+      frame.style.setProperty('--st', pct(f.band[0]));
+      frame.style.setProperty('--sb', pct(f.band[1]));
     }
   };
 
