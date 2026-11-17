@@ -251,9 +251,11 @@ export const WORLDBAR = {
   /** "WorldBar" drops in letter by letter. */
   letters: { stagger: 0.055, duration: 0.9, from: 115 },
   /** The slabs fall in from high above, bottom plate first, and settle at the resting gap. */
-  stack: { introFrom: 1.1, introDuration: 1.25, introStagger: 0.17, delay: 0.45, rest: 0.085, scrollExplode: 0.3, assemble: 0, settle: 0.9 },
+  stack: { introFrom: 1.1, introDuration: 1.25, introStagger: 0.17, delay: 0.45, rest: 0.085, scrollExplode: 0.3, assemble: 0, settle: 1.1 },
   /** After the plates land they hold for `stack.settle` seconds, then close into the whole popover. Hovering (or tapping) pulls them apart again, and letting go closes them; this is how long each takes. */
-  assembleDuration: 0.75,
+  assembleDuration: 1.5,
+  /** A gentle in-and-out ease for closing and opening the plates (the page's sharper entrance ease felt abrupt here). */
+  assembleEase: 'power2.inOut',
   /** The assembled popover turns almost face-on (degrees), so the real app is easy to read. */
   assemblePose: { rx: 6, rz: 4 },
   /** The whole stack bobs gently. Pixels and seconds for one pass. */

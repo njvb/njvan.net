@@ -158,8 +158,10 @@ function setupHero() {
     });
     // Square the inner corners as the plates close up, so the whole popover is one shape.
     const open = Math.min(1, g / 0.02);
+    // The per-plate shadows and edge lines die away well before the plates touch, so no glow is left in the seams.
+    const lit = Math.pow(Math.min(1, g / 0.06), 2);
     iso.style.setProperty('--open', String(open));
-    iso.style.setProperty('--lit', String(open));
+    iso.style.setProperty('--lit', String(lit));
     gsap.set(floor, { '--floor': 1 + g * 2.4 });
   };
 
@@ -238,7 +240,7 @@ function setupHero() {
     assembled = on;
     // Closing the plates also turns the popover almost face-on, so it can be read.
     const pose = on ? WORLDBAR.assemblePose : BASE;
-    gsap.to(st, { rx: pose.rx, rz: pose.rz, duration: WORLDBAR.assembleDuration, ease: 'animaxxing', overwrite: 'auto' });
+    gsap.to(st, { rx: pose.rx, rz: pose.rz, duration: WORLDBAR.assembleDuration, ease: WORLDBAR.assembleEase, overwrite: 'auto' });
     // A small settle as the plates lock together.
     if (on) {
       gsap.fromTo(
@@ -250,7 +252,7 @@ function setupHero() {
     gsap.to(gap, {
       base: on ? WORLDBAR.stack.assemble : WORLDBAR.stack.rest,
       duration: WORLDBAR.assembleDuration,
-      ease: 'animaxxing',
+      ease: WORLDBAR.assembleEase,
       overwrite: 'auto',
     });
   };
