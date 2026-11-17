@@ -1,0 +1,1457 @@
+---
+// WorldBar's landing page, served at njvan.net/worldbar/.
+// An app-specific page: it may use gradients, glows and shadows (the homepage stays flat).
+// Motion and the live demo live in src/scripts/worldbar-page.ts; the screenshots are real
+// captures of the app (public/assets/worldbar/), never mock-ups.
+import Base from '../../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+const shots = `${base}assets/worldbar/`;
+const SUPPORT = `${base}worldbar/support/`;
+const PRIVACY = `${base}worldbar/privacy/`;
+
+// The demo cities. Times below are the spec example (19 Nov 2026, 14:00 in London), rendered at
+// build time so the page reads complete without JavaScript; the script takes over with live times.
+const EXAMPLE = new Date('2026-11-19T14:00:00Z');
+const demoCities = [
+  { id: 'london', name: 'London', code: 'GB', tz: 'Europe/London', on: true },
+  { id: 'newyork', name: 'New York', code: 'US', tz: 'America/New_York', on: true },
+  { id: 'berlin', name: 'Berlin', code: 'DE', tz: 'Europe/Berlin', on: true },
+  { id: 'singapore', name: 'Singapore', code: 'SG', tz: 'Asia/Singapore', on: false },
+  { id: 'sydney', name: 'Sydney', code: 'AU', tz: 'Australia/Sydney', on: false },
+].map((c) => ({
+  ...c,
+  time: new Intl.DateTimeFormat('en-GB', { timeZone: c.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(EXAMPLE),
+  date: new Intl.DateTimeFormat('en-GB', { timeZone: c.tz, weekday: 'short', day: 'numeric', month: 'short' }).format(EXAMPLE),
+}));
+
+const steps = [
+  {
+    title: 'Add the cities that matter',
+    text: 'Search 194 cities by name, country or time zone. It works offline, and your home city gets a "You" badge.',
+    shot: 'picker',
+    focus: 'picker',
+    alt: 'The add-city screen listing cities with their current local times',
+  },
+  {
+    title: 'Drag through the day',
+    text: 'Slide the time and every city follows, with the right day, the right offset and daylight saving for that date.',
+    shot: 'popover',
+    focus: 'top',
+    alt: 'The clock list and the time-travel slider showing Thursday 19 November, 14:00 in London',
+  },
+  {
+    title: 'See who is awake',
+    text: 'A 24-hour timeline shows when everyone is in working hours. Green means all of them. Drag the block to pick a time.',
+    shot: 'popover',
+    focus: 'bottom',
+    alt: 'The meeting timeline with a green window from 14:00 to 16:00',
+  },
+  {
+    title: 'No overlap? It says so',
+    text: 'When nobody shares working hours it tells you, then offers the least inconvenient times and who they cost.',
+    shot: 'nooverlap',
+    focus: 'nooverlap',
+    alt: 'The planner reporting no shared working hours, with three alternative times',
+  },
+];
+
+const bento = [
+  { n: '01', title: 'Four ways to sit in the menu bar', text: 'A globe, a city and time, just the time, or two favourite cities.' },
+  { n: '02', title: 'Light and dark, properly', text: 'Follows your Mac, or pick one. Both are drawn, not inverted.' },
+  { n: '03', title: 'Private by design', text: 'No account, no analytics and no network access. Your cities stay on your Mac.' },
+  { n: '04', title: 'Hands the event to your calendar', text: 'Opens the meeting in Calendar or Outlook. You review it and you save it.' },
+  { n: '05', title: 'Built for the keyboard', text: 'Arrow keys move the meeting block, and the shortcuts are the ones you expect.' },
+];
+
+const facts = [
+  'macOS 15 or later',
+  'Apple silicon',
+  'Menu bar app, no Dock icon',
+  'Works offline',
+  'No account',
+  'No tracking',
+  'Sandboxed',
+];
+
+const description =
+  'WorldBar is a menu bar app for Mac. Keep world clocks one click away, drag through the day, and find a meeting time that works across time zones. No account, no tracking.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'WorldBar',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'macOS 15 or later',
+  description,
+  url: 'https://njvan.net/worldbar/',
+  author: { '@type': 'Person', name: 'Nathan VanderByl', url: 'https://njvan.net/' },
+};
+---
+
+<Base
+  title="WorldBar · World clocks and meeting times in your Mac's menu bar"
+  description={description}
+  image="/og/worldbar.jpg"
+  imageAlt="WorldBar: every timezone, one glance, shown as an isometric stack of the app's panels"
+  jsonLd={jsonLd}
+>
+  <!-- Marks the page as scripted so the pinned story layout is in place before first paint.
+       If the page script has not started within 2.5s, fall back to the plain stacked layout. -->
+  <script is:inline slot="head">
+    document.documentElement.dataset.wbJs = '';
+    setTimeout(function () {
+      if (!('wbReady' in document.documentElement.dataset)) delete document.documentElement.dataset.wbJs;
+    }, 2500);
+  </script>
+
+  <!-- ============ Hero: the field, the name, the isometric stack ============ -->
+  <section class="wb-hero" aria-labelledby="wb-title" data-wb-hero>
+    <div class="wb-hero__field" aria-hidden="true">
+      <span class="wb-hero__orb wb-hero__orb--a"></span>
+      <span class="wb-hero__orb wb-hero__orb--b"></span>
+      <span class="wb-hero__grid"></span>
+    </div>
+
+    <div class="shell wb-hero__inner">
+      <div class="wb-hero__top t-caption" data-wb-rise>
+        <span>WorldBar · Tool</span>
+        <span>For Mac</span>
+      </div>
+
+      <div class="wb-hero__copy">
+        <img class="wb-icon" src={`${shots}icon.png`} width="72" height="72" alt="" data-wb-rise />
+        <h1 class="wb-hero__name" id="wb-title" data-wb-letters>WorldBar</h1>
+        <p class="wb-hero__line" data-wb-rise>Every timezone. One glance.</p>
+        <p class="wb-hero__more t-body" data-wb-rise>
+          A menu bar app for your Mac. Keep your cities one click away, drag through the day, and find a meeting
+          time that works for everyone.
+        </p>
+        <div class="wb-hero__links" data-wb-rise>
+          <!-- No store URL yet: a labelled placeholder, never a guessed link. -->
+          <span class="btn btn--lg btn--placeholder wb-btn" role="note">
+            Mac App Store <span class="placeholder-note">· link coming</span>
+          </span>
+          <a class="btn btn--lg wb-btn wb-btn--solid" href="#try">Try it below ↓</a>
+        </div>
+        <p class="wb-hero__note t-annotation" data-wb-rise>macOS 15 or later · No account · No tracking</p>
+      </div>
+
+      <div class="wb-hero__visual" aria-hidden="true">
+        <div class="wb-iso" data-wb-iso>
+          <span class="wb-iso__floor" data-wb-floor></span>
+          <div class="wb-iso__world" data-wb-world>
+            <figure class="wb-slab wb-slab--planner" data-wb-slab="0">
+              <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" fetchpriority="high" />
+              <figcaption class="t-annotation">03 · Meeting planner</figcaption>
+            </figure>
+            <figure class="wb-slab wb-slab--travel" data-wb-slab="1">
+              <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" fetchpriority="high" />
+              <figcaption class="t-annotation">02 · Time travel</figcaption>
+            </figure>
+            <figure class="wb-slab wb-slab--clocks" data-wb-slab="2">
+              <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" fetchpriority="high" />
+              <figcaption class="t-annotation">01 · World clocks</figcaption>
+            </figure>
+          </div>
+          <!-- Live local times drifting around the stack. Decoration only: real times, no invented screens. -->
+          <span class="wb-chip wb-chip--a" data-wb-chip data-tz="Asia/Tokyo"><i>TYO</i><b>--:--</b></span>
+          <span class="wb-chip wb-chip--b" data-wb-chip data-tz="America/Los_Angeles"><i>SFO</i><b>--:--</b></span>
+          <span class="wb-chip wb-chip--c" data-wb-chip data-tz="Europe/Paris"><i>PAR</i><b>--:--</b></span>
+          <span class="wb-chip wb-chip--d" data-wb-chip data-tz="Australia/Sydney"><i>SYD</i><b>--:--</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell wb-hero__meta t-annotation">
+      <span>Hover the stack to assemble it</span>
+      <!-- Pauses the looping float and wave (WCAG 2.2.2). Shown only when they run. -->
+      <button class="wb-pause t-annotation" type="button" hidden data-wb-pause aria-pressed="false">Pause motion</button>
+      <span aria-hidden="true">Scroll ↓</span>
+    </div>
+  </section>
+
+  <!-- ============ 01 · Live demo ============ -->
+  <section class="wb-section shell" id="try" aria-labelledby="wb-demo-title">
+    <p class="wb-eyebrow t-annotation" data-wb-reveal>01 · Try it</p>
+    <h2 class="wb-h2" id="wb-demo-title" data-wb-split>Drag through the day.</h2>
+    <p class="wb-lede t-body" data-wb-reveal>
+      Every city updates at once. This runs in your browser with today's real offsets, so daylight saving is
+      already in the sums. Tick cities in or out to see the overlap move.
+    </p>
+
+    <div class="wb-demo" data-wb-demo data-wb-reveal>
+      <div class="wb-demo__head">
+        <output class="wb-demo__when" data-demo-when>Thu 19 Nov · 14:00 in London</output>
+        <button class="btn wb-btn-now" type="button" data-demo-now hidden>Now</button>
+      </div>
+      <input
+        class="wb-range"
+        type="range"
+        min="0"
+        max="1425"
+        step="15"
+        value="840"
+        aria-label="Time of day in London"
+        data-demo-range
+      />
+      <ul class="wb-rows">
+        {
+          demoCities.map((c) => (
+            <li class="wb-row" data-city={c.tz} data-on={c.on ? 'true' : 'false'}>
+              <label class="wb-row__check">
+                <input type="checkbox" checked={c.on} aria-label={`Include ${c.name} in the meeting`} data-demo-check />
+                <span class="wb-row__box" aria-hidden="true"></span>
+              </label>
+              <div class="wb-row__name">
+                <span class="t-annotation muted">{c.code}</span>
+                <span>{c.name}</span>
+              </div>
+              <div class="wb-row__time" data-time>{c.time}</div>
+              <div class="wb-row__date t-annotation muted" data-date>{c.date}</div>
+              <div class="wb-row__bar" data-bar aria-hidden="true"></div>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="wb-demo__overlap" data-demo-overlap aria-hidden="true">
+        <span class="wb-demo__overlap-label t-annotation">Everyone ticked</span>
+        <div class="wb-row__bar wb-row__bar--all" data-bar-all></div>
+      </div>
+      <p class="wb-demo__result" data-demo-result aria-live="polite">Best overlap: 14:00 – 16:00 (2 hours)</p>
+      <p class="wb-demo__note t-annotation muted">
+        Working hours 09:00 – 17:00 local · The demo assumes a weekday · Working hours only, never your calendar
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 02 · Scroll story with the real screenshots ============ -->
+  <section class="wb-story" data-wb-story aria-labelledby="wb-story-title">
+    <div class="wb-story__sticky">
+      <div class="shell wb-story__grid">
+        <div class="wb-story__copy">
+          <p class="wb-eyebrow t-annotation">02 · How it works</p>
+          <h2 class="wb-h2" id="wb-story-title">Four steps, one click.</h2>
+          <ol class="wb-steps">
+            {
+              steps.map((s, i) => (
+                <li class="wb-step" data-wb-step={i}>
+                  <span class="wb-step__num t-annotation">{String(i + 1).padStart(2, '0')}</span>
+                  <h3 class="wb-step__title">{s.title}</h3>
+                  <p class="wb-step__text t-body">{s.text}</p>
+                </li>
+              ))
+            }
+          </ol>
+          <div class="wb-story__rule" aria-hidden="true"><span data-wb-story-bar></span></div>
+        </div>
+
+        <div class="wb-stage" aria-hidden="true">
+          <span class="wb-stage__glow"></span>
+          <div class="wb-stage__frame" data-wb-frame>
+            {
+              steps.map((s, i) => (
+                <div class="wb-shot" data-wb-shot={i} data-focus={s.focus ?? 'all'}>
+                  <img class="wb-shot__img wb-theme-dark" src={`${shots}${s.shot}-dark.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+                  <img class="wb-shot__img wb-theme-light" src={`${shots}${s.shot}-light.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+                </div>
+              ))
+            }
+            <span class="wb-ring" data-wb-ring></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The same steps, with their screenshots, for narrow screens and when scripts are off. -->
+    <ol class="wb-story__stack">
+      {
+        steps.map((s, i) => (
+          <li>
+            <span class="wb-step__num t-annotation">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="wb-step__title">{s.title}</h3>
+            <p class="t-body muted">{s.text}</p>
+            <img class="wb-theme-dark" src={`${shots}${s.shot}-dark.png`} alt={s.alt} width="756" height="1404" loading="lazy" decoding="async" />
+            <img class="wb-theme-light" src={`${shots}${s.shot}-light.png`} alt={s.alt} width="756" height="1404" loading="lazy" decoding="async" />
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- ============ 03 · Details ============ -->
+  <section class="wb-section shell" aria-labelledby="wb-bento-title">
+    <p class="wb-eyebrow t-annotation" data-wb-reveal>03 · The details</p>
+    <h2 class="wb-h2" id="wb-bento-title" data-wb-split>Small app. Sharp edges sanded.</h2>
+
+    <div class="wb-bento">
+      <!-- Menu bar styles -->
+      <article class="wb-card wb-card--wide" data-wb-card>
+        <span class="wb-card__n t-annotation">{bento[0].n}</span>
+        <h3 class="wb-card__title">{bento[0].title}</h3>
+        <p class="wb-card__text t-body">{bento[0].text}</p>
+        <div class="wb-bars" aria-hidden="true">
+          <div class="wb-bar" data-wb-menubar="globe"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg></div>
+          <div class="wb-bar" data-wb-menubar="city"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span data-bar-city="Europe/London" data-bar-name="London">London --:--</span></div>
+          <div class="wb-bar" data-wb-menubar="time"><span data-bar-city="Europe/London" data-bar-name="">--:--</span></div>
+          <div class="wb-bar" data-wb-menubar="two"><span data-bar-city="Europe/London" data-bar-name="London">London --:--</span><i>·</i><span data-bar-city="Asia/Tokyo" data-bar-name="Tokyo">Tokyo --:--</span></div>
+        </div>
+      </article>
+
+      <!-- Light and dark wipe -->
+      <article class="wb-card wb-card--tall" data-wb-card>
+        <span class="wb-card__n t-annotation">{bento[1].n}</span>
+        <h3 class="wb-card__title">{bento[1].title}</h3>
+        <p class="wb-card__text t-body">{bento[1].text}</p>
+        <div class="wb-wipe" data-wb-wipe aria-hidden="true">
+          <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+          <img class="wb-wipe__top" src={`${shots}popover-light.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+          <span class="wb-wipe__handle"></span>
+        </div>
+      </article>
+
+      <!-- Private -->
+      <article class="wb-card" data-wb-card>
+        <span class="wb-card__n t-annotation">{bento[2].n}</span>
+        <h3 class="wb-card__title">{bento[2].title}</h3>
+        <p class="wb-card__text t-body">{bento[2].text}</p>
+        <ul class="wb-ticks t-annotation" aria-label="What WorldBar does not do">
+          <li><span aria-hidden="true">✕</span> Account</li>
+          <li><span aria-hidden="true">✕</span> Analytics</li>
+          <li><span aria-hidden="true">✕</span> Network access</li>
+        </ul>
+      </article>
+
+      <!-- Calendar -->
+      <article class="wb-card" data-wb-card>
+        <span class="wb-card__n t-annotation">{bento[3].n}</span>
+        <h3 class="wb-card__title">{bento[3].title}</h3>
+        <p class="wb-card__text t-body">{bento[3].text}</p>
+        <div class="wb-chips t-annotation" aria-hidden="true">
+          <span>Calendar</span><span>Outlook</span><span>Outlook on the web</span>
+        </div>
+      </article>
+
+      <!-- Keyboard -->
+      <article class="wb-card wb-card--wide" data-wb-card>
+        <span class="wb-card__n t-annotation">{bento[4].n}</span>
+        <h3 class="wb-card__title">{bento[4].title}</h3>
+        <p class="wb-card__text t-body">{bento[4].text}</p>
+        <div class="wb-keys" aria-hidden="true">
+          <span><kbd>←</kbd><kbd>→</kbd> Move the meeting 15 min</span>
+          <span><kbd>⌘</kbd><kbd>N</kbd> Back to now</span>
+          <span><kbd>⌘</kbd><kbd>,</kbd> Settings</span>
+          <span><kbd>esc</kbd> Close</span>
+        </div>
+      </article>
+
+      <!-- Count -->
+      <article class="wb-card wb-card--stat" data-wb-card>
+        <span class="wb-stat" data-wb-count="194">194</span>
+        <p class="wb-card__text t-body">cities bundled in the app, searchable with no internet.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ Closing ============ -->
+  <section class="wb-end shell" aria-labelledby="wb-end-title">
+    <ul class="wb-facts t-annotation" data-wb-reveal>
+      {facts.map((f) => <li>{f}</li>)}
+    </ul>
+    <h2 class="wb-end__title" id="wb-end-title" data-wb-split>Every timezone. One glance.</h2>
+    <div class="wb-end__links" data-wb-reveal>
+      <span class="btn btn--lg btn--placeholder wb-btn wb-btn--page" role="note">
+        Mac App Store <span class="placeholder-note">· link coming</span>
+      </span>
+      <a class="btn btn--lg" href={SUPPORT}>Support</a>
+      <a class="btn btn--lg" href={PRIVACY}>Privacy</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../../scripts/worldbar-page';
+</script>
+
+<style>
+  /* The homepage's panel snapping is for its full-screen scenes; this page scrolls freely. */
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  /* The header sits on the canvas above the hero, like the other landing pages. */
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .muted {
+    color: var(--color-muted);
+  }
+
+  /* ================= Hero ================= */
+
+  .wb-hero {
+    --field: var(--color-worldbar);
+    --on: var(--color-on-worldbar);
+    position: relative;
+    isolation: isolate;
+    margin-top: var(--gutter);
+    padding-block: 40px 28px;
+    overflow: hidden;
+    color: var(--on);
+    background: var(--field);
+  }
+
+  .wb-hero ::selection {
+    background: var(--on);
+    color: var(--field);
+  }
+
+  .wb-hero :focus-visible {
+    outline-color: var(--on);
+  }
+
+  /* The light field: soft orbs and a faint grid. Allowed here: this is an app page. */
+  .wb-hero__field {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(120% 90% at 85% 10%, #b8dcff 0%, rgba(184, 220, 255, 0) 55%),
+      radial-gradient(90% 80% at 0% 100%, #2c86f0 0%, rgba(44, 134, 240, 0) 60%),
+      var(--field);
+  }
+
+  .wb-hero__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+  }
+
+  .wb-hero__orb--a {
+    width: 46vw;
+    height: 46vw;
+    right: -8vw;
+    top: -12vw;
+    background: #e7f3ff;
+  }
+
+  .wb-hero__orb--b {
+    width: 38vw;
+    height: 38vw;
+    left: -10vw;
+    bottom: -14vw;
+    background: #1f6fdc;
+  }
+
+  .wb-hero__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(10, 10, 10, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(80% 70% at 70% 45%, #000 0%, transparent 75%);
+  }
+
+  .wb-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .wb-hero__top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .wb-hero__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    container-type: inline-size;
+    min-width: 0;
+  }
+
+  .wb-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 17px;
+    box-shadow:
+      0 18px 30px -10px rgba(5, 40, 100, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.35);
+  }
+
+  .wb-hero__name {
+    font-size: clamp(3.4rem, 19cqw, 8.5rem);
+    line-height: 0.92;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    /* The name is split into letters (no kerning between them), so switch kerning off from the start. */
+    font-kerning: none;
+    margin-left: -0.04em;
+    display: flex;
+    flex-wrap: nowrap;
+    perspective: 800px;
+  }
+
+  .wb-hero__name :global(.wb-char) {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    will-change: transform;
+  }
+
+  .wb-hero__line {
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .wb-hero__more {
+    max-width: 40ch;
+  }
+
+  .wb-hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .wb-btn {
+    border-color: var(--on);
+    color: var(--on);
+  }
+
+  .wb-btn--solid {
+    background: var(--on);
+    color: var(--field);
+  }
+
+  .wb-btn--solid:hover {
+    background: color-mix(in srgb, var(--on) 82%, var(--field));
+  }
+
+  .wb-hero__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: 28px;
+  }
+
+  .wb-pause {
+    border: var(--border-hairline) solid currentColor;
+    border-radius: var(--radius-lg);
+    padding: 2px 8px;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  /* ---------- The isometric stack ---------- */
+
+  .wb-hero__visual {
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  .wb-iso {
+    --w: 54cqw;
+    /* Plan height of the whole popover, and the top that centres it in the box. */
+    --plan: calc(var(--w) * 1404 / 756);
+    --top0: calc((100cqw * 1.02 - var(--plan)) / 2);
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.02;
+    perspective: 2400px;
+    perspective-origin: 50% 40%;
+    touch-action: manipulation;
+  }
+
+  .wb-iso__floor {
+    position: absolute;
+    left: 50%;
+    top: 74%;
+    width: 78%;
+    height: 24%;
+    transform: translate(-50%, -50%) scale(var(--floor, 1));
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(4, 36, 96, 0.5), rgba(4, 36, 96, 0));
+    filter: blur(6px);
+    pointer-events: none;
+  }
+
+  .wb-iso__world {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(58deg) rotateZ(-34deg) translateY(-6%);
+  }
+
+  /* One popover sliced into three plates. Each slab shows its band of the same capture. */
+  .wb-slab {
+    position: absolute;
+    left: calc(50% - var(--w) / 2);
+    width: var(--w);
+    margin: 0;
+    overflow: hidden;
+    border-radius: 2.4cqw;
+    transform-style: preserve-3d;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.22),
+      0 3.2cqw 5cqw -1.5cqw rgba(3, 30, 80, 0.55);
+    background: #1c1c1e;
+  }
+
+  .wb-slab img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .wb-slab figcaption {
+    position: absolute;
+    left: 1.6cqw;
+    top: 1.2cqw;
+    padding: 0.3cqw 1cqw;
+    border-radius: 999px;
+    font-size: clamp(7px, 1.35cqw, 11px);
+    background: rgba(77, 163, 255, 0.92);
+    color: var(--color-on-worldbar);
+  }
+
+  /* Bands of the 756 x 1404 capture: clocks 0-640, travel 640-842, planner 842-1404. */
+  .wb-slab--clocks {
+    top: var(--top0);
+    aspect-ratio: 756 / 640;
+  }
+
+  .wb-slab--travel {
+    top: calc(var(--top0) + (var(--w) * 640 / 756));
+    aspect-ratio: 756 / 202;
+  }
+
+  .wb-slab--travel img {
+    transform: translateY(-45.58%);
+  }
+
+  .wb-slab--planner {
+    top: calc(var(--top0) + (var(--w) * 842 / 756));
+    aspect-ratio: 756 / 562;
+  }
+
+  .wb-slab--planner img {
+    transform: translateY(-59.97%);
+  }
+
+  /* Live clock pills floating around the stack. */
+  .wb-chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: clamp(10px, 2.4cqw, 13px);
+    color: #fff;
+    background: rgba(12, 24, 52, 0.72);
+    backdrop-filter: blur(10px);
+    box-shadow:
+      0 10px 24px -8px rgba(3, 30, 80, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.18);
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .wb-chip i {
+    font-style: normal;
+    opacity: 0.65;
+    letter-spacing: 0.08em;
+  }
+
+  .wb-chip b {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wb-chip--a { right: 2%; top: 14%; }
+  .wb-chip--b { left: 0%; top: 36%; }
+  .wb-chip--c { right: 0%; top: 58%; }
+  .wb-chip--d { left: 8%; top: 8%; }
+
+  @media (min-width: 768px) {
+    .wb-hero {
+      padding-block: 64px 36px;
+    }
+
+    .wb-hero__line {
+      font-size: 30px;
+      line-height: 38px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .wb-hero__inner {
+      min-height: calc(100svh - 190px);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto 1fr;
+      column-gap: var(--gutter);
+      row-gap: 36px;
+      align-items: center;
+    }
+
+    .wb-hero__top {
+      grid-column: 1 / -1;
+    }
+
+    .wb-hero__copy {
+      grid-column: 1 / span 5;
+    }
+
+    .wb-hero__visual {
+      grid-column: 6 / -1;
+    }
+  }
+
+  /* ================= Shared section bits ================= */
+
+  .wb-section {
+    padding-block: 112px 0;
+  }
+
+  .wb-eyebrow {
+    color: var(--color-muted);
+    margin-bottom: 16px;
+  }
+
+  .wb-h2 {
+    font-size: clamp(2.2rem, 7vw, 4.6rem);
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    max-width: 14ch;
+    margin-bottom: 20px;
+  }
+
+  .wb-lede {
+    max-width: 52ch;
+    color: var(--color-muted);
+    margin-bottom: 40px;
+  }
+
+  /* ================= Live demo ================= */
+
+  .wb-demo {
+    position: relative;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 20px;
+    padding: clamp(18px, 3vw, 36px);
+    background:
+      radial-gradient(70% 90% at 100% 0%, color-mix(in srgb, var(--color-worldbar) 16%, transparent), transparent 60%),
+      var(--color-surface);
+    box-shadow: 0 40px 80px -40px color-mix(in srgb, var(--color-worldbar) 45%, transparent);
+  }
+
+  .wb-demo__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: 18px;
+  }
+
+  .wb-demo__when {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+
+  .wb-btn-now {
+    height: 32px;
+    font-size: 11px;
+    padding: 0 12px;
+  }
+
+  /* The slider: a thick track filled with the accent as it moves. */
+  .wb-range {
+    --p: 58%;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 14px;
+    margin: 0 0 26px;
+    border-radius: 999px;
+    cursor: ew-resize;
+    background: linear-gradient(to right, var(--color-worldbar) var(--p), var(--color-surface-hover) var(--p));
+  }
+
+  .wb-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #fff;
+    border: 0;
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.45),
+      0 0 0 6px color-mix(in srgb, var(--color-worldbar) 35%, transparent);
+    transition: box-shadow 0.14s var(--ease-entrance);
+  }
+
+  .wb-range::-moz-range-thumb {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #fff;
+    border: 0;
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.45),
+      0 0 0 6px color-mix(in srgb, var(--color-worldbar) 35%, transparent);
+  }
+
+  .wb-range:active::-webkit-slider-thumb {
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.45),
+      0 0 0 12px color-mix(in srgb, var(--color-worldbar) 40%, transparent);
+  }
+
+  .wb-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+
+  .wb-row {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    grid-template-areas:
+      'check name time'
+      'check date time'
+      'bar bar bar';
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 2px;
+    padding-block: 14px 12px;
+    border-top: var(--border-hairline) solid var(--color-border);
+    transition: opacity 0.2s var(--ease-entrance);
+  }
+
+  .wb-row[data-on='false'] {
+    opacity: 0.55;
+  }
+
+  .wb-row__check {
+    grid-area: check;
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 22px;
+  }
+
+  .wb-row__check input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .wb-row__box {
+    position: absolute;
+    inset: 0;
+    border: var(--border-strong) solid var(--color-muted);
+    border-radius: 6px;
+    transition:
+      background-color 0.14s var(--ease-entrance),
+      border-color 0.14s var(--ease-entrance);
+  }
+
+  .wb-row__check input:checked + .wb-row__box {
+    background: var(--color-worldbar);
+    border-color: var(--color-worldbar);
+  }
+
+  .wb-row__check input:checked + .wb-row__box::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid var(--color-on-worldbar);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+
+  .wb-row__check input:focus-visible + .wb-row__box {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .wb-row__name {
+    grid-area: name;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .wb-row__time {
+    grid-area: time;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .wb-row__date {
+    grid-area: date;
+  }
+
+  /* 24-hour bars: working hours in the accent, the playhead as a thin rule. */
+  .wb-row__bar {
+    --head: 58%;
+    grid-area: bar;
+    position: relative;
+    height: 10px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: var(--color-surface-hover);
+    overflow: hidden;
+  }
+
+  .wb-row__bar :global(.seg) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: color-mix(in srgb, var(--color-worldbar) 80%, transparent);
+    border-radius: 999px;
+  }
+
+  .wb-row__bar :global(.seg--all) {
+    background: #3fbf5f;
+    box-shadow: 0 0 18px #3fbf5f;
+  }
+
+  .wb-row__bar::after {
+    content: '';
+    position: absolute;
+    left: var(--head);
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-foreground);
+  }
+
+  .wb-demo__overlap {
+    display: grid;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  /* Not inside the row grid: it has no "bar" area to place into. */
+  .wb-demo__overlap .wb-row__bar {
+    grid-area: auto;
+    margin-top: 0;
+  }
+
+  .wb-demo__overlap-label {
+    color: var(--color-muted);
+  }
+
+  .wb-demo__result {
+    margin: 18px 0 8px;
+    font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .wb-demo__note {
+    margin: 0;
+  }
+
+  /* ================= Scroll story ================= */
+
+  .wb-story {
+    position: relative;
+    margin-top: 112px;
+    border-block: var(--border-hairline) solid var(--color-border);
+  }
+
+  .wb-story__sticky {
+    display: none;
+  }
+
+  .wb-story__stack {
+    list-style: none;
+    margin: 0;
+    padding: 56px var(--pad);
+    display: grid;
+    gap: 56px;
+    max-width: 640px;
+    margin-inline: auto;
+  }
+
+  .wb-story__stack li {
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+  }
+
+  .wb-story__stack img {
+    width: min(100%, 380px);
+    height: auto;
+    margin-top: 12px;
+    border-radius: 14px;
+    box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--color-worldbar) 60%, transparent);
+  }
+
+  .wb-step__num {
+    color: var(--color-muted);
+  }
+
+  .wb-step__title {
+    font-size: 26px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  /* Screenshots follow the site theme (dark unless the visitor chose light). */
+  .wb-theme-light {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .wb-theme-dark {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .wb-theme-light {
+    display: block;
+  }
+
+  /* With scripts on, wide screens get the pinned story and the stacked copy hides. */
+  @media (min-width: 1024px) and (min-height: 640px) {
+    :global(html[data-wb-js]) .wb-story {
+      height: 420vh;
+    }
+
+    :global(html[data-wb-js]) .wb-story__sticky {
+      display: block;
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+    }
+
+    :global(html[data-wb-js]) .wb-story__stack {
+      display: none;
+    }
+
+    .wb-story__grid {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: center;
+      gap: var(--gutter-lg);
+    }
+
+    .wb-story__copy .wb-h2 {
+      margin-bottom: 36px;
+    }
+
+    .wb-steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0;
+    }
+
+    .wb-step {
+      display: grid;
+      gap: 6px;
+      padding-block: 18px;
+      border-top: var(--border-hairline) solid var(--color-border);
+      opacity: 0.32;
+      transition: opacity 0.35s var(--ease-entrance);
+    }
+
+    .wb-step.is-active {
+      opacity: 1;
+    }
+
+    .wb-step__text {
+      color: var(--color-muted);
+      max-width: 44ch;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s var(--ease-entrance);
+    }
+
+    .wb-step.is-active .wb-step__text {
+      max-height: 8em;
+    }
+
+    .wb-story__rule {
+      margin-top: 24px;
+      height: 2px;
+      background: var(--color-border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .wb-story__rule span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+      background: var(--color-worldbar);
+    }
+
+    .wb-stage {
+      position: relative;
+      height: min(82svh, 760px);
+      display: grid;
+      place-items: center;
+    }
+
+    .wb-stage__glow {
+      position: absolute;
+      inset: 4% 8%;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--color-worldbar) 45%, transparent), transparent);
+      filter: blur(30px);
+    }
+
+    .wb-stage__frame {
+      position: relative;
+      height: 100%;
+      aspect-ratio: 756 / 1000;
+      max-width: 100%;
+      overflow: hidden;
+      border-radius: 22px;
+      box-shadow:
+        0 50px 90px -30px rgba(0, 0, 0, 0.7),
+        0 0 0 1px var(--color-border),
+        0 0 80px -20px color-mix(in srgb, var(--color-worldbar) 55%, transparent);
+      background: var(--color-surface);
+      transform: perspective(1600px) rotateY(var(--ry, -8deg)) rotateX(var(--rx, 3deg));
+      transition: transform 0.6s var(--ease-entrance);
+    }
+
+    .wb-shot {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.45s var(--ease-entrance);
+    }
+
+    .wb-shot.is-active {
+      opacity: 1;
+    }
+
+    .wb-shot img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: auto;
+      transform: translateY(var(--sy, 0%));
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* An outline that glides to the part of the screen being described. */
+    .wb-ring {
+      position: absolute;
+      left: 3%;
+      width: 94%;
+      top: var(--ring-top, 6%);
+      height: var(--ring-h, 40%);
+      border-radius: 14px;
+      border: 2px solid var(--color-worldbar);
+      box-shadow:
+        0 0 0 6px color-mix(in srgb, var(--color-worldbar) 22%, transparent),
+        0 0 40px color-mix(in srgb, var(--color-worldbar) 55%, transparent);
+      opacity: var(--ring-o, 0);
+      transition:
+        top 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        height 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.3s var(--ease-entrance);
+      pointer-events: none;
+    }
+  }
+
+  /* ================= Bento ================= */
+
+  .wb-bento {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--gutter);
+  }
+
+  .wb-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 24px;
+    min-height: 260px;
+    overflow: hidden;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 20px;
+    background:
+      radial-gradient(80% 70% at 100% 0%, color-mix(in srgb, var(--color-worldbar) 13%, transparent), transparent 62%),
+      var(--color-surface);
+    transition:
+      transform 0.25s var(--ease-entrance),
+      box-shadow 0.25s var(--ease-entrance),
+      border-color 0.25s var(--ease-entrance);
+  }
+
+  .wb-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--color-worldbar) 55%, var(--color-border));
+    box-shadow: 0 30px 60px -28px color-mix(in srgb, var(--color-worldbar) 60%, transparent);
+  }
+
+  .wb-card__n {
+    color: var(--color-muted);
+  }
+
+  .wb-card__title {
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    max-width: 18ch;
+  }
+
+  .wb-card__text {
+    color: var(--color-muted);
+    max-width: 38ch;
+  }
+
+  @media (min-width: 900px) {
+    .wb-bento {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-flow: dense;
+    }
+
+    .wb-card--wide {
+      grid-column: span 2;
+    }
+
+    .wb-card--tall {
+      grid-row: span 2;
+    }
+  }
+
+  /* Menu bar styles: little menu bars with live times. */
+  .wb-bars {
+    margin-top: auto;
+    display: grid;
+    gap: 8px;
+    padding-top: 12px;
+  }
+
+  .wb-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: #f2f2f2;
+    background: rgba(40, 40, 44, 0.92);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 10px 24px -12px rgba(0, 0, 0, 0.7);
+  }
+
+  .wb-bar i {
+    font-style: normal;
+    opacity: 0.5;
+  }
+
+  /* Light/dark wipe, driven by scroll. */
+  .wb-wipe {
+    --wipe: 0%;
+    position: relative;
+    margin-top: 12px;
+    margin-bottom: -60px;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--color-worldbar) 65%, transparent);
+  }
+
+  .wb-wipe img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .wb-wipe__top {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--wipe)) 0 0);
+  }
+
+  .wb-wipe__handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--wipe);
+    width: 3px;
+    margin-left: -1.5px;
+    background: var(--color-worldbar);
+    box-shadow: 0 0 18px var(--color-worldbar);
+  }
+
+  .wb-ticks {
+    list-style: none;
+    margin: auto 0 0;
+    padding: 12px 0 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .wb-ticks span {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border-radius: 50%;
+    font-size: 11px;
+    background: color-mix(in srgb, var(--color-worldbar) 24%, transparent);
+  }
+
+  .wb-chips {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 12px;
+  }
+
+  .wb-chips span {
+    padding: 7px 12px;
+    border: var(--border-strong) solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .wb-keys {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 22px;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+
+  .wb-keys kbd {
+    display: inline-block;
+    min-width: 28px;
+    margin-right: 4px;
+    padding: 5px 8px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-foreground);
+    border: var(--border-hairline) solid var(--color-border);
+    border-bottom-width: 3px;
+    border-radius: 8px;
+    background: var(--color-surface-hover);
+    transition: transform 0.12s var(--ease-entrance);
+  }
+
+  .wb-keys span:hover kbd {
+    transform: translateY(2px);
+  }
+
+  .wb-card--stat {
+    justify-content: flex-end;
+    background:
+      radial-gradient(90% 90% at 0% 100%, color-mix(in srgb, var(--color-worldbar) 55%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  .wb-stat {
+    font-size: clamp(4.5rem, 14vw, 8rem);
+    line-height: 0.9;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ================= Closing ================= */
+
+  .wb-end {
+    padding-block: 112px 120px;
+  }
+
+  .wb-facts {
+    list-style: none;
+    margin: 0 0 56px;
+    padding: var(--space-4) 0 0;
+    border-top: var(--border-hairline) solid var(--color-border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--gutter);
+    color: var(--color-muted);
+  }
+
+  .wb-facts li:not(:last-child)::after {
+    content: '·';
+    margin-left: var(--gutter);
+  }
+
+  .wb-end__title {
+    font-size: clamp(2.6rem, 9vw, 6.4rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    max-width: 12ch;
+    margin-bottom: 36px;
+  }
+
+  .wb-end__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .wb-btn--page {
+    color: var(--color-foreground);
+    border-color: var(--color-foreground);
+  }
+
+  /* Split headings: each line sits behind a mask while it rises. */
+  :global(.wb-line-mask) {
+    overflow: hidden;
+    padding-bottom: 0.08em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wb-card:hover {
+      transform: none;
+    }
+  }
+</style>

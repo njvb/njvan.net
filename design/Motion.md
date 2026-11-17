@@ -67,3 +67,19 @@ Rules for project moments:
 
 - `prefers-reduced-motion: reduce`: no scatter, wave, speak-in, particles, pinning or scrubbing. Elements fade in over `DURATION.component`. Accent washes are shown as static fields.
 - No script: the page renders its settled state. Nothing starts hidden unless a script is there to reveal it.
+
+## WorldBar page (`/worldbar/`)
+
+An app landing page, so it may use gradients, glows and shadows. Values are in `motion.ts` under `WORLDBAR`; the script is `src/scripts/worldbar-page.ts`.
+
+| Surface | Moment |
+|---|---|
+| Hero name | Letters drop in (rotate up from below, `animaxxing`), then a slow wave runs through them every few seconds. |
+| Isometric stack | Three plates cut from one real capture of the app fall in from high above, bottom plate first, and settle at the resting gap. They bob gently, follow the pointer (fine pointers only), close into the whole popover on hover or tap, and pull apart as the hero scrolls away. |
+| Clock pills | Real local times (Intl) drift around the stack; the little menu bars further down tick on the minute. |
+| Live demo | One sweep through the day plays the first time it is seen, then it settles on now. Dragging the slider or ticking a city recomputes the overlap. |
+| Story | Pinned on wide screens: steps on the left, the real screenshots on the right in a slowly turning frame, with an outline that glides to the part being described. Narrow screens and no-script get the same steps stacked. |
+| Details | Cards rise in as a batch; the light/dark wipe scrubs with the scroll; "194" counts up. |
+
+Everything that loops registers with the pause control (shared `motion-paused` key). Reduced motion shows the stack and everything else settled; the demo still works. No script: the page reads complete (the demo shows the 19 Nov example).
+

@@ -242,3 +242,29 @@ export const INDEX = {
   sweepGap: 0.3,
   sweep: 0.42,
 } as const;
+
+/**
+ * WorldBar's page (src/scripts/worldbar-page.ts). Gaps between the isometric slabs are
+ * fractions of the stack's width, so the stack looks the same at every size.
+ */
+export const WORLDBAR = {
+  /** "WorldBar" drops in letter by letter. */
+  letters: { stagger: 0.055, duration: 0.9, from: 115 },
+  /** The slabs fall in from high above, bottom plate first, and settle at the resting gap. */
+  stack: { introFrom: 1.1, introDuration: 1.25, introStagger: 0.17, delay: 0.45, rest: 0.085, scrollExplode: 0.3, assemble: 0 },
+  /** Hovering (or tapping) the stack closes the gaps; this is how long that takes. */
+  assembleDuration: 0.75,
+  /** The whole stack bobs gently. Pixels and seconds for one pass. */
+  float: { amplitude: 9, duration: 3.4 },
+  /** The stack follows the pointer: degrees of turn and tilt at the edge of the hero. */
+  parallax: { turn: 7, tilt: 5, follow: 0.7 },
+  /** Floating clock pills drift: pixels, then a min and max seconds per pass. */
+  chips: { drift: 11, duration: [2.6, 4.2] },
+  /** The demo plays one sweep through the day the first time it is seen: minutes from London midnight. */
+  sweep: { from: 330, to: 930, duration: 4.4 },
+  /** Scroll reveals: section copy and cards rise in. */
+  reveal: { y: 34, duration: 0.7, stagger: 0.08, start: 'top 85%' },
+  /** The pinned story: each step owns this share of the scroll. */
+  storySteps: 4,
+} as const;
+
