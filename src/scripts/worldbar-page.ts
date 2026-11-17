@@ -121,7 +121,7 @@ function setupHero() {
 
   // The stack is flat 2D: each plate gets one matrix (rotate, squash, lift) written every frame.
   // True 3D (preserve-3d) renders differently in Chrome and Safari once plates are clipped, so avoid it.
-  const BASE = { rx: 58, rz: -34 };
+  const BASE = { rx: 58, rz: 34 };
   // rx/rz are the pose (isometric, or near face-on when assembled); px/py are the pointer's nudge on top.
   const st = { rx: BASE.rx, rz: BASE.rz, y: 0, px: 0, py: 0 };
   // Gap between plates as a fraction of the stack's width; hover/tap assembles it, scroll explodes it.

@@ -602,11 +602,11 @@ const jsonLd = {
   /* One popover sliced into three plates. Each slab shows its band of the same capture.
      The isometric look is a flat 2D matrix per plate (no 3D context), set by the script on every
      frame. The rule below is the same matrix for the resting pose, for when scripts are off:
-     rotate -34deg, squash by cos 58deg, lift each plate by its index. */
+     rotate 34deg, squash by cos 58deg, lift each plate by its index. */
   .wb-slab {
     --a: 0.829;
-    --b: -0.2963;
-    --c: 0.559;
+    --b: 0.2963;
+    --c: -0.559;
     --d: 0.4393;
     --i: 0;
     /* Where the plate's top-left sits in the box, relative to the box centre. */
@@ -627,7 +627,7 @@ const jsonLd = {
         calc(50cqw + var(--a) * var(--dx) + var(--c) * var(--dy)),
         calc(51cqw + var(--b) * var(--dx) + var(--d) * var(--dy) - 6.12cqw - var(--i) * 7.2cqw)
       )
-      matrix(0.829, -0.2963, 0.559, 0.4393, 0, 0);
+      matrix(0.829, 0.2963, -0.559, 0.4393, 0, 0);
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, calc(0.22 * var(--lit))),
       0 3.2cqw 5cqw -1.5cqw rgba(3, 30, 80, calc(0.55 * var(--lit)));
@@ -715,10 +715,10 @@ const jsonLd = {
     font-variant-numeric: tabular-nums;
   }
 
-  .wb-chip--a { right: 2%; top: 14%; }
-  .wb-chip--b { left: 0%; top: 36%; }
-  .wb-chip--c { right: 0%; top: 58%; }
-  .wb-chip--d { left: 8%; top: 8%; }
+  .wb-chip--a { left: 34%; top: 1%; }
+  .wb-chip--b { left: 0%; top: 42%; }
+  .wb-chip--c { right: 0%; top: 52%; }
+  .wb-chip--d { left: 4%; top: 18%; }
 
   @media (min-width: 768px) {
     .wb-hero {
