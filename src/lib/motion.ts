@@ -254,6 +254,8 @@ export const WORLDBAR = {
   stack: { introFrom: 1.1, introDuration: 1.25, introStagger: 0.17, delay: 0.45, rest: 0.085, scrollExplode: 0.3, assemble: 0 },
   /** Hovering (or tapping) the stack closes the gaps; this is how long that takes. */
   assembleDuration: 0.75,
+  /** The assembled popover turns almost face-on (degrees), so the real app is easy to read. */
+  assemblePose: { rx: 6, rz: -4 },
   /** The whole stack bobs gently. Pixels and seconds for one pass. */
   float: { amplitude: 9, duration: 3.4 },
   /** The stack follows the pointer: degrees of turn and tilt at the edge of the hero. */

@@ -122,7 +122,8 @@ function setupHero() {
   // The stack is flat 2D: each plate gets one matrix (rotate, squash, lift) written every frame.
   // True 3D (preserve-3d) renders differently in Chrome and Safari once plates are clipped, so avoid it.
   const BASE = { rx: 58, rz: -34 };
-  const st = { rx: BASE.rx, rz: BASE.rz, y: 0 };
+  // rx/rz are the pose (isometric, or near face-on when assembled); px/py are the pointer's nudge on top.
+  const st = { rx: BASE.rx, rz: BASE.rz, y: 0, px: 0, py: 0 };
   // Gap between plates as a fraction of the stack's width; hover/tap assembles it, scroll explodes it.
   const gap: { base: number; scroll: number } = { base: WORLDBAR.stack.rest, scroll: 0 };
   const RAD = Math.PI / 180;
@@ -130,14 +131,14 @@ function setupHero() {
   const render = () => {
     const W = iso.clientWidth;
     const g = gap.base + gap.scroll;
-    const key = `${W}|${st.rx}|${st.rz}|${st.y}|${g}`;
+    const key = `${W}|${st.rx}|${st.rz}|${st.px}|${st.py}|${st.y}|${g}`;
     if (key === last) return;
     last = key;
     const H = W * 1.02;
     const cx = W / 2;
     const cy = H / 2;
-    const th = st.rz * RAD;
-    const ph = st.rx * RAD;
+    const th = (st.rz + st.px) * RAD;
+    const ph = (st.rx + st.py) * RAD;
     const a = Math.cos(th);
     const b = Math.sin(th) * Math.cos(ph);
     const c = -Math.sin(th);
@@ -204,18 +205,20 @@ function setupHero() {
 
   // Pointer parallax (fine pointers only).
   if (window.matchMedia('(pointer: fine)').matches) {
-    const rz = gsap.quickTo(st, 'rz', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
-    const rx = gsap.quickTo(st, 'rx', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
+    const rz = gsap.quickTo(st, 'px', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
+    const rx = gsap.quickTo(st, 'py', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
     hero.addEventListener('pointermove', (e) => {
       const r = hero.getBoundingClientRect();
       const nx = (e.clientX - r.left) / r.width - 0.5;
       const ny = (e.clientY - r.top) / r.height - 0.5;
-      rz(BASE.rz + nx * WORLDBAR.parallax.turn * 2);
-      rx(BASE.rx - ny * WORLDBAR.parallax.tilt * 2);
+      // Calmer while assembled, so the app stays easy to read.
+      const k = assembled ? 0.4 : 1;
+      rz(nx * WORLDBAR.parallax.turn * 2 * k);
+      rx(-ny * WORLDBAR.parallax.tilt * 2 * k);
     });
     hero.addEventListener('pointerleave', () => {
-      rz(BASE.rz);
-      rx(BASE.rx);
+      rz(0);
+      rx(0);
     });
   }
 
@@ -223,6 +226,9 @@ function setupHero() {
   let assembled = false;
   const assemble = (on: boolean) => {
     assembled = on;
+    // Closing the plates also turns the popover almost face-on, so it can be read.
+    const pose = on ? WORLDBAR.assemblePose : BASE;
+    gsap.to(st, { rx: pose.rx, rz: pose.rz, duration: WORLDBAR.assembleDuration, ease: 'animaxxing', overwrite: 'auto' });
     gsap.to(gap, {
       base: on ? WORLDBAR.stack.assemble : WORLDBAR.stack.rest,
       duration: WORLDBAR.assembleDuration,
