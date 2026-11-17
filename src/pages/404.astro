@@ -1,0 +1,41 @@
+---
+// The page GitHub Pages shows for any address that doesn't exist. Kept out of
+// search results and the sitemap. The header shows settled at once: there is no intro here.
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found · Nathan VanderByl" description="That page isn't here." noindex>
+  <Fragment slot="head">
+    <script is:inline>
+      (function () {
+        clearTimeout(window.__motionBootTimer);
+        document.documentElement.dataset.motionBoot = 'settled';
+        document.addEventListener('DOMContentLoaded', function () { document.body.dataset.phase = 'settled'; });
+      })();
+    </script>
+  </Fragment>
+
+  <section class="notfound">
+    <div class="shell notfound__inner">
+      <p class="t-caption muted">404</p>
+      <h1 class="t-statement">That page isn't here.</h1>
+      <p class="t-body">It may have moved, or the address has a typo.</p>
+      <a class="btn btn--lg btn--inverse" href="/">Back to njvan.net</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    min-height: 70svh;
+    display: grid;
+    align-items: center;
+    padding-block: 12svh;
+  }
+
+  .notfound__inner {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+</style>
