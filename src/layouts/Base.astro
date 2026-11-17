@@ -57,7 +57,9 @@ const imageUrl = image ? new URL(image, Astro.site).href : undefined;
       )
     }
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} sizes="48x48" />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
     <!--
       Apply a saved theme choice before first paint so there is no flash.
       Without one the page is dark, whatever the OS prefers.
