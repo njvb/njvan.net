@@ -75,10 +75,10 @@ An app landing page, so it may use gradients, glows and shadows. Values are in `
 | Surface | Moment |
 |---|---|
 | Hero name | Letters drop in (rotate up from below, `animaxxing`), then a slow wave runs through them every few seconds. |
-| Isometric stack | Three plates cut from one real capture of the app fall in from high above, bottom plate first, and settle at the resting gap. They bob gently, follow the pointer (fine pointers only), close into the whole popover on hover or tap, and pull apart as the hero scrolls away. |
+| Isometric stack | Three plates cut from one real capture of the app fall in from high above, bottom plate first, and settle at the resting gap. The stack is flat 2D: one matrix per plate (rotate, squash, lift) written each frame, no `preserve-3d`, so Chrome and Safari match; the gap closes to zero on assemble with square inner corners and no labels. They bob gently, follow the pointer (fine pointers only), close into the whole popover on hover or tap, and pull apart as the hero scrolls away. |
 | Clock pills | Real local times (Intl) drift around the stack; the little menu bars further down tick on the minute. |
-| Live demo | One sweep through the day plays the first time it is seen, then it settles on now. Dragging the slider or ticking a city recomputes the overlap. |
-| Story | Pinned on wide screens: steps on the left, the real screenshots on the right in a slowly turning frame, with an outline that glides to the part being described. Narrow screens and no-script get the same steps stacked. |
+| Live demo | The first time it is seen, the slider slides in one continuous move from early morning to the real time now, at a steady pace with no 15 minute steps and no jump at the end; it then follows the clock. Once dragged, it snaps to 15 minutes. Dragging the slider or ticking a city recomputes the overlap. |
+| Story | Pinned on wide screens: steps on the left, the real screenshots on the right in a slowly turning frame, with a spotlight: the rest of the capture dims and a soft-edged band glides to the part being described (the band comes from the capture's own pixel rows). Narrow screens and no-script get the same steps stacked. |
 | Details | Cards rise in as a batch; the light/dark wipe scrubs with the scroll; "194" counts up. |
 
 Everything that loops registers with the pause control (shared `motion-paused` key). Reduced motion shows the stack and everything else settled; the demo still works. No script: the page reads complete (the demo shows the 19 Nov example).
