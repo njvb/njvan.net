@@ -581,7 +581,7 @@ function setupDemo() {
         live = false;
         sweep = gsap.to(s, {
           v: target,
-          duration: clamp(Math.abs(target - s.v) / WORLDBAR.sweep.speed, 1.2, 6),
+          duration: clamp(Math.abs(target - s.v) / WORLDBAR.sweep.speed, 0.9, 3),
           ease: 'sine.inOut',
           onUpdate: () => update(s.v),
           onComplete: () => {
