@@ -116,13 +116,15 @@ function setupHero() {
   const hero = $<HTMLElement>('[data-wb-hero]');
   const iso = $<HTMLElement>('[data-wb-iso]');
   const floor = $<HTMLElement>('[data-wb-floor]');
+  const world = $<HTMLElement>('[data-wb-world]');
   const slabs = $$<HTMLElement>('[data-wb-slab]');
-  if (!hero || !iso || slabs.length === 0) return;
+  if (!hero || !iso || !world || slabs.length === 0) return;
 
   // The stack is flat 2D: each plate gets one matrix (rotate, squash, lift) written every frame.
   // True 3D (preserve-3d) renders differently in Chrome and Safari once plates are clipped, so avoid it.
-  const BASE = { rx: 58, rz: -34 };
-  const st = { rx: BASE.rx, rz: BASE.rz, y: 0 };
+  const BASE = { rx: 58, rz: 34 };
+  // rx/rz are the pose (isometric, or near face-on when assembled); px/py are the pointer's nudge on top.
+  const st = { rx: BASE.rx, rz: BASE.rz, y: 0, px: 0, py: 0 };
   // Gap between plates as a fraction of the stack's width; hover/tap assembles it, scroll explodes it.
   const gap: { base: number; scroll: number } = { base: WORLDBAR.stack.rest, scroll: 0 };
   const RAD = Math.PI / 180;
@@ -130,14 +132,14 @@ function setupHero() {
   const render = () => {
     const W = iso.clientWidth;
     const g = gap.base + gap.scroll;
-    const key = `${W}|${st.rx}|${st.rz}|${st.y}|${g}`;
+    const key = `${W}|${st.rx}|${st.rz}|${st.px}|${st.py}|${st.y}|${g}`;
     if (key === last) return;
     last = key;
     const H = W * 1.02;
     const cx = W / 2;
     const cy = H / 2;
-    const th = st.rz * RAD;
-    const ph = st.rx * RAD;
+    const th = (st.rz + st.px) * RAD;
+    const ph = (st.rx + st.py) * RAD;
     const a = Math.cos(th);
     const b = Math.sin(th) * Math.cos(ph);
     const c = -Math.sin(th);
@@ -164,7 +166,14 @@ function setupHero() {
   render();
   window.addEventListener('resize', render);
 
-  if (reduced) return;
+  if (reduced) {
+    // Reduced motion: show the finished state straight away, the popover assembled and almost face-on.
+    gap.base = WORLDBAR.stack.assemble;
+    st.rx = WORLDBAR.assemblePose.rx;
+    st.rz = WORLDBAR.assemblePose.rz;
+    render();
+    return;
+  }
   gsap.ticker.add(render);
 
   // Intro: the plates fall in from high above, bottom plate first.
@@ -204,25 +213,40 @@ function setupHero() {
 
   // Pointer parallax (fine pointers only).
   if (window.matchMedia('(pointer: fine)').matches) {
-    const rz = gsap.quickTo(st, 'rz', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
-    const rx = gsap.quickTo(st, 'rx', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
+    const rz = gsap.quickTo(st, 'px', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
+    const rx = gsap.quickTo(st, 'py', { duration: WORLDBAR.parallax.follow, ease: 'power3.out' });
     hero.addEventListener('pointermove', (e) => {
       const r = hero.getBoundingClientRect();
       const nx = (e.clientX - r.left) / r.width - 0.5;
       const ny = (e.clientY - r.top) / r.height - 0.5;
-      rz(BASE.rz + nx * WORLDBAR.parallax.turn * 2);
-      rx(BASE.rx - ny * WORLDBAR.parallax.tilt * 2);
+      // Calmer while assembled, so the app stays easy to read.
+      const k = assembled ? 0.4 : 1;
+      rz(nx * WORLDBAR.parallax.turn * 2 * k);
+      rx(-ny * WORLDBAR.parallax.tilt * 2 * k);
     });
     hero.addEventListener('pointerleave', () => {
-      rz(BASE.rz);
-      rx(BASE.rx);
+      rz(0);
+      rx(0);
     });
   }
 
-  // Hover (mouse) or tap (touch) closes the gaps: the stack becomes the whole popover.
+  // The plates fall in segmented and angled, then close into the whole popover (almost face-on) so the
+  // app can be read. Hovering (mouse) or tapping (touch) pulls them apart again to show the layers.
   let assembled = false;
+  let ready = false;
   const assemble = (on: boolean) => {
     assembled = on;
+    // Closing the plates also turns the popover almost face-on, so it can be read.
+    const pose = on ? WORLDBAR.assemblePose : BASE;
+    gsap.to(st, { rx: pose.rx, rz: pose.rz, duration: WORLDBAR.assembleDuration, ease: 'animaxxing', overwrite: 'auto' });
+    // A small settle as the plates lock together.
+    if (on) {
+      gsap.fromTo(
+        world,
+        { scale: 1 },
+        { scale: 1.012, duration: 0.14, ease: 'power2.out', yoyo: true, repeat: 1, delay: WORLDBAR.assembleDuration * 0.8, overwrite: true },
+      );
+    }
     gsap.to(gap, {
       base: on ? WORLDBAR.stack.assemble : WORLDBAR.stack.rest,
       duration: WORLDBAR.assembleDuration,
@@ -231,11 +255,19 @@ function setupHero() {
     });
   };
   const visual = $<HTMLElement>('.wb-hero__visual');
-  visual?.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && assemble(true));
-  visual?.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && assemble(false));
+  visual?.addEventListener('pointerenter', (e) => ready && e.pointerType === 'mouse' && assemble(false));
+  visual?.addEventListener('pointerleave', (e) => ready && e.pointerType === 'mouse' && assemble(true));
   visual?.addEventListener('click', (e) => {
-    if ((e as PointerEvent).pointerType !== 'mouse') assemble(!assembled);
+    if (ready && (e as PointerEvent).pointerType !== 'mouse') assemble(!assembled);
   });
+  intro.call(
+    () => {
+      assemble(true);
+      ready = true;
+    },
+    undefined,
+    WORLDBAR.stack.introDuration + WORLDBAR.stack.settle,
+  );
 
   // Scrolling away pulls the plates apart and turns the stack.
   ScrollTrigger.create({
@@ -607,7 +639,7 @@ function setupStory() {
     }
   };
 
-  ScrollTrigger.create({
+  const trigger = ScrollTrigger.create({
     trigger: story,
     start: 'top top',
     end: 'bottom bottom',
@@ -621,6 +653,23 @@ function setupStory() {
     },
   });
   show(0);
+
+  // Each step is a button: it scrolls the pinned story to the middle of that step's share.
+  steps.forEach((el, i) => {
+    el.setAttribute('role', 'button');
+    el.tabIndex = 0;
+    const go = () => {
+      const top = trigger.start + (trigger.end - trigger.start) * ((i + 0.5) / N);
+      window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
+    };
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        go();
+      }
+    });
+  });
 }
 
 /* ---------------------------------------------------------------------------------------------
