@@ -597,6 +597,10 @@ const jsonLd = {
   .wb-iso__world {
     position: absolute;
     inset: 0;
+    /* One shadow for the whole popover once the plates have locked together (the per-plate shadows
+       fade out as they close, so no shadow lines show between them). */
+    filter: drop-shadow(0 3.4cqw 4.4cqw rgba(3, 30, 80, calc(0.5 * (1 - var(--lit, 1)))))
+      drop-shadow(0 0.5cqw 1cqw rgba(3, 30, 80, calc(0.35 * (1 - var(--lit, 1)))));
   }
 
   /* One popover sliced into three plates. Each slab shows its band of the same capture.

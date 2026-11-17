@@ -116,8 +116,9 @@ function setupHero() {
   const hero = $<HTMLElement>('[data-wb-hero]');
   const iso = $<HTMLElement>('[data-wb-iso]');
   const floor = $<HTMLElement>('[data-wb-floor]');
+  const world = $<HTMLElement>('[data-wb-world]');
   const slabs = $$<HTMLElement>('[data-wb-slab]');
-  if (!hero || !iso || slabs.length === 0) return;
+  if (!hero || !iso || !world || slabs.length === 0) return;
 
   // The stack is flat 2D: each plate gets one matrix (rotate, squash, lift) written every frame.
   // True 3D (preserve-3d) renders differently in Chrome and Safari once plates are clipped, so avoid it.
@@ -238,6 +239,14 @@ function setupHero() {
     // Closing the plates also turns the popover almost face-on, so it can be read.
     const pose = on ? WORLDBAR.assemblePose : BASE;
     gsap.to(st, { rx: pose.rx, rz: pose.rz, duration: WORLDBAR.assembleDuration, ease: 'animaxxing', overwrite: 'auto' });
+    // A small settle as the plates lock together.
+    if (on) {
+      gsap.fromTo(
+        world,
+        { scale: 1 },
+        { scale: 1.012, duration: 0.14, ease: 'power2.out', yoyo: true, repeat: 1, delay: WORLDBAR.assembleDuration * 0.8, overwrite: true },
+      );
+    }
     gsap.to(gap, {
       base: on ? WORLDBAR.stack.assemble : WORLDBAR.stack.rest,
       duration: WORLDBAR.assembleDuration,
