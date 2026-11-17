@@ -619,7 +619,6 @@ const jsonLd = {
     /* Square corners where plates meet, rounded where the plate is an outside edge. */
     --ro: 1.6cqw;
     --ri: calc(1.6cqw * var(--open, 1));
-    --lit: 1;
     position: absolute;
     left: 0;
     top: 0;
@@ -633,8 +632,8 @@ const jsonLd = {
       )
       matrix(0.829, 0.2963, -0.559, 0.4393, 0, 0);
     box-shadow:
-      0 0 0 1px rgba(255, 255, 255, calc(0.22 * var(--lit))),
-      0 3.2cqw 5cqw -1.5cqw rgba(3, 30, 80, calc(0.55 * var(--lit)));
+      0 0 0 1px rgba(255, 255, 255, calc(0.22 * var(--lit, 1))),
+      0 3.2cqw 5cqw -1.5cqw rgba(3, 30, 80, calc(0.55 * var(--lit, 1)));
     background: #323234;
   }
 
