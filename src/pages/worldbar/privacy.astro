@@ -1,0 +1,158 @@
+---
+// WorldBar's privacy policy: the Privacy Policy URL for the App Store listing.
+// It describes only what the app does. Keep it in step with the app if that changes.
+import Base from '../../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+const EMAIL = 'njvanderbyl@gmail.com';
+---
+
+<Base
+  title="Privacy policy · WorldBar"
+  description="WorldBar collects no personal data, has no accounts and makes no network requests. Your cities and preferences stay on your Mac."
+  image="/og/worldbar.jpg"
+  imageAlt="WorldBar: every timezone, one glance"
+>
+  <article class="doc shell">
+    <p class="doc__crumb t-annotation"><a href={`${base}worldbar/`}>WorldBar</a> · Privacy</p>
+    <h1 class="doc__title">Privacy policy</h1>
+    <p class="doc__meta t-annotation">Effective 17 November 2026 · Applies to the WorldBar app for Mac</p>
+
+    <div class="doc__panel">
+      <p>
+        <strong>The short version.</strong> WorldBar has no accounts and no servers of its own. It does not collect,
+        send or share any personal data, and it asks for no permissions. Your cities and settings stay on your Mac.
+      </p>
+    </div>
+
+    <h2>1. Who I am</h2>
+    <p>
+      WorldBar is made and published by an independent developer, Nathan VanderByl. Contact:
+      <a href={`mailto:${EMAIL}?subject=WorldBar%20privacy`}>{EMAIL}</a>.
+    </p>
+
+    <h2>2. What WorldBar does not do</h2>
+    <p>
+      It has no sign-in, no analytics, no advertising, no crash reporting and no tracking of any kind. The app runs
+      in the macOS App Sandbox without network access, so it cannot send anything off your Mac. Time zone
+      calculations and the list of cities are built into the app and work offline.
+    </p>
+
+    <h2>3. What is stored on your Mac</h2>
+    <p>
+      Your chosen cities and their order, your home city, your time format, appearance and menu bar choices, and your
+      meeting preferences (duration, working hours, which cities take part). These are saved in the app's own
+      preferences inside its sandbox container. Deleting the app's data removes them. They are never synced or uploaded.
+    </p>
+
+    <h2>4. Permissions</h2>
+    <p>
+      WorldBar does not request access to your calendar, contacts, location, files, photos, camera or microphone.
+    </p>
+
+    <h2>5. Creating a calendar event</h2>
+    <p>
+      When you click "Create calendar event…", WorldBar writes a small event file (the meeting's date and time, and
+      the times in the cities you selected) to its temporary folder and opens it in the app you chose: Calendar or
+      Outlook. You review the event there and decide whether to save it. WorldBar does not read your calendar and
+      never creates an event on its own.
+    </p>
+    <p>
+      If you choose "Outlook on the web" in Settings, WorldBar opens a Microsoft Outlook link in your default browser
+      with the same meeting details in the address. That is the only case where meeting details leave your Mac, it
+      happens only when you click, and Microsoft's own privacy policy then applies to what you do on their page.
+    </p>
+
+    <h2>6. Launch at login</h2>
+    <p>
+      If you turn this on, WorldBar uses the macOS login item system. That setting is managed by macOS and is
+      visible in System Settings, General, Login Items.
+    </p>
+
+    <h2>7. Children</h2>
+    <p>WorldBar collects no data from anyone, including children.</p>
+
+    <h2>8. Changes</h2>
+    <p>
+      If WorldBar ever changes how it handles data, I will update this page and the effective date above before the
+      change ships.
+    </p>
+
+    <h2>9. Questions</h2>
+    <p>Email <a href={`mailto:${EMAIL}?subject=WorldBar%20privacy`}>{EMAIL}</a>.</p>
+
+    <p class="doc__links t-annotation">
+      <a href={`${base}worldbar/`}>WorldBar</a> · <a href={`${base}worldbar/support/`}>Support</a>
+    </p>
+  </article>
+</Base>
+
+<style>
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .doc {
+    padding-block: 56px 112px;
+    max-width: calc(820px + 2 * var(--pad));
+  }
+
+  .doc__crumb {
+    color: var(--color-muted);
+    margin-bottom: 18px;
+  }
+
+  .doc__crumb a {
+    text-decoration: none;
+  }
+
+  .doc__crumb a:hover {
+    text-decoration: underline;
+  }
+
+  .doc__title {
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .doc__meta {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+  }
+
+  .doc__panel {
+    padding: 20px 22px;
+    margin-bottom: 40px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-left: 4px solid var(--color-worldbar);
+    border-radius: 14px;
+    background:
+      radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--color-worldbar) 14%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  h2 {
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 36px 0 10px;
+  }
+
+  article p {
+    max-width: 66ch;
+    margin: 0 0 14px;
+  }
+
+  .doc__links {
+    margin-top: 48px;
+    color: var(--color-muted);
+  }
+</style>

@@ -43,7 +43,7 @@ Rules for accents:
 - **Accents are fields, not text.** Use them as full-bleed washes, highlights, drawn lines and progress rules. Text on an accent uses its `on-` token. In the light theme no text takes an accent, Kora's violet included; hover and focus keep text in ink and put the accent in a rule.
 - **Cotrip uses coral, not its brand violet,** so it never reads as Kora.
 - The four accents differ in lightness as well as hue (gold lightest, violet darkest), so they stay distinct for colour-blind visitors.
-- No gradients, glows or shadows. Depth comes from hairlines and from colour taking over the page.
+- No gradients, glows or shadows on the homepage and the shell. Depth comes from hairlines and from colour taking over the page. **App-specific landing pages (`/worldbar/`, and any like it) may use gradients, glows and shadows**; they still use the shared type, layout and tokens, and one accent per page. (Nathan's call, 17 Nov 2026: the flat rule was for the homepage only.)
 
 ### Type
 
