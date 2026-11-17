@@ -165,7 +165,14 @@ function setupHero() {
   render();
   window.addEventListener('resize', render);
 
-  if (reduced) return;
+  if (reduced) {
+    // Reduced motion: show the finished state straight away, the popover assembled and almost face-on.
+    gap.base = WORLDBAR.stack.assemble;
+    st.rx = WORLDBAR.assemblePose.rx;
+    st.rz = WORLDBAR.assemblePose.rz;
+    render();
+    return;
+  }
   gsap.ticker.add(render);
 
   // Intro: the plates fall in from high above, bottom plate first.
@@ -222,8 +229,10 @@ function setupHero() {
     });
   }
 
-  // Hover (mouse) or tap (touch) closes the gaps: the stack becomes the whole popover.
+  // The plates fall in segmented and angled, then close into the whole popover (almost face-on) so the
+  // app can be read. Hovering (mouse) or tapping (touch) pulls them apart again to show the layers.
   let assembled = false;
+  let ready = false;
   const assemble = (on: boolean) => {
     assembled = on;
     // Closing the plates also turns the popover almost face-on, so it can be read.
@@ -237,11 +246,19 @@ function setupHero() {
     });
   };
   const visual = $<HTMLElement>('.wb-hero__visual');
-  visual?.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && assemble(true));
-  visual?.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && assemble(false));
+  visual?.addEventListener('pointerenter', (e) => ready && e.pointerType === 'mouse' && assemble(false));
+  visual?.addEventListener('pointerleave', (e) => ready && e.pointerType === 'mouse' && assemble(true));
   visual?.addEventListener('click', (e) => {
-    if ((e as PointerEvent).pointerType !== 'mouse') assemble(!assembled);
+    if (ready && (e as PointerEvent).pointerType !== 'mouse') assemble(!assembled);
   });
+  intro.call(
+    () => {
+      assemble(true);
+      ready = true;
+    },
+    undefined,
+    WORLDBAR.stack.introDuration + WORLDBAR.stack.settle,
+  );
 
   // Scrolling away pulls the plates apart and turns the stack.
   ScrollTrigger.create({
