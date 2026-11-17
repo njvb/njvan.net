@@ -607,7 +607,7 @@ function setupStory() {
     }
   };
 
-  ScrollTrigger.create({
+  const trigger = ScrollTrigger.create({
     trigger: story,
     start: 'top top',
     end: 'bottom bottom',
@@ -621,6 +621,23 @@ function setupStory() {
     },
   });
   show(0);
+
+  // Each step is a button: it scrolls the pinned story to the middle of that step's share.
+  steps.forEach((el, i) => {
+    el.setAttribute('role', 'button');
+    el.tabIndex = 0;
+    const go = () => {
+      const top = trigger.start + (trigger.end - trigger.start) * ((i + 0.5) / N);
+      window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
+    };
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        go();
+      }
+    });
+  });
 }
 
 /* ---------------------------------------------------------------------------------------------
