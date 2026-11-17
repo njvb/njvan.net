@@ -60,7 +60,26 @@ Show Nathan each step running locally (`npm run dev`) before moving on. He tunes
 
 ## Deploy
 
-GitHub Pages from this repo with the official Astro GitHub Action, custom domain `njvan.net` (add `public/CNAME` containing `njvan.net`). DNS for njvan.net is still at HostGator and is being moved to Cloudflare; Nathan will point the domain once the site is ready. Do not change any DNS from here.
+The site is live at https://njvan.net on GitHub Pages, built by the official Astro action (`.github/workflows/deploy.yml`) on every push to `main`. `public/CNAME` holds `njvan.net` and HTTPS is enforced. There are no `SITE` or `BASE` overrides: assets load from the site root.
+
+- Work on `site-build` and open a PR to `main`. Merging deploys to the live site, so merge only when Nathan says to.
+- Check the deploy afterwards: the run succeeds, and the changed files return 200 on njvan.net.
+
+## Domain and mail
+
+- **njvan.net** is registered through iwantmyname, and its DNS is hosted there: the four GitHub Pages A records and four AAAA records, `www` as a CNAME to `njvb.github.io`, and iCloud's MX, SPF, DKIM (`sig1._domainkey`) and `apple-domain` records. HostGator's old zone for it was edited to match, so any resolver that still asks HostGator gets the same answers. The HostGator hosting is being cancelled.
+- **Mail** for njvan.net runs on iCloud+ as a custom domain (hello@ and i.am@). SPF and DKIM pass.
+- **epilogue.com.au** is registered and hosted at GoDaddy. Its mail is on iCloud, and it forwards with a 301 to https://njvan.net.
+- Ask Nathan before changing any DNS. Keep the iCloud and GitHub Pages records above intact, or mail or the site stops.
+
+## SEO and social
+
+- Every page uses `src/layouts/Base.astro`, which writes the title, description, canonical URL, Open Graph and Twitter tags. Pass `image` (1200 x 630, a path from the site root), `imageAlt`, `jsonLd` and `noindex` as needed. A new page needs its own title, description and image.
+- Share images: `public/og/home.jpg`, `public/og/tavren.jpg` and `public/campaign-tower/img/share.jpg`. The first two were rendered in Chrome from HTML using the site's fonts and colours; redo them if the name, tagline or Tavren wordmark changes.
+- Structured data: `Person` and `WebSite` on the home page (LinkedIn comes from `contact` in `src/data/projects.ts`), `SoftwareApplication` on Tavren and Campaign Tower. Add only facts that are on the page.
+- The sitemap comes from `@astrojs/sitemap` (`/sitemap-index.xml`) and `public/robots.txt` points to it. New pages are included automatically. The 404 page is `noindex` and left out.
+- Google Search Console is verified by the `google-site-verification` meta tag in `Base.astro` (URL prefix property `https://njvan.net/`). Keep the tag.
+- Icons: `public/favicon.svg` (the "N" tile), plus `favicon.ico` and `apple-touch-icon.png` made from it. Redo the two if the SVG changes.
 
 ## Writing rules
 
