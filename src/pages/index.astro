@@ -8,6 +8,7 @@ import KoraPanels from '../components/scenes/KoraPanels.astro';
 import CotripRoute from '../components/scenes/CotripRoute.astro';
 import TowerPhone from '../components/scenes/TowerPhone.astro';
 import TowerBackdrop from '../components/scenes/TowerBackdrop.astro';
+import WorldbarBackdrop from '../components/scenes/WorldbarBackdrop.astro';
 import WorldbarStack from '../components/scenes/WorldbarStack.astro';
 import { projects, contact } from '../data/projects';
 
@@ -59,6 +60,7 @@ const jsonLd = {
       return (
         <Scene project={p} total={projects.length}>
           {p.id === 'tower' && <TowerBackdrop slot="backdrop" />}
+          {p.id === 'worldbar' && <WorldbarBackdrop slot="backdrop" />}
           <Visual />
         </Scene>
       );

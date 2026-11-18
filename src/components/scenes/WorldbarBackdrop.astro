@@ -1,0 +1,58 @@
+---
+// WorldBar's backdrop: the same field as the hero on /worldbar/ (soft light and deep blue
+// glows, two blurred orbs and a faint grid), laid over the scene's azure. It belongs to the
+// field, so it is clipped with the accent wash as the scene arrives and leaves.
+// Allowed here because it is an app's own look; the other scenes stay flat.
+---
+
+<div class="wb-backdrop" aria-hidden="true" data-scene-backdrop>
+  <span class="wb-backdrop__orb wb-backdrop__orb--a"></span>
+  <span class="wb-backdrop__orb wb-backdrop__orb--b"></span>
+  <span class="wb-backdrop__grid"></span>
+</div>
+
+<style>
+  .wb-backdrop {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 90% at 85% 10%, #b8dcff 0%, rgba(184, 220, 255, 0) 55%),
+      radial-gradient(90% 80% at 0% 100%, #2c86f0 0%, rgba(44, 134, 240, 0) 60%);
+  }
+
+  .wb-backdrop__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+  }
+
+  .wb-backdrop__orb--a {
+    width: 46vw;
+    height: 46vw;
+    right: -8vw;
+    top: -12vw;
+    background: #e7f3ff;
+  }
+
+  .wb-backdrop__orb--b {
+    width: 38vw;
+    height: 38vw;
+    left: -10vw;
+    bottom: -14vw;
+    background: #1f6fdc;
+  }
+
+  .wb-backdrop__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(10, 10, 10, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(80% 70% at 70% 45%, #000 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(80% 70% at 70% 45%, #000 0%, transparent 75%);
+  }
+</style>
