@@ -1511,6 +1511,17 @@ const jsonLd = {
     margin-left: var(--gutter);
   }
 
+  /* Wide enough for one line: spread the facts across the full width, with no dots between them. */
+  @media (min-width: 768px) {
+    .wb-facts {
+      justify-content: space-between;
+    }
+
+    .wb-facts li:not(:last-child)::after {
+      content: none;
+    }
+  }
+
   .wb-end__title {
     font-size: clamp(2.6rem, 9vw, 6.4rem);
     line-height: 0.95;
