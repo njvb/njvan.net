@@ -1,0 +1,179 @@
+---
+// A long-form page for a project: its privacy policy or support page (Tavren's).
+// The page supplies the body as the slot. WorldBar's two pages carry their own
+// copy of these styles; this layout is the shared version.
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  /** The project's name and page, for the crumb above the heading. */
+  project: string;
+  projectHref: string;
+  /** This page's name in the crumb, for example "Privacy". */
+  section: string;
+  heading: string;
+  /** A line under the heading, in small mono type (an effective date). */
+  meta?: string;
+  /** A line under the heading, in body type. */
+  lede?: string;
+  /** The project's accent colour, used only for the panel's rule and wash. */
+  accent: string;
+  links: { label: string; href: string; external?: boolean }[];
+}
+
+const { title, description, image, imageAlt, project, projectHref, section, heading, meta, lede, accent, links } =
+  Astro.props;
+---
+
+<Base title={title} description={description} image={image} imageAlt={imageAlt}>
+  <article class="doc shell" style={`--doc-accent:${accent}`}>
+    <p class="doc__crumb t-annotation"><a href={projectHref}>{project}</a> · {section}</p>
+    <h1 class="doc__title">{heading}</h1>
+    {meta && <p class="doc__meta t-annotation">{meta}</p>}
+    {lede && <p class="doc__lede t-body">{lede}</p>}
+    <slot />
+    <p class="doc__links t-annotation">
+      {
+        links.map((l, i) => (
+          <>
+            {i > 0 && ' · '}
+            <a href={l.href} {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}>
+              {l.label}
+              {l.external && ' ↗'}
+            </a>
+          </>
+        ))
+      }
+    </p>
+  </article>
+</Base>
+
+<style is:global>
+  /* These pages scroll freely and the header stays in the flow. */
+  html {
+    scroll-snap-type: none !important;
+  }
+
+  .site-header {
+    position: static !important;
+  }
+
+  .doc {
+    padding-block: 56px 112px;
+    max-width: calc(820px + 2 * var(--pad));
+  }
+
+  .doc__crumb {
+    color: var(--color-muted);
+    margin-bottom: 18px;
+  }
+
+  .doc__crumb a {
+    text-decoration: none;
+  }
+
+  .doc__crumb a:hover {
+    text-decoration: underline;
+  }
+
+  .doc__title {
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .doc__meta {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+  }
+
+  .doc__lede {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+    max-width: 66ch;
+  }
+
+  .doc__panel {
+    padding: 20px 22px;
+    margin-bottom: 40px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-left: 4px solid var(--doc-accent);
+    border-radius: 14px;
+    background:
+      radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--doc-accent) 14%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  .doc__panel p {
+    margin: 0 0 8px;
+  }
+
+  .doc__panel p:last-child {
+    margin-bottom: 0;
+  }
+
+  .doc h2 {
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 40px 0 10px;
+  }
+
+  .doc h3 {
+    font-size: 18px;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 26px 0 6px;
+  }
+
+  .doc p,
+  .doc ul {
+    max-width: 66ch;
+    margin: 0 0 14px;
+  }
+
+  .doc ul {
+    padding-left: 1.3em;
+  }
+
+  .doc li + li {
+    margin-top: 6px;
+  }
+
+  .doc details {
+    max-width: 66ch;
+    border-top: var(--border-hairline) solid var(--color-border);
+    padding: 14px 0;
+  }
+
+  .doc details:last-of-type {
+    border-bottom: var(--border-hairline) solid var(--color-border);
+  }
+
+  .doc summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .doc details > p {
+    margin: 10px 0 0;
+    color: var(--color-muted);
+  }
+
+  .doc__note {
+    color: var(--color-muted);
+    margin-top: 32px;
+  }
+
+  .doc__links {
+    margin-top: 48px;
+    color: var(--color-muted);
+  }
+</style>

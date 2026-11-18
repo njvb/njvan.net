@@ -1,0 +1,84 @@
+---
+// Tavren's support page: the Support URL for the App Store listing.
+// The text is the page as published with the game (the Mac mini's /support/ page),
+// moved here unchanged apart from the privacy link, which now points at this site.
+import Doc from '../../layouts/Doc.astro';
+
+const base = import.meta.env.BASE_URL;
+const PLAY = 'https://mac-mini.tail94f02c.ts.net/';
+---
+
+<Doc
+  title="Support · Tavren"
+  description="Help with Tavren, the hex-island game of settling, trading and building: how to play, online play, the tutorial and contact."
+  image="/og/tavren.jpg"
+  imageAlt="Tavren, a medieval hex-board strategy game"
+  project="Tavren"
+  projectHref={`${base}tavren/`}
+  section="Support"
+  heading="Support"
+  lede="Questions, problems or ideas about Tavren? The answers to the common ones are below, and you can always write to me."
+  accent="var(--color-tavren)"
+  links={[
+    { label: 'Tavren', href: `${base}tavren/` },
+    { label: 'Privacy policy', href: `${base}tavren/privacy/` },
+    { label: 'Play in your browser', href: PLAY, external: true },
+  ]}
+>
+    <div class="doc__panel">
+      <p><b>Contact</b></p>
+      <p>Email <a href="mailto:nathan@epilogue.com.au?subject=Tavren">nathan@epilogue.com.au</a></p>
+      <p>I read everything and usually reply within a few days. If something went wrong, say which device you're on and what happened just before.</p>
+    </div>
+
+    <h2>Frequently asked questions</h2>
+
+    <details open>
+      <summary>How do I play?</summary>
+      <p>Tavren is played on a small island of hexes. Each turn you roll the dice, and every village next to a hex showing that number collects its goods: grain, timber, stone or wool. Spend goods on roads, villages and upgrades (towns, castles, windmills, markets and more), trade with the other players or the bank, and be the first to reach the target score.</p>
+      <p>Tap <b>Rules</b> on the title screen, or the <b>?</b> button during a game, for the full rules and the cost of everything.</p>
+    </details>
+
+    <details>
+      <summary>Is there a tutorial?</summary>
+      <p>Yes. The first time you open Tavren, choose <b>Learn by playing</b>: a guided game of about five minutes that walks you through placing, rolling, building and trading. You can start it again at any time with <b>Tutorial</b> on the title screen.</p>
+    </details>
+
+    <details>
+      <summary>Can I play without an internet connection?</summary>
+      <p>Yes. Games against the computer (Easy, Normal or Hard) and pass-and-play games with friends on one device work completely offline. No account or sign-in is needed.</p>
+    </details>
+
+    <details>
+      <summary>How does online play work?</summary>
+      <p>In the iPhone and iPad app, <b>Play online</b> uses Apple's Game Center turn-based matches. Sign in to Game Center, then start a <b>New match</b> to invite friends through Messages or be matched with other players. Each player takes their turn when they like, and Game Center sends a notification when it's your move. Your matches in progress are under <b>Your games</b>. You can fill any seat with a computer player.</p>
+      <p>On the website, <b>Play online</b> hosts a room instead: share the four-letter code or invite link with friends to play together in the browser. App and website players can't join the same game.</p>
+    </details>
+
+    <details>
+      <summary>Game Center says I'm not signed in</summary>
+      <p>Open the Settings app, tap <b>Game Center</b> and sign in with your Apple Account, then return to Tavren. Achievements and leaderboards also need Game Center; everything else works without it.</p>
+    </details>
+
+    <details>
+      <summary>Does my progress sync between my devices?</summary>
+      <p>In the app, your record, settings and the game in progress are kept in your own iCloud account, so they follow you to your other iPhones and iPads signed in to the same Apple Account. Make sure iCloud is turned on for your device. The website keeps everything in your browser only.</p>
+    </details>
+
+    <details>
+      <summary>How do I reset my progress?</summary>
+      <p>There isn't a reset button in the game yet. On the website, clearing the site's data in your browser's settings starts you afresh. In the app, deleting Tavren removes everything it keeps on that device, but if iCloud is on, your record is also kept in your iCloud account and comes back when you reinstall. If you'd like a clean slate there, email me and I'll help.</p>
+      <p>Game Center achievements and leaderboard scores belong to your Game Center account and are managed by Apple.</p>
+    </details>
+
+    <details>
+      <summary>The board is too small or too big</summary>
+      <p>Pinch to zoom and drag to move around the island. Tap the corners button to see the whole island again. In the app, text follows your device's text size setting.</p>
+    </details>
+
+    <h2>Privacy</h2>
+    <p>Tavren has no ads, no tracking and no analytics. Read the <a href={`${base}tavren/privacy/`}>privacy policy</a> for the details.</p>
+
+    <p class="doc__note">Current version of the app: <b>1.0</b> for iPhone and iPad.</p>
+
+</Doc>

@@ -7,8 +7,8 @@ import TavrenBoard from '../components/scenes/TavrenBoard.astro';
 
 const APP_STORE = 'https://apps.apple.com/app/id6834014978';
 const PLAY = 'https://mac-mini.tail94f02c.ts.net/';
-const SUPPORT = 'https://mac-mini.tail94f02c.ts.net/support/';
-const PRIVACY = 'https://mac-mini.tail94f02c.ts.net/privacy/';
+const SUPPORT = `${import.meta.env.BASE_URL}tavren/support/`;
+const PRIVACY = `${import.meta.env.BASE_URL}tavren/privacy/`;
 const shots = `${import.meta.env.BASE_URL}assets/tavren/`;
 
 const steps = [
@@ -163,8 +163,8 @@ const jsonLd = {
     <h2 class="block__title" id="help-title">Help</h2>
     <div class="help__links">
       <a class="btn btn--lg btn--inverse" href={APP_STORE} target="_blank" rel="noopener">Get Tavren ↗</a>
-      <a class="btn btn--lg" href={SUPPORT} target="_blank" rel="noopener">Support ↗</a>
-      <a class="btn btn--lg" href={PRIVACY} target="_blank" rel="noopener">Privacy ↗</a>
+      <a class="btn btn--lg" href={SUPPORT}>Support</a>
+      <a class="btn btn--lg" href={PRIVACY}>Privacy</a>
     </div>
   </section>
 </Base>
