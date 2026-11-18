@@ -79,8 +79,42 @@ const site = 'https://njvan.net/';
 const shotUrls = ['popover-dark.png', 'popover-light.png', 'picker-dark.png', 'nooverlap-dark.png'].map(
   (f) => `${site}assets/worldbar/${f}`,
 );
-const jsonLd = {
-  '@context': 'https://schema.org',
+// Answers are taken from the support and privacy pages, so the three always agree.
+const faqs = [
+  {
+    q: 'Is WorldBar free?',
+    a: 'Yes. It is free, with no account to make.',
+  },
+  {
+    q: 'What do I need to run it?',
+    a: 'A Mac with Apple silicon running macOS 15 or later.',
+  },
+  {
+    q: 'How does it find a meeting time?',
+    a: 'You set working hours for each city, and WorldBar shows where they overlap. Green means everyone is inside their working hours. If nobody overlaps, it lists the three least inconvenient times and who pays for each one.',
+  },
+  {
+    q: 'Does it read my calendar?',
+    a: 'No. It only looks at working hours, never at your meetings, so a green window does not mean anyone is free. "Create calendar event" hands the meeting to Calendar or Outlook, and you review and save it there.',
+  },
+  {
+    q: 'Does it collect any data?',
+    a: 'No. There is no sign-in, no analytics, no ads and no tracking. The app runs in the macOS sandbox without network access, so it cannot send anything off your Mac.',
+  },
+  {
+    q: 'Does it work offline?',
+    a: 'Yes. The time zone rules and the list of 194 cities are built in, so searching and the calculations need no internet.',
+  },
+  {
+    q: 'How many cities can I add?',
+    a: 'Up to 8.',
+  },
+  {
+    q: 'Does it handle daylight saving?',
+    a: 'Yes. It uses the official time zone rules for the exact date you pick, so clock changes are right in every city.',
+  },
+];
+const softwareApp = {
   '@type': 'SoftwareApplication',
   name: 'WorldBar',
   applicationCategory: 'UtilitiesApplication',
@@ -100,6 +134,15 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   author: { '@type': 'Person', name: 'Nathan VanderByl', url: 'https://njvan.net/' },
 };
+const faqPage = {
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPage] };
 ---
 
 <Base
@@ -367,6 +410,26 @@ const jsonLd = {
   </section>
 
   <!-- ============ Closing ============ -->
+  <!-- ============ 04 · Questions (also the FAQPage structured data above) ============ -->
+  <section class="wb-section shell" aria-labelledby="wb-faq-title">
+    <p class="wb-eyebrow t-annotation" data-wb-reveal>04 · Questions</p>
+    <h2 class="wb-h2" id="wb-faq-title" data-wb-split>Common questions.</h2>
+    <dl class="wb-faq">
+      {
+        faqs.map((f) => (
+          <div class="wb-faq__item" data-wb-reveal>
+            <dt>{f.q}</dt>
+            <dd>{f.a}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="wb-faq__more t-annotation" data-wb-reveal>
+      More in the <a href={SUPPORT}>support pages</a> · How your data is handled is on the
+      <a href={PRIVACY}>privacy page</a>
+    </p>
+  </section>
+
   <section class="wb-end shell" aria-labelledby="wb-end-title">
     <ul class="wb-facts t-annotation" data-wb-reveal>
       {facts.map((f) => <li>{f}</li>)}
@@ -1531,6 +1594,46 @@ const jsonLd = {
   }
 
   /* ================= Closing ================= */
+
+  .wb-faq {
+    margin: 40px 0 0;
+    display: grid;
+    gap: 0 var(--gutter);
+  }
+
+  .wb-faq__item {
+    padding-block: 22px;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .wb-faq__item dt {
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 8px;
+  }
+
+  .wb-faq__item dd {
+    margin: 0;
+    max-width: 52ch;
+    color: var(--color-muted);
+  }
+
+  .wb-faq__more {
+    margin-top: 28px;
+    color: var(--color-muted);
+  }
+
+  .wb-faq__more a {
+    color: var(--color-foreground);
+  }
+
+  @media (min-width: 900px) {
+    .wb-faq {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 
   .wb-end {
     padding-block: 112px 120px;
