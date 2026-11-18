@@ -163,7 +163,7 @@ const jsonLd = {
     </div>
 
     <div class="shell wb-hero__meta t-annotation">
-      <span>Hover the stack to assemble it</span>
+      <span>Hover or tap the popover to see its layers</span>
       <!-- Pauses the looping float and wave (WCAG 2.2.2). Shown only when they run. -->
       <button class="wb-pause t-annotation" type="button" hidden data-wb-pause aria-pressed="false">Pause motion</button>
       <span aria-hidden="true">Scroll ↓</span>
@@ -568,17 +568,33 @@ const jsonLd = {
   .wb-hero__visual {
     min-width: 0;
     container-type: inline-size;
+    /* Single column: keep the popover (which rises a little above its box) clear of the copy. */
+    margin-top: 28px;
   }
 
   .wb-iso {
     --w: 54cqw;
+    --h: 102cqw;
     /* Plan height of the whole popover, and the top that centres it in the box. */
     --plan: calc(var(--w) * 1404 / 756);
-    --top0: calc((100cqw * 1.02 - var(--plan)) / 2);
+    --top0: calc((var(--h) - var(--plan)) / 2);
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1.02;
+    height: var(--h);
     touch-action: manipulation;
+  }
+
+  /* On a phone the stack gets a taller box and a wider popover, so the app is big enough to read. */
+  @media (max-width: 767px) {
+    .wb-iso {
+      --w: 66cqw;
+      --h: 128cqw;
+    }
+
+    /* The clock pills would sit on top of the popover at this size. */
+    .wb-iso .wb-chip {
+      display: none;
+    }
   }
 
   .wb-iso__floor {
@@ -615,7 +631,7 @@ const jsonLd = {
     --i: 0;
     /* Where the plate's top-left sits in the box, relative to the box centre. */
     --dx: calc(var(--w) / -2);
-    --dy: calc(var(--top) - 51cqw);
+    --dy: calc(var(--top) - var(--h) / 2);
     /* Square corners where plates meet, rounded where the plate is an outside edge. */
     --ro: 1.6cqw;
     --ri: calc(1.6cqw * var(--open, 1));
@@ -628,7 +644,7 @@ const jsonLd = {
     transform-origin: 0 0;
     transform: translate(
         calc(50cqw + var(--a) * var(--dx) + var(--c) * var(--dy)),
-        calc(51cqw + var(--b) * var(--dx) + var(--d) * var(--dy) - 6.12cqw - var(--i) * 7.2cqw)
+        calc(var(--h) / 2 + var(--b) * var(--dx) + var(--d) * var(--dy) - var(--h) * 0.06 - var(--i) * 7.2cqw)
       )
       matrix(0.829, 0.2963, -0.559, 0.4393, 0, 0);
     box-shadow:
@@ -753,6 +769,7 @@ const jsonLd = {
     }
 
     .wb-hero__visual {
+      margin-top: 0;
       grid-column: 6 / -1;
     }
   }

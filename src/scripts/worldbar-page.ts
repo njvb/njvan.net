@@ -135,7 +135,7 @@ function setupHero() {
     const key = `${W}|${st.rx}|${st.rz}|${st.px}|${st.py}|${st.y}|${g}`;
     if (key === last) return;
     last = key;
-    const H = W * 1.02;
+    const H = iso.clientHeight;
     const cx = W / 2;
     const cy = H / 2;
     const th = (st.rz + st.px) * RAD;
@@ -146,7 +146,7 @@ function setupHero() {
     const d = Math.cos(th) * Math.cos(ph);
     const lift = Math.sin(ph);
     // Plan geometry, matching the CSS: plate width, and where each band of the capture starts.
-    const w = W * 0.54;
+    const w = slabs[0].offsetWidth;
     const top0 = (H - (w * 1404) / 756) / 2;
     const tops = [top0 + (w * 842) / 756, top0 + (w * 640) / 756, top0];
     const dx = -w / 2;
@@ -272,9 +272,11 @@ function setupHero() {
   );
 
   // Scrolling away pulls the plates apart and turns the stack.
+  // It starts once the stack itself is leaving, so on a phone (stack below the copy) the popover is
+  // still whole when it scrolls into view.
   ScrollTrigger.create({
-    trigger: hero,
-    start: 'top top',
+    trigger: iso,
+    start: 'center 35%',
     end: 'bottom top',
     scrub: 0.6,
     onUpdate: (self) => {
