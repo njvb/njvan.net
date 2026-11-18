@@ -5,7 +5,7 @@
 // The rise and reveal are one paused GSAP timeline positioned by the scene's
 // moment (src/lib/moments.ts), so replays line up. The video loads as the scene
 // approaches, plays only once the moment reaches TOWER.playAt, and only while
-// the phone is on screen and "Pause motion" is off; it restarts on each visit.
+// the phone is on screen; it restarts on each visit.
 // Under reduced motion, or without JavaScript, the poster frame shows instead.
 import gsap from 'gsap';
 import { TOWER } from '../lib/motion';
@@ -19,7 +19,6 @@ export function mountTower(root: HTMLElement): void {
   const screen = root.querySelector<HTMLElement>('[data-tower-screen]');
   const video = root.querySelector<HTMLVideoElement>('[data-tower-video]');
   if (!id || !screen || !video) return;
-  const html = document.documentElement;
 
   // Load the video as the scene approaches, not with the page.
   const preload = new IntersectionObserver(
@@ -35,8 +34,7 @@ export function mountTower(root: HTMLElement): void {
 
   let p = 0;
   let onScreen = false;
-  const shouldPlay = () =>
-    !prefersReducedMotion() && p >= TOWER.playAt && onScreen && !html.hasAttribute('data-motion-paused');
+  const shouldPlay = () => !prefersReducedMotion() && p >= TOWER.playAt && onScreen;
   const sync = () => {
     if (shouldPlay()) {
       if (video.paused) void video.play().catch(() => {});
@@ -46,7 +44,6 @@ export function mountTower(root: HTMLElement): void {
     onScreen = entry?.isIntersecting ?? false;
     sync();
   }).observe(root);
-  new MutationObserver(sync).observe(html, { attributes: true, attributeFilter: ['data-motion-paused'] });
 
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
   const r = span(TOWER.rise);
