@@ -81,7 +81,7 @@ An app landing page, so it may use gradients, glows and shadows. Values are in `
 | Live demo | The first time it is seen, the slider slides in one continuous move from early morning to the real time now, at a steady pace with no 15 minute steps and no jump at the end; it then follows the clock. Once dragged, it snaps to 15 minutes. Dragging the slider or ticking a city recomputes the overlap. |
 | Story | Pinned on wide screens (each step is clickable and scrolls to its share): steps on the left, the real screenshots on the right in a slowly turning frame, with a spotlight: the rest of the capture dims and a soft-edged band glides to the part being described (the band comes from the capture's own pixel rows). Narrow screens and no-script get the same steps stacked. |
 | Details | Cards rise in as a batch; the light/dark wipe scrubs with the scroll; "194" counts up. |
-| Questions | Each question rises in as it enters view; the section also feeds the FAQPage structured data. |
+| Questions | As the section enters view, each item's top rule draws across, its number and question rise behind masks, then the answer fades up, staggered by row. Hovering an item draws an azure rule along its foot and nudges its number. The section also feeds the FAQPage structured data. The facts strip draws its rule then raises each fact; the closing buttons pop in one by one. Values are `WORLDBAR.faq`. |
 
 Everything that loops registers with the pause control (shared `motion-paused` key). Reduced motion shows the stack and everything else settled; the demo still works. No script: the page reads complete (the demo shows the 19 Nov example).
 

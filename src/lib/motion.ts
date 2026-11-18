@@ -289,6 +289,8 @@ export const WORLDBAR = {
   sweep: { from: 330, speed: 520 },
   /** Scroll reveals: section copy and cards rise in. */
   reveal: { y: 34, duration: 0.7, stagger: 0.08, start: 'top 85%' },
+  /** Common questions: each item's rule draws, its question rises behind a mask, then its answer. */
+  faq: { start: 'top 88%', stagger: 0.09, rule: 0.9, text: 0.7 },
   /** The pinned story: each step owns this share of the scroll. */
   storySteps: 4,
 } as const;
