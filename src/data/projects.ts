@@ -10,6 +10,8 @@ export interface ProjectLink {
   external?: boolean;
   /** Solid (primary) or outline. */
   variant: 'solid' | 'outline';
+  /** Show Apple's own badge instead of a text button (black, for a light or coloured field). */
+  badge?: 'mac-app-store';
 }
 
 export interface Project {
@@ -125,7 +127,7 @@ export const projects: Project[] = [
     links: [
       { label: 'See WorldBar', href: '/worldbar/', variant: 'solid' },
       // The listing returns 404 until Apple releases the app, so this branch waits for that.
-      { label: 'Mac App Store', href: 'https://apps.apple.com/app/id6836081075', external: true, variant: 'outline' },
+      { label: 'Download WorldBar on the Mac App Store', href: 'https://apps.apple.com/app/id6836081075', external: true, variant: 'outline', badge: 'mac-app-store' },
     ],
   },
 ];
