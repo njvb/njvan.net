@@ -122,8 +122,8 @@ export const projects: Project[] = [
     indexLine: "Find a time that works for everyone. A world clock and meeting planner in your Mac's menu bar.",
     indexStack: 'Menu bar · macOS',
     line: 'Find a time that works for everyone.',
-    more: 'A menu bar app for your Mac. Keep up to 8 cities one click away, drag through the day, and see who is awake.',
-    notes: ['macOS 15 or later · Apple silicon', 'No account · No tracking'],
+    more: 'A menu bar app for your Mac. Keep up to 8 cities one click away, drag through the day, and see when everyone is in working hours.',
+    notes: ['macOS 15 or later', 'No account · No tracking'],
     links: [
       { label: 'See WorldBar', href: '/worldbar/', variant: 'solid' },
       // The listing returns 404 until Apple releases the app, so this branch waits for that.
