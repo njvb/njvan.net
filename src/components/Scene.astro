@@ -277,7 +277,8 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
   }
 
   .scene-badge img {
-    height: 48px;
+    /* The scene's buttons are 40px tall, and so is Apple's badge as designed. */
+    height: 40px;
     width: auto;
   }
 
