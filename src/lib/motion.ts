@@ -265,7 +265,7 @@ export const WORLDBAR = {
   /** Floating clock pills drift: pixels, then a min and max seconds per pass. */
   chips: { drift: 11, duration: [2.6, 4.2] },
   /** The demo slides once from early morning to the real time now, the first time it is seen: start in minutes from London midnight, pace in minutes per second. */
-  sweep: { from: 330, speed: 240 },
+  sweep: { from: 330, speed: 520 },
   /** Scroll reveals: section copy and cards rise in. */
   reveal: { y: 34, duration: 0.7, stagger: 0.08, start: 'top 85%' },
   /** The pinned story: each step owns this share of the scroll. */
