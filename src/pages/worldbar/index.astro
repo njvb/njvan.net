@@ -1404,14 +1404,33 @@ const jsonLd = {
   }
 
   .wb-ticks span {
-    display: inline-grid;
-    place-items: center;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 26px;
+    height: 26px;
+    margin-right: 12px;
     border-radius: 50%;
-    font-size: 11px;
-    background: color-mix(in srgb, var(--color-worldbar) 24%, transparent);
+    /* A solid accent field with a bold cross drawn on it, so the "no" reads at a glance. */
+    background: var(--color-worldbar);
+    font-size: 0;
+  }
+
+  .wb-ticks span::before,
+  .wb-ticks span::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-on-worldbar);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .wb-ticks span::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
   }
 
   .wb-chips {
