@@ -122,7 +122,11 @@ export const projects: Project[] = [
     line: 'Find a time that works for everyone.',
     more: 'A menu bar app for your Mac. Keep up to 8 cities one click away, drag through the day, and see who is awake.',
     notes: ['macOS 15 or later · Apple silicon', 'No account · No tracking'],
-    links: [{ label: 'See WorldBar', href: '/worldbar/', variant: 'solid' }],
+    links: [
+      { label: 'See WorldBar', href: '/worldbar/', variant: 'solid' },
+      // The listing returns 404 until Apple releases the app, so this branch waits for that.
+      { label: 'Mac App Store', href: 'https://apps.apple.com/app/id6836081075', external: true, variant: 'outline' },
+    ],
   },
 ];
 
