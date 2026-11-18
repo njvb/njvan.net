@@ -1,8 +1,8 @@
-// Copy and metadata for the four projects. Source: design/Projects.md and the frames.
+// Copy and metadata for the five projects. Source: design/Projects.md and the frames.
 // A link with no href is a placeholder still waiting on Nathan: it renders as a
 // labelled placeholder, never as a guessed URL.
 
-export type ProjectId = 'tavren' | 'kora' | 'cotrip' | 'tower';
+export type ProjectId = 'tavren' | 'kora' | 'cotrip' | 'tower' | 'worldbar';
 
 export interface ProjectLink {
   label: string;
@@ -111,6 +111,18 @@ export const projects: Project[] = [
         variant: 'solid',
       },
     ],
+  },
+  {
+    id: 'worldbar',
+    number: '05',
+    name: 'WorldBar',
+    kind: 'Tool',
+    indexLine: "Find a time that works for everyone. A world clock and meeting planner in your Mac's menu bar.",
+    indexStack: 'Menu bar · macOS',
+    line: 'Find a time that works for everyone.',
+    more: 'A menu bar app for your Mac. Keep up to 8 cities one click away, drag through the day, and see who is awake.',
+    notes: ['macOS 15 or later · Apple silicon', 'No account · No tracking'],
+    links: [{ label: 'See WorldBar', href: '/worldbar/', variant: 'solid' }],
   },
 ];
 

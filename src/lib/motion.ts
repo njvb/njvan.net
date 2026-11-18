@@ -126,7 +126,7 @@ export const SCENE = {
   /** The signature moment plays once, the first time the scene is active. */
   moment: { at: 0.7, duration: 2.8 },
   /** Scenes whose moment tells a longer story get their own length, in seconds. */
-  momentLength: { cotrip: 5, kora: 4.5 } as Record<string, number>,
+  momentLength: { cotrip: 5, kora: 4.5, worldbar: 3.6 } as Record<string, number>,
   /** A moment whose visual loads late waits for it, up to this many seconds. */
   momentWait: 4,
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
@@ -221,6 +221,27 @@ export const TOWER = {
   playAt: 0.75,
   /** Start loading the video when the scene is this close (viewport heights). */
   preloadMargin: '400%',
+} as const;
+
+/**
+ * WorldBar's signature moment on the homepage (src/scripts/worldbar-moment.ts): three plates cut
+ * from the real capture fall in angled and apart, then close into the whole popover, which turns
+ * almost face-on. Spans are fractions of the moment's progress; gaps are fractions of the stack's width.
+ */
+export const WORLDBAR_SCENE = {
+  /** The plates fade in over this span. */
+  fade: [0, 0.18] as [number, number],
+  /** The plates close and the popover turns face-on over this span. */
+  assemble: [0.1, 0.78] as [number, number],
+  ease: 'power2.inOut',
+  /** Start: the gap between plates, and the isometric turn and tilt (degrees). */
+  from: { gap: 0.16, rx: 58, rz: 34 },
+  /** End: closed, and almost face-on (the same pose as the page's hover state). */
+  to: { gap: 0, rx: 6, rz: 4 },
+  /** A small scale settle as the plates lock together. */
+  settle: { span: [0.78, 0.92] as [number, number], scale: 0.012 },
+  /** The clock pills fade in over this span. */
+  chips: [0.72, 0.95] as [number, number],
 } as const;
 
 /**

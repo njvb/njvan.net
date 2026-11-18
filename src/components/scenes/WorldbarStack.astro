@@ -1,0 +1,149 @@
+---
+// WorldBar's visual: three plates cut from one real capture of the app (the same bands as the
+// /worldbar/ hero), with live clock pills. Without JavaScript, or under reduced motion, the
+// plates sit closed as the whole popover, almost face-on.
+// src/scripts/worldbar-moment.ts plays the signature moment: the plates fall in angled and
+// apart, then close into the popover and turn to face you.
+const shots = `${import.meta.env.BASE_URL}assets/worldbar/`;
+const bands = [
+  { key: 'planner', i: 0 },
+  { key: 'travel', i: 1 },
+  { key: 'clocks', i: 2 },
+];
+---
+
+<div class="wbs" data-wbs>
+  <div class="wbs__box" data-wbs-box>
+    {
+      bands.map((b) => (
+        <figure class={`wbs__slab wbs__slab--${b.key}`} data-wbs-slab={b.i}>
+          <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+        </figure>
+      ))
+    }
+    <span class="wbs__chip wbs__chip--a" data-wbs-chip data-tz="Asia/Tokyo"><i>TYO</i><b>--:--</b></span>
+    <span class="wbs__chip wbs__chip--b" data-wbs-chip data-tz="America/Los_Angeles"><i>SFO</i><b>--:--</b></span>
+    <span class="wbs__chip wbs__chip--c" data-wbs-chip data-tz="Europe/Paris"><i>PAR</i><b>--:--</b></span>
+  </div>
+</div>
+
+<script>
+  import { mountWorldbar } from '../../scripts/worldbar-moment';
+  document.querySelectorAll<HTMLElement>('[data-wbs]').forEach((root) => {
+    try {
+      mountWorldbar(root);
+    } catch (error) {
+      console.error('[worldbar] moment failed, keeping the closed popover', error);
+    }
+  });
+</script>
+
+<style>
+  .wbs {
+    /* One size unit: the column's width, capped so the whole stack fits the screen's height. */
+    --u: min(100cqi, 58svh);
+    --w: calc(var(--u) * 0.58);
+    --h: calc(var(--u) * 1.14);
+    --plan: calc(var(--w) * 1404 / 756);
+    --top0: calc((var(--h) - var(--plan)) / 2);
+    display: grid;
+    place-items: center;
+  }
+
+  .wbs__box {
+    position: relative;
+    width: var(--u);
+    height: var(--h);
+  }
+
+  /* The closed pose for scripts-off: the whole popover, turned 3 degrees. The script replaces
+     this with one matrix per plate, every frame. */
+  .wbs__slab {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--w);
+    margin: 0;
+    overflow: hidden;
+    transform-origin: calc(var(--w) / 2) calc(var(--h) / 2 - var(--top));
+    transform: translate(calc((var(--u) - var(--w)) / 2), var(--top)) rotate(3deg);
+    background: #323234;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, calc(0.22 * var(--lit, 0))),
+      0 3.2cqi 5cqi -1.5cqi rgba(3, 30, 80, calc(0.55 * var(--lit, 0)));
+  }
+
+  .wbs__slab img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Bands of the 756 x 1404 capture: clocks 0-640, travel 640-842, planner 842-1404. Each plate is
+     1px taller than its band so neighbours overlap and no hairline shows between them. */
+  .wbs__slab--clocks {
+    --top: var(--top0);
+    height: calc(var(--w) * 640 / 756 + 1px);
+    border-radius: var(--ro, 1.6cqi) var(--ro, 1.6cqi) var(--ri, 0px) var(--ri, 0px);
+  }
+
+  .wbs__slab--travel {
+    --top: calc(var(--top0) + var(--w) * 640 / 756);
+    height: calc(var(--w) * 202 / 756 + 1px);
+    border-radius: var(--ri, 0px);
+  }
+
+  .wbs__slab--travel img {
+    transform: translateY(-45.58%);
+  }
+
+  .wbs__slab--planner {
+    --top: calc(var(--top0) + var(--w) * 842 / 756);
+    height: calc(var(--w) * 562 / 756);
+    border-radius: var(--ri, 0px) var(--ri, 0px) var(--ro, 1.6cqi) var(--ro, 1.6cqi);
+  }
+
+  .wbs__slab--planner img {
+    transform: translateY(-59.97%);
+  }
+
+  /* The whole popover gets one shadow once the plates have closed. */
+  .wbs__box {
+    filter: drop-shadow(0 3.4cqi 4.4cqi rgba(3, 30, 80, calc(0.5 * (1 - var(--lit, 0)))));
+  }
+
+  .wbs__chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: clamp(10px, 2.2cqi, 13px);
+    color: #fff;
+    background: rgba(12, 24, 52, 0.78);
+    box-shadow: 0 10px 24px -8px rgba(3, 30, 80, 0.6);
+  }
+
+  .wbs__chip i {
+    font-style: normal;
+    opacity: 0.7;
+  }
+
+  .wbs__chip--a { left: 2%; top: 12%; }
+  .wbs__chip--b { left: 0%; top: 46%; }
+  .wbs__chip--c { right: 0%; top: 62%; }
+
+  @media (max-width: 767px) {
+    .wbs {
+      --u: min(100cqi, 70svh);
+      --w: calc(var(--u) * 0.62);
+      --h: calc(var(--u) * 1.2);
+    }
+
+    .wbs__chip {
+      display: none;
+    }
+  }
+</style>
