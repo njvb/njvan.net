@@ -220,8 +220,6 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
 
     <div class="shell wb-hero__meta t-annotation">
       <span>Hover or tap the popover to see its layers</span>
-      <!-- Pauses the looping float and wave (WCAG 2.2.2). Shown only when they run. -->
-      <button class="wb-pause t-annotation" type="button" hidden data-wb-pause aria-pressed="false">Pause motion</button>
       <span aria-hidden="true">Scroll ↓</span>
     </div>
   </section>
@@ -652,15 +650,6 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     align-items: center;
     gap: var(--space-4);
     margin-top: 28px;
-  }
-
-  .wb-pause {
-    border: var(--border-hairline) solid currentColor;
-    border-radius: var(--radius-lg);
-    padding: 2px 8px;
-    color: inherit;
-    background: transparent;
-    cursor: pointer;
   }
 
   /* ---------- The isometric stack ---------- */

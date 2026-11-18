@@ -5,7 +5,7 @@
 // city, flyers and walkers in the scene's ink, the clouds in soft white.
 // Each layer drifts on a compositor transform at the landing page's speed and
 // scale; the walkers step through their sprite sheet. Drifting pauses off
-// screen and with "Pause motion", and stops under reduced motion.
+// screen and stops under reduced motion.
 const base = `${import.meta.env.BASE_URL}assets/tower/`;
 
 type Layer = {
@@ -121,10 +121,6 @@ const styleFor = (l: Layer) => {
 
   .tower-backdrop.is-running .tb-layer {
     animation-play-state: running;
-  }
-
-  :global(html[data-motion-paused]) .tower-backdrop .tb-layer {
-    animation-play-state: paused;
   }
 
   @keyframes tb-pan {

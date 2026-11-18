@@ -1,5 +1,5 @@
 // Page motion controller: owns the phases (initial -> intro -> settled), the
-// boot handoff and recovery, the pause control, the hero's scroll blast-off,
+// boot handoff and recovery, the hero's scroll blast-off,
 // and starts the project index motion (src/scripts/ledger.ts).
 // The effects it calls live in src/lib/effects; timings live in src/lib/motion.ts.
 import gsap from 'gsap';
@@ -32,7 +32,6 @@ const html = document.documentElement;
 const owner = document.body;
 /** Longest we wait for fonts before splitting; the boot deadline bounds it anyway. */
 const FONT_WAIT_MS = 1200;
-const PAUSE_KEY = 'motion-paused';
 
 type Elements = {
   hero: HTMLElement;
@@ -41,7 +40,6 @@ type Elements = {
   cta: HTMLElement;
   particleRoot: HTMLElement;
   canvas: HTMLCanvasElement;
-  pause: HTMLButtonElement;
   wordmark: HTMLElement;
   wordmarkText: HTMLElement;
   wordmarkRule: HTMLElement;
@@ -57,11 +55,10 @@ function query(): Elements | null {
   const cta = $<HTMLElement>('[data-cta]');
   const particleRoot = $<HTMLElement>('[data-particle-button]');
   const canvas = $<HTMLCanvasElement>('[data-particles]');
-  const pause = $<HTMLButtonElement>('[data-motion-pause]');
   const wordmark = $<HTMLElement>('[data-wordmark]');
   const wordmarkText = $<HTMLElement>('[data-wordmark-text]');
   const wordmarkRule = $<HTMLElement>('[data-wordmark-rule]');
-  if (!hero || !heading || !sub || !cta || !particleRoot || !canvas || !pause) return null;
+  if (!hero || !heading || !sub || !cta || !particleRoot || !canvas) return null;
   if (!wordmark || !wordmarkText || !wordmarkRule) return null;
   // Only rise items that are actually displayed at this width (nav vs menu button).
   const rise = Array.from(document.querySelectorAll<HTMLElement>('[data-rise]')).filter(
@@ -75,7 +72,6 @@ function query(): Elements | null {
     cta,
     particleRoot,
     canvas: canvas as HTMLCanvasElement,
-    pause: pause as HTMLButtonElement,
     wordmark,
     wordmarkText,
     wordmarkRule,
@@ -99,22 +95,6 @@ function releaseBoot(state: 'recovered' | 'settled') {
   html.dataset.motionBoot = state;
 }
 
-/* ---------- Pause control (WCAG 2.2.2: loops past five seconds need one) ---------- */
-
-function readPaused(): boolean {
-  try {
-    return localStorage.getItem(PAUSE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-}
-
-function writePaused(paused: boolean) {
-  try {
-    localStorage.setItem(PAUSE_KEY, String(paused));
-  } catch {}
-}
-
 /* ---------- Wordmark: letters spring in, the underline draws ---------- */
 
 function wordmarkIntro(text: HTMLElement, rule: HTMLElement): gsap.core.Timeline {
@@ -136,12 +116,11 @@ function wordmarkIntro(text: HTMLElement, rule: HTMLElement): gsap.core.Timeline
   return tl;
 }
 
-/* ---------- Settled: wave, cursor letters, embers, pause, blast-off ---------- */
+/* ---------- Settled: wave, cursor letters, embers, blast-off ---------- */
 
 function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectControls | null) {
   owner.dataset.phase = 'settled';
 
-  let paused = readPaused();
   let heroVisible = true;
   let blasted = false;
   let wave: WaveStop | null = null;
@@ -150,13 +129,7 @@ function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectCo
   let hovering = false;
   let blast: BlastOff | null = null;
 
-  const running = () => !paused && heroVisible;
-  // Exposed on <html> so CSS loops elsewhere (Campaign Tower's drifting city) pause too.
-  const markPaused = () => {
-    if (paused) html.dataset.motionPaused = 'true';
-    else delete html.dataset.motionPaused;
-  };
-  markPaused();
+  const running = () => heroVisible;
   const applyRunning = () => {
     if (running() && !hovering) wave?.resume();
     else wave?.pause();
@@ -185,20 +158,6 @@ function settle(els: Elements, words: HTMLElement[], particles: ParticleEffectCo
     wave?.();
     wave = null;
   };
-
-  // Pause button.
-  const syncPause = () => {
-    els.pause.textContent = paused ? 'Play motion' : 'Pause motion';
-    els.pause.setAttribute('aria-pressed', String(paused));
-  };
-  els.pause.addEventListener('click', () => {
-    paused = !paused;
-    writePaused(paused);
-    markPaused();
-    syncPause();
-    applyRunning();
-  });
-  syncPause();
 
   beginWave();
 
@@ -278,7 +237,6 @@ function introFull(els: Elements) {
       words = spoken.words;
       particles = attachParticleEffect(els.particleRoot, els.canvas, els.cta, reactor);
       particles.enter(HERO.buttonDelay);
-      if (readPaused()) particles.pause();
       // The index entrance waits for the hero's supporting items, so rows never arrive before the name.
       ledgerTeardown = setupLedgerIntro({ hold: HERO.riseDelay });
       master = gsap.timeline({ paused: true }).add(mark, 0).add(page, 0).add(spoken.timeline, 0);
@@ -295,7 +253,6 @@ function introFull(els: Elements) {
   }
 
   const timeline: gsap.core.Timeline = master;
-  els.pause.hidden = false;
   owner.dataset.phase = 'intro';
   timeline.eventCallback('onComplete', () => {
     releaseBoot('settled');
@@ -332,7 +289,6 @@ function lateSettle(els: Elements) {
   particles.idle();
   setupLedgerIntro();
   const words = SplitText.create(els.sub, { type: 'words' }).words as HTMLElement[];
-  els.pause.hidden = false;
   settle(els, words, particles);
 }
 

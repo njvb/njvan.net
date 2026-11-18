@@ -83,5 +83,5 @@ An app landing page, so it may use gradients, glows and shadows. Values are in `
 | Details | Cards rise in as a batch; the light/dark wipe scrubs with the scroll; "194" counts up. |
 | Questions | As the section enters view, each item's top rule draws across, its number and question rise behind masks, then the answer fades up, staggered by row. Hovering an item draws an azure rule along its foot and nudges its number. The section also feeds the FAQPage structured data. The facts strip draws its rule then raises each fact; the closing buttons pop in one by one. Values are `WORLDBAR.faq`. |
 
-Everything that loops registers with the pause control (shared `motion-paused` key). Reduced motion shows the stack and everything else settled; the demo still works. No script: the page reads complete (the demo shows the 19 Nov example).
+Reduced motion shows the stack and everything else settled; the demo still works. No script: the page reads complete (the demo shows the 19 Nov example).
 

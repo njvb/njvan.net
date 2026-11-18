@@ -25,10 +25,6 @@ const count = String(projects.length).padStart(2, '0');
 
     <div class="hero__meta t-annotation muted" data-intro data-rise>
       <span aria-hidden="true">{count} projects</span>
-      <!-- Pauses the looping wave and embers (WCAG 2.2.2). Shown only when they run. -->
-      <button class="hero__pause t-annotation" type="button" hidden data-motion-pause aria-pressed="false">
-        Pause motion
-      </button>
       <span class="hero__scroll" aria-hidden="true">Scroll ↓</span>
     </div>
   </div>
@@ -118,24 +114,6 @@ const count = String(projects.length).padStart(2, '0');
     justify-content: space-between;
     align-items: center;
     gap: var(--space-4);
-  }
-
-  .hero__pause {
-    appearance: none;
-    background: none;
-    border: 0;
-    padding: 12px 0;
-    margin: -12px 0;
-    color: var(--color-muted);
-    cursor: pointer;
-  }
-
-  .hero__pause:hover {
-    color: var(--color-foreground);
-  }
-
-  .hero__pause[hidden] {
-    display: none;
   }
 
   /* As a full-screen panel the header sits over the hero: keep its content clear of it. */

@@ -21,7 +21,6 @@ declare global {
 const html = document.documentElement;
 const owner = document.body;
 const reduced = prefersReducedMotion();
-const PAUSE_KEY = 'motion-paused'; // shared with the homepage's pause control
 
 const $ = <T extends Element>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel);
 const $$ = <T extends Element>(sel: string, root: ParentNode = document) => Array.from(root.querySelectorAll<T>(sel));
@@ -69,43 +68,6 @@ function dayLabel(tz: string, ms: number): string {
     dayFormats.set(tz, f);
   }
   return f.format(ms);
-}
-
-/* ---------------------------------------------------------------------------------------------
- * Pause control (WCAG 2.2.2): everything that loops registers here
- * ------------------------------------------------------------------------------------------- */
-
-const loops: gsap.core.Animation[] = [];
-let paused = false;
-try {
-  paused = localStorage.getItem(PAUSE_KEY) === 'true';
-} catch {
-  /* private mode: unpaused */
-}
-
-function applyPause() {
-  loops.forEach((t) => (paused ? t.pause() : t.resume()));
-  const btn = $<HTMLButtonElement>('[data-wb-pause]');
-  if (btn) {
-    btn.setAttribute('aria-pressed', String(paused));
-    btn.textContent = paused ? 'Resume motion' : 'Pause motion';
-  }
-}
-
-function setupPause() {
-  const btn = $<HTMLButtonElement>('[data-wb-pause]');
-  if (!btn || reduced) return;
-  btn.hidden = false;
-  btn.addEventListener('click', () => {
-    paused = !paused;
-    try {
-      localStorage.setItem(PAUSE_KEY, String(paused));
-    } catch {
-      /* ignore */
-    }
-    applyPause();
-  });
-  applyPause();
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -189,8 +151,8 @@ function setupHero() {
   intro.from(st, { rz: BASE.rz - 50, duration: WORLDBAR.stack.introDuration + 0.4, ease: 'animaxxing' }, 0);
   intro.from('[data-wb-chip]', { autoAlpha: 0, scale: 0.6, duration: 0.6, ease: 'back.out(2)', stagger: 0.12 }, 1.2);
 
-  // Idle: the stack bobs, the chips drift. Both register for the pause control.
-  const bob = gsap.to(st, {
+  // Idle: the stack bobs, the chips drift.
+  gsap.to(st, {
     y: WORLDBAR.float.amplitude,
     duration: WORLDBAR.float.duration,
     ease: 'sine.inOut',
@@ -198,10 +160,9 @@ function setupHero() {
     repeat: -1,
     delay: 1.8,
   });
-  loops.push(bob);
   $$<HTMLElement>('[data-wb-chip]').forEach((chip) => {
     const d = WORLDBAR.chips.drift;
-    const t = gsap.to(chip, {
+    gsap.to(chip, {
       x: `random(${-d}, ${d})`,
       y: `random(${-d}, ${d})`,
       duration: `random(${WORLDBAR.chips.duration[0]}, ${WORLDBAR.chips.duration[1]})`,
@@ -210,7 +171,6 @@ function setupHero() {
       repeat: -1,
       delay: 1.6,
     });
-    loops.push(t);
   });
 
   // Pointer parallax (fine pointers only).
@@ -342,12 +302,10 @@ function setupHeroCopy() {
     stagger: WORLDBAR.letters.stagger,
     delay: 0.2,
     onComplete: () => {
-      // A slow wave runs through the name every few seconds (a pausable loop).
+      // A slow wave runs through the name every few seconds (a loop).
       const wave = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1 });
       wave.to(split.chars, { yPercent: -12, duration: 0.28, ease: 'power2.out', stagger: 0.05 });
       wave.to(split.chars, { yPercent: 0, duration: 0.45, ease: 'bounce.out', stagger: 0.05 }, '>-0.18');
-      loops.push(wave);
-      applyPause();
     },
   });
 }
@@ -860,7 +818,6 @@ function run() {
   setupHeroCopy();
   setupHero();
   setupReveals();
-  setupPause();
   window.setTimeout(settle, 1800);
 }
 
