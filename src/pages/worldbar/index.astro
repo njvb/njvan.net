@@ -414,8 +414,9 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     <h2 class="wb-h2" id="wb-faq-title" data-wb-split>Common questions.</h2>
     <dl class="wb-faq">
       {
-        faqs.map((f) => (
-          <div class="wb-faq__item" data-wb-reveal>
+        faqs.map((f, i) => (
+          <div class="wb-faq__item" data-wb-faq>
+            <span class="wb-faq__n t-annotation" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <dt>{f.q}</dt>
             <dd>{f.a}</dd>
           </div>
@@ -429,11 +430,11 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
   </section>
 
   <section class="wb-end shell" aria-labelledby="wb-end-title">
-    <ul class="wb-facts t-annotation" data-wb-reveal>
+    <ul class="wb-facts t-annotation" data-wb-facts>
       {facts.map((f) => <li>{f}</li>)}
     </ul>
     <h2 class="wb-end__title" id="wb-end-title" data-wb-split>Find a time that works for everyone.</h2>
-    <div class="wb-end__links" data-wb-reveal>
+    <div class="wb-end__links" data-wb-end-links>
       <!-- Apple's badge: white on the dark page, black on the light one. -->
       <a class="wb-badge" href={STORE} target="_blank" rel="noopener" aria-label="Download WorldBar on the Mac App Store">
         <img class="wb-theme-dark" src={`${shots}badge-mac-app-store-white.svg`} alt="Download on the Mac App Store" width="156" height="40" />
@@ -1600,8 +1601,35 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
   }
 
   .wb-faq__item {
+    position: relative;
     padding-block: 22px;
-    border-top: var(--border-hairline) solid var(--color-border);
+    /* Two rules: the hairline on top (drawn in by the page script through --rule), and an azure
+       rule along the bottom that draws across on hover or focus. */
+    background:
+      linear-gradient(var(--color-worldbar), var(--color-worldbar)) left bottom / 0% 2px no-repeat,
+      linear-gradient(var(--color-border), var(--color-border)) left top / var(--rule, 100%) var(--border-hairline) no-repeat;
+    transition: background-size 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .wb-faq__item:hover,
+  .wb-faq__item:focus-within {
+    background-size:
+      100% 2px,
+      var(--rule, 100%) var(--border-hairline);
+  }
+
+  .wb-faq__n {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--color-muted);
+    transition:
+      color 0.3s var(--ease-entrance),
+      transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .wb-faq__item:hover .wb-faq__n {
+    color: var(--color-foreground);
+    transform: translateX(6px);
   }
 
   .wb-faq__item dt {
@@ -1641,7 +1669,9 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     list-style: none;
     margin: 0 0 56px;
     padding: var(--space-4) 0 0;
-    border-top: var(--border-hairline) solid var(--color-border);
+    /* The top rule is a background so the page script can draw it across (--rule). */
+    background: linear-gradient(var(--color-border), var(--color-border)) left top / var(--rule, 100%) var(--border-hairline)
+      no-repeat;
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2) var(--gutter);

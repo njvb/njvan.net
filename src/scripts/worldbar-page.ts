@@ -748,6 +748,76 @@ function setupReveals() {
     });
   }
 
+  // Common questions: each rule draws across, the number and question rise behind their masks, then the answer.
+  const F = WORLDBAR.faq;
+  const faqItems = $$<HTMLElement>('[data-wb-faq]').map((el) => ({
+    el,
+    n: $<HTMLElement>('.wb-faq__n', el)!,
+    lines: SplitText.create($<HTMLElement>('dt', el)!, { type: 'lines', mask: 'lines', linesClass: 'wb-line' }).lines,
+    dd: $<HTMLElement>('dd', el)!,
+  }));
+  if (faqItems.length) {
+    gsap.set(
+      faqItems.map((i) => i.el),
+      { '--rule': '0%' },
+    );
+    gsap.set(
+      faqItems.map((i) => i.n),
+      { autoAlpha: 0, x: -10 },
+    );
+    gsap.set(
+      faqItems.flatMap((i) => i.lines),
+      { yPercent: 110 },
+    );
+    gsap.set(
+      faqItems.map((i) => i.dd),
+      { autoAlpha: 0, y: 16 },
+    );
+    ScrollTrigger.batch(
+      faqItems.map((i) => i.el),
+      {
+        start: F.start,
+        once: true,
+        onEnter: (els) => {
+          const tl = gsap.timeline();
+          els.forEach((el, k) => {
+            const item = faqItems.find((i) => i.el === el)!;
+            const at = k * F.stagger;
+            tl.to(el, { '--rule': '100%', duration: F.rule, ease: 'animaxxing' }, at);
+            tl.to(item.n, { autoAlpha: 1, x: 0, duration: 0.5, ease: EASE.entrance }, at + 0.1);
+            tl.to(item.lines, { yPercent: 0, duration: F.text, ease: 'animaxxing', stagger: 0.06 }, at + 0.12);
+            tl.to(item.dd, { autoAlpha: 1, y: 0, duration: F.text, ease: EASE.entrance }, at + 0.28);
+          });
+        },
+      },
+    );
+  }
+
+  // The facts strip: its rule draws across, then the facts rise one by one.
+  const facts = $<HTMLElement>('[data-wb-facts]');
+  if (facts) {
+    const factItems = $$<HTMLElement>('li', facts);
+    gsap.set(facts, { '--rule': '0%' });
+    gsap.set(factItems, { autoAlpha: 0, y: 14 });
+    const tl = gsap.timeline({ scrollTrigger: { trigger: facts, start: 'top 92%', once: true } });
+    tl.to(facts, { '--rule': '100%', duration: 0.9, ease: 'animaxxing' }, 0);
+    tl.to(factItems, { autoAlpha: 1, y: 0, duration: 0.5, ease: EASE.entrance, stagger: 0.1 }, 0.2);
+  }
+
+  // The closing buttons pop in one after another.
+  const endLinks = $$<HTMLElement>('[data-wb-end-links] > *');
+  if (endLinks.length) {
+    gsap.from(endLinks, {
+      autoAlpha: 0,
+      y: 18,
+      scale: 0.92,
+      duration: 0.6,
+      ease: 'back.out(1.8)',
+      stagger: 0.1,
+      scrollTrigger: { trigger: '[data-wb-end-links]', start: 'top 92%', once: true },
+    });
+  }
+
   // The menu bar samples slide in one after another.
   gsap.from('.wb-bar', {
     x: -24,
