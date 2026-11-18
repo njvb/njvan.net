@@ -8,6 +8,8 @@ import KoraPanels from '../components/scenes/KoraPanels.astro';
 import CotripRoute from '../components/scenes/CotripRoute.astro';
 import TowerPhone from '../components/scenes/TowerPhone.astro';
 import TowerBackdrop from '../components/scenes/TowerBackdrop.astro';
+import WorldbarBackdrop from '../components/scenes/WorldbarBackdrop.astro';
+import WorldbarStack from '../components/scenes/WorldbarStack.astro';
 import { projects, contact } from '../data/projects';
 
 const visuals = {
@@ -15,6 +17,7 @@ const visuals = {
   kora: KoraPanels,
   cotrip: CotripRoute,
   tower: TowerPhone,
+  worldbar: WorldbarStack,
 };
 
 // Tells search engines who the site is about and links the name to LinkedIn.
@@ -44,7 +47,7 @@ const jsonLd = {
 
 <Base
   title="Nathan VanderByl · Games, tools and apps"
-  description="Games, tools and apps I've built: Tavren, Kora, Cotrip and Campaign Tower."
+  description="Games, tools and apps I've built: Tavren, Kora, Cotrip, Campaign Tower and WorldBar."
   image="/og/home.jpg"
   imageAlt="Nathan VanderByl. Games, tools and apps I've built."
   jsonLd={jsonLd}
@@ -57,6 +60,7 @@ const jsonLd = {
       return (
         <Scene project={p} total={projects.length}>
           {p.id === 'tower' && <TowerBackdrop slot="backdrop" />}
+          {p.id === 'worldbar' && <WorldbarBackdrop slot="backdrop" />}
           <Visual />
         </Scene>
       );

@@ -67,7 +67,22 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
       <div class="scene__links" data-ink data-scene-rise>
         {
           p.links.map((l) =>
-            l.href ? (
+            l.badge && l.href ? (
+              <a
+                class="scene-badge"
+                href={l.href}
+                aria-label={l.label}
+                {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}
+              >
+                {/* Apple's badge as supplied (black on the accent field), only sized. */}
+                <img
+                  src={`${import.meta.env.BASE_URL}assets/worldbar/badge-${l.badge}-black.svg`}
+                  alt="Download on the Mac App Store"
+                  width="156"
+                  height="40"
+                />
+              </a>
+            ) : l.href ? (
               <a
                 class:list={['btn', `scene-btn--${l.variant}`]}
                 href={l.href}
@@ -148,6 +163,7 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
   .scene[data-project='kora'] { --field: var(--color-kora); --on: var(--color-on-kora); }
   .scene[data-project='cotrip'] { --field: var(--color-cotrip); --on: var(--color-on-cotrip); }
   .scene[data-project='tower'] { --field: var(--color-tower); --on: var(--color-on-tower); }
+  .scene[data-project='worldbar'] { --field: var(--color-worldbar); --on: var(--color-on-worldbar); }
 
   .scene ::selection {
     background: var(--on);
@@ -250,6 +266,23 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
     background: var(--on);
     border-color: var(--on);
     color: var(--field);
+  }
+
+  /* Apple's badge: black on the accent field, used as supplied and only sized. */
+  .scene-badge {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+    border-radius: 8px;
+  }
+
+  .scene-badge img {
+    height: 48px;
+    width: auto;
+  }
+
+  .scene-badge:hover {
+    opacity: 0.88;
   }
 
   .scene-btn--outline {

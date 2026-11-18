@@ -35,6 +35,16 @@ What each project is, as the site should describe it, and what its section draws
 - **Moment.** The tower builds itself floor by floor.
 - **Links.** The existing landing page at njvb.github.io/campaigntower-site stays where it is; this section links to it.
 
+## 05 · WorldBar
+
+- **Line.** Find a time that works for everyone.
+- **More.** A menu bar app for your Mac. Keep up to 8 cities one click away, drag through the day, and see who is awake.
+- **Index.** "Find a time that works for everyone. A world clock and meeting planner in your Mac's menu bar." · `MENU BAR · MACOS`
+- **Accent.** `worldbar` (#4DA3FF), text in `on-worldbar`.
+- **Background.** The same light field as the hero on /worldbar/ (soft glows, two blurred orbs, a faint grid) over the azure. The one scene allowed gradients, because it is an app's own look; it is clipped with the accent wash like Campaign Tower's city.
+- **Moment.** Three plates cut from the real capture fall in angled and apart, then close into the whole popover and turn to face you. The clock pills fade in with live times.
+- **Links.** "See WorldBar" goes to /worldbar/, which has its own page. "Mac App Store ↗" goes to the store listing (live once Apple releases the app).
+
 ## Order
 
-Newest or most active first is the default; the order above is a draft. The index numbers (01-04) follow whatever order is chosen.
+Newest or most active first is the default; the order above is a draft. The index numbers (01-05) follow whatever order is chosen.

@@ -4,7 +4,7 @@ The design system for njvan.net: a home for Nathan VanderByl's side projects, Ta
 
 ## The idea in one line
 
-**One quiet frame, four loud guests.** The frame (type, rules, grid, motion) is the same everywhere and never takes colour. Colour belongs to the projects: each one arrives with its accent, takes over its section, and leaves.
+**One quiet frame, five loud guests.** The frame (type, rules, grid, motion) is the same everywhere and never takes colour. Colour belongs to the projects: each one arrives with its accent, takes over its section, and leaves.
 
 ## Content fundamentals
 
@@ -42,7 +42,7 @@ Rules for accents:
 - **An accent lives only in its own project's section.** Never two accents on screen at once, except the project index, where each is a small mark beside its name.
 - **Accents are fields, not text.** Use them as full-bleed washes, highlights, drawn lines and progress rules. Text on an accent uses its `on-` token. In the light theme no text takes an accent, Kora's violet included; hover and focus keep text in ink and put the accent in a rule.
 - **Cotrip uses coral, not its brand violet,** so it never reads as Kora.
-- The four accents differ in lightness as well as hue (gold lightest, violet darkest), so they stay distinct for colour-blind visitors.
+- The accents differ in lightness as well as hue (gold lightest, violet darkest), so they stay distinct for colour-blind visitors.
 - No gradients, glows or shadows on the homepage and the shell. Depth comes from hairlines and from colour taking over the page. **App-specific landing pages (`/worldbar/`, and any like it) may use gradients, glows and shadows**; they still use the shared type, layout and tokens, and one accent per page. (Nathan's call, 17 Nov 2026: the flat rule was for the homepage only.)
 
 ### Type
@@ -64,8 +64,8 @@ The contrast is the point: poster-size sans against tiny mono. `poster` and `sta
 ### Page structure (the homepage)
 
 1. **Hero.** Wordmark top-left, a poster "njvan" and one line of lead copy that speaks in. Monochrome.
-2. **Index.** The four projects as a numbered ledger: `01 · TAVREN`, a statement-size name, one line, the stack. Hovering a row previews its accent as a thin rule.
-3. **Four project scenes.** Each pinned for a scroll's length: the accent washes in, the project's signature moment plays (see Motion), screenshots stack, metadata settles. The accent washes out as the next scene arrives.
+2. **Index.** The five projects as a numbered ledger: `01 · TAVREN`, a statement-size name, one line, the stack. Hovering a row previews its accent as a thin rule.
+3. **Five project scenes.** Each pinned for a scroll's length: the accent washes in, the project's signature moment plays (see Motion), screenshots stack, metadata settles. The accent washes out as the next scene arrives.
 4. **Footer.** Hairline rule, contact in mono, theme toggle.
 
 ## Motion

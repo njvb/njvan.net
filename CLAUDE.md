@@ -1,6 +1,6 @@
 # njvan.net
 
-Nathan VanderByl's personal site: a showcase of four side projects (Tavren, Kora, Cotrip, Campaign Tower). A monochrome editorial site in the Animaxxing style, where each project takes over the page in its own colour as you scroll. Motion is the point of the site; it has to feel slick.
+Nathan VanderByl's personal site: a showcase of five side projects (Tavren, Kora, Cotrip, Campaign Tower, WorldBar). A monochrome editorial site in the Animaxxing style, where each project takes over the page in its own colour as you scroll. Motion is the point of the site; it has to feel slick.
 
 ## Read first
 
@@ -24,7 +24,7 @@ The live versions are on claude.ai: the njvan design system (https://claude.ai/a
 - **Dark is the default theme,** whatever the OS prefers. Light is only a manual choice from the footer toggle, remembered on the device.
 - **Campaign Tower's landing page** is served at njvan.net/campaign-tower/ (linked from its scene), inside this site's header and footer. It comes from `docs/` in ~/Projects/CampaignTower: the markup is in `src/pages/campaign-tower/index.astro` wrapped in `.ct`, its stylesheet is scoped to `.ct` in `src/styles/campaign-tower.css` (with `.btn` renamed `.ct-btn`), and its images, videos, `motion.js` (two lines changed: the effects canvas joins `.ct`, and `.ct-btn`) and standalone support and privacy pages are in `public/campaign-tower/`. The original stays live at https://njvb.github.io/campaigntower-site/ because App Review and the App Store listing point there. Do not touch the `njvb.github.io` or `campaigntower-site` repos (they host its AdMob app-ads.txt). If the original changes, port the change here by hand.
 
-- **WorldBar's page** is served at njvan.net/worldbar/ (with /worldbar/support/ and /worldbar/privacy/, the App Store's Support and Privacy URLs). Accent: azure #4DA3FF (`worldbar`, text `on-worldbar`). App landing pages may use gradients, glows and shadows (the flat rule is for the homepage only). The screenshots in `public/assets/worldbar/` are real captures of the app, never mock-ups; recapture them if the UI changes. The Mac App Store button is a labelled placeholder until there is a real URL. It is not in the homepage index yet: that is a deliberate "four projects" design, so add it only if Nathan asks.
+- **WorldBar's page** is served at njvan.net/worldbar/ (with /worldbar/support/ and /worldbar/privacy/, the App Store's Support and Privacy URLs). Accent: azure #4DA3FF (`worldbar`, text `on-worldbar`). App landing pages may use gradients, glows and shadows (the flat rule is for the homepage only). The screenshots in `public/assets/worldbar/` are real captures of the app, never mock-ups; recapture them if the UI changes. The Mac App Store button is a labelled placeholder until there is a real URL. It is the fifth scene on the homepage (index row 05 and a full scene in azure, linking to /worldbar/), added at Nathan's request.
 
 ## Stack
 
