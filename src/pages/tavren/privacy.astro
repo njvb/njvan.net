@@ -1,0 +1,86 @@
+---
+// Tavren's privacy policy: the Privacy Policy URL for the App Store listing.
+// The text is the policy as published with the game (the Mac mini's /privacy/ page),
+// moved here unchanged. Keep it in step with the app and the game server if they change.
+import Doc from '../../layouts/Doc.astro';
+
+const base = import.meta.env.BASE_URL;
+const PLAY = 'https://mac-mini.tail94f02c.ts.net/';
+---
+
+<Doc
+  title="Privacy policy · Tavren"
+  description="How Tavren handles your information: what the app and website keep, where, and for how long."
+  image="/og/tavren.jpg"
+  imageAlt="Tavren, a medieval hex-board strategy game"
+  project="Tavren"
+  projectHref={`${base}tavren/`}
+  section="Privacy"
+  heading="Privacy policy"
+  meta="Effective 13 November 2026"
+  accent="var(--color-tavren)"
+  links={[
+    { label: 'Tavren', href: `${base}tavren/` },
+    { label: 'Support', href: `${base}tavren/support/` },
+    { label: 'Play in your browser', href: PLAY, external: true },
+  ]}
+>
+    <p>Tavren is a game made by one person, Nathan VanderByl. This policy covers the Tavren app for iPhone and iPad and the Tavren website at <a href="https://mac-mini.tail94f02c.ts.net/">mac-mini.tail94f02c.ts.net</a>.</p>
+
+    <div class="doc__panel">
+      <p><b>The short version</b></p>
+      <p>Tavren has no ads, no analytics and no tracking, and it doesn't ask for your name, email or location. The app sends nothing about you to me. What it saves stays on your device and in your own iCloud account. Online play in the app goes through Apple's Game Center.</p>
+    </div>
+
+    <h2>The app</h2>
+
+    <h3>On your device</h3>
+    <p>The app saves your game in progress, its move log, your record (games played, wins, scores and badges), the last game setup you chose and your settings (sound, music, haptics) on your device. They never leave it, except to your own iCloud account as described next.</p>
+
+    <h3>In your iCloud account</h3>
+    <p>If you're signed in to iCloud, the app copies your record, settings and the game in progress to iCloud key-value storage, so they appear on your other devices signed in to the same Apple Account. This data is stored by Apple in your iCloud account under Apple's privacy policy. I can't see or access it.</p>
+
+    <h3>Game Center</h3>
+    <p>Online matches, invitations, turn notifications, achievements and leaderboards use Apple's Game Center, if you choose to sign in to it. Game Center shows your Game Center nickname to the people you play with and, for leaderboards, to other players. A match's game (the board, everyone's moves and goods, and the seats) is stored by Apple with the match so every player's device can carry it on. Your achievements and best scores are sent to Game Center. All of this is handled by Apple under <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>; I don't receive any of it.</p>
+
+    <h3>No accounts, ads, analytics or tracking</h3>
+    <p>The app has no sign-up, no advertising, no analytics or crash-reporting services and no third-party code that collects data. It doesn't track you across other companies' apps or websites. Apple may give developers anonymous, aggregated statistics (such as downloads and crash counts) if you've chosen to share them with developers in your device's settings.</p>
+
+    <h2>The website</h2>
+
+    <h3>Playing in your browser</h3>
+    <p>The website stores your games, record and settings in your browser's local storage, on your device only. It uses no cookies, no analytics and no third-party scripts, fonts or embeds.</p>
+
+    <h3>Online rooms</h3>
+    <p>On the website (not in the app), <b>Play online</b> connects to a small game server I run, so friends can play in the same room. When you host or join a room, the server keeps:</p>
+    <ul>
+      <li>the name you type (up to 16 characters; it can be anything, and you don't need to use your real name), which the others in the room see;</li>
+      <li>the room's code, settings, game and move log;</li>
+      <li>a random token that lets your browser rejoin your seat;</li>
+      <li>quick-chat messages, which are chosen from a fixed list (there is no free-text chat) and are passed on to the room, not stored;</li>
+      <li>if you turn on turn alerts, the push address your browser gives for that room, so the server can tell you when it's your move. The alert goes through your browser maker's push service (such as Apple, Google, Mozilla or Microsoft) and says only the room code and that it's your turn or that someone offered you a trade.</li>
+    </ul>
+    <p>The server doesn't record your IP address or anything that identifies you, and it doesn't share room data with anyone. A room, with everything above, is deleted when everyone has left it, or automatically after 48 hours without activity. Its operational log records only room codes, events such as a room starting or closing, and errors.</p>
+
+    <h3>Hosting</h3>
+    <p>The website runs on my own computer and reaches the internet through Tailscale Funnel, which relays the encrypted connection. Like any internet service, your IP address is visible to the network services that carry the connection. The web server is set up not to keep access logs.</p>
+
+    <h2>Children</h2>
+    <p>Tavren is suitable for all ages. It doesn't knowingly collect personal information from anyone, including children under 13: the app collects none, and the website's online rooms keep only the name typed in, and only until 48 hours after the room was last used. There's no free-text chat with other players. If you believe a child has entered personal information as a name in an online room, email me and I'll delete it.</p>
+
+    <h2>Your choices</h2>
+    <ul>
+      <li>Play offline, against computers or pass-and-play, without sending anything anywhere.</li>
+      <li>Turn iCloud off for your device to keep the app's data on that device only.</li>
+      <li>Don't sign in to Game Center if you don't want to play online or record achievements.</li>
+      <li>Turn off turn alerts at any time in the game, or in your device's notification settings.</li>
+      <li>Ask me to access or delete anything held on the game server.</li>
+    </ul>
+
+    <h2>Changes</h2>
+    <p>If Tavren starts handling information differently, I'll update this page and its effective date before the change takes effect.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about privacy? Email <a href="mailto:nathan@epilogue.com.au?subject=Tavren%20privacy">nathan@epilogue.com.au</a>.</p>
+
+</Doc>
