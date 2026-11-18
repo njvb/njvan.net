@@ -74,7 +74,11 @@ const facts = [
 ];
 
 const description =
-  'WorldBar is a menu bar app for Mac. Keep world clocks one click away, drag through the day, and find a meeting time that works across time zones. No account, no tracking.';
+  'WorldBar is a free menu bar app for Mac. Keep up to 8 world clocks one click away and find a meeting time that works across time zones. No tracking.';
+const site = 'https://njvan.net/';
+const shotUrls = ['popover-dark.png', 'popover-light.png', 'picker-dark.png', 'nooverlap-dark.png'].map(
+  (f) => `${site}assets/worldbar/${f}`,
+);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -83,6 +87,15 @@ const jsonLd = {
   operatingSystem: 'macOS 15 or later',
   description,
   url: 'https://njvan.net/worldbar/',
+  image: `${site}og/worldbar.jpg`,
+  screenshot: shotUrls,
+  featureList: [
+    'World clocks for up to 8 cities in the menu bar',
+    'Drag through the day to see every city at that time',
+    'Meeting planner that finds when everyone is in working hours',
+    'Hands the event to Calendar or Outlook',
+    'Works offline, with no account and no tracking',
+  ],
   downloadUrl: STORE,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   author: { '@type': 'Person', name: 'Nathan VanderByl', url: 'https://njvan.net/' },
@@ -90,7 +103,7 @@ const jsonLd = {
 ---
 
 <Base
-  title="WorldBar · World clocks and meeting times in your Mac's menu bar"
+  title="WorldBar: world clocks and meeting planner for Mac"
   description={description}
   image="/og/worldbar.jpg"
   imageAlt="WorldBar: find a time that works for everyone, shown as a stack of the app's panels"
@@ -174,7 +187,7 @@ const jsonLd = {
   <!-- ============ 01 · Live demo ============ -->
   <section class="wb-section shell" id="try" aria-labelledby="wb-demo-title">
     <p class="wb-eyebrow t-annotation" data-wb-reveal>01 · Try it</p>
-    <h2 class="wb-h2" id="wb-demo-title" data-wb-split>Drag through the day.</h2>
+    <h2 class="wb-h2" id="wb-demo-title" data-wb-split>Drag through the day to find a time.</h2>
     <p class="wb-lede t-body" data-wb-reveal>
       Every city updates at once. This runs in your browser with today's real offsets, so daylight saving is
       already in the sums. Tick cities in or out to see the overlap move.
@@ -282,7 +295,7 @@ const jsonLd = {
   <!-- ============ 03 · Details ============ -->
   <section class="wb-section shell" aria-labelledby="wb-bento-title">
     <p class="wb-eyebrow t-annotation" data-wb-reveal>03 · The details</p>
-    <h2 class="wb-h2" id="wb-bento-title" data-wb-split>Small app. Sharp edges sanded.</h2>
+    <h2 class="wb-h2" id="wb-bento-title" data-wb-split>A menu bar app, in detail.</h2>
 
     <div class="wb-bento">
       <!-- Menu bar styles -->
