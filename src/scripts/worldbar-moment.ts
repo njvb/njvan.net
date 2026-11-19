@@ -58,8 +58,8 @@ export function mountWorldbar(root: HTMLElement): void {
     const cx = W / 2;
     const cy = H / 2;
     const w = slabs[0]!.offsetWidth;
-    const top0 = (H - (w * 1404) / 756) / 2;
-    const tops = [top0 + (w * 842) / 756, top0 + (w * 640) / 756, top0];
+    const top0 = (H - (w * 1463) / 758) / 2;
+    const tops = [top0 + (w * 848) / 758, top0 + (w * 648) / 758, top0];
     const dx = -w / 2;
     // A small scale as the plates lock together.
     const s = 1 + WS.settle.scale * Math.sin(Math.PI * span(p, WS.settle.span));

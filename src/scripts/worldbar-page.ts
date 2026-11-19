@@ -109,8 +109,8 @@ function setupHero() {
     const lift = Math.sin(ph);
     // Plan geometry, matching the CSS: plate width, and where each band of the capture starts.
     const w = slabs[0].offsetWidth;
-    const top0 = (H - (w * 1404) / 756) / 2;
-    const tops = [top0 + (w * 842) / 756, top0 + (w * 640) / 756, top0];
+    const top0 = (H - (w * 1463) / 758) / 2;
+    const tops = [top0 + (w * 848) / 758, top0 + (w * 648) / 758, top0];
     const dx = -w / 2;
     slabs.forEach((s, i) => {
       const dy = tops[i] - cy;
@@ -443,10 +443,24 @@ function setupDemo() {
   rows.forEach((r) => paint(r.bar, r.work));
 
   const participants = () => rows.filter((r) => r.check.checked);
+  const comparingEl = $<HTMLElement>('[data-demo-comparing]', root);
+  const resetBtn = $<HTMLButtonElement>('[data-demo-reset]', root);
+  // "London, New York and Berlin", as the app's planner words the cities it is comparing.
+  const joinNames = (names: string[]) =>
+    names.length < 2 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 
   function analyse() {
     const on = participants();
     rows.forEach((r) => (r.el.dataset.on = String(r.check.checked)));
+    if (comparingEl) {
+      comparingEl.textContent =
+        on.length === 0
+          ? 'No cities ticked'
+          : on.length === rows.length
+            ? `Comparing all ${rows.length} cities`
+            : `Comparing ${joinNames(on.map((r) => r.name))}`;
+    }
+    if (resetBtn) resetBtn.hidden = on.length === rows.length;
     if (on.length === 0) {
       paint(allEl, []);
       out.textContent = 'Tick at least one city.';
@@ -506,6 +520,10 @@ function setupDemo() {
     update(Number(rangeEl.value));
   });
   rows.forEach((r) => r.check.addEventListener('change', analyse));
+  resetBtn?.addEventListener('click', () => {
+    rows.forEach((r) => (r.check.checked = true));
+    analyse();
+  });
   nowBtn?.addEventListener('click', () => {
     live = true;
     sweep?.kill();
@@ -569,18 +587,20 @@ function setupStory() {
   const N = WORLDBAR.storySteps;
 
   // Where each view sits: how far the capture slides up (share of its height), and the band of the
-  // capture's own pixel rows to light (y0, y1 in the 756 x 1404 image).
-  const IMG_H = 1404;
-  const FRAME_SHARE = 1404 / 1000; // the image is 1.404 frames tall (frame aspect is 756 / 1000)
+  // capture's own pixel rows to light (y0, y1 in the 758 x 1463 image).
+  const IMG_H = 1463;
+  const FRAME_SHARE = 1463 / 1000; // the image is 1.463 frames tall (frame aspect is 758 / 1000)
   const focus: Record<string, { sy: number; band?: [number, number] }> = {
     all: { sy: 0 },
     // The add-city capture is shorter than the frame: centre it.
     picker: { sy: 7.47 },
-    // Time travel: its title row through the date line (rows 646 to 826).
-    top: { sy: 0, band: [646, 826] },
-    // Find a meeting time: its header through the Options row (rows 858 to 1276).
-    bottom: { sy: -28.77, band: [858, 1276] },
-    nooverlap: { sy: -41.66 },
+    // Time travel: its title row through the date line (rows 654 to 832).
+    top: { sy: 0, band: [654, 832] },
+    // Find a meeting time: its header through the Options row (rows 864 to 1336), with the
+    // capture's bottom edge on the frame's bottom edge.
+    bottom: { sy: -31.65, band: [864, 1336] },
+    // The 758 x 1723 no-overlap capture, bottom edge on the frame's bottom edge.
+    nooverlap: { sy: -41.96 },
   };
 
   let current = -1;
