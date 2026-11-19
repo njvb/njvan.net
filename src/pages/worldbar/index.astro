@@ -27,11 +27,18 @@ const demoCities = [
   date: new Intl.DateTimeFormat('en-GB', { timeZone: c.tz, weekday: 'short', day: 'numeric', month: 'short' }).format(EXAMPLE),
 }));
 
+// "London, New York and Berlin": the ticked cities, as the app's planner words them.
+const joinNames = (names: string[]) =>
+  names.length < 2 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+const comparing = `Comparing ${joinNames(demoCities.filter((c) => c.on).map((c) => c.name))}`;
+
 const steps = [
   {
     title: 'Add the cities that matter',
     text: 'Search 194 cities by name, country or time zone. It works offline, and your home city gets a "You" badge.',
     shot: 'picker',
+    w: 756,
+    h: 870,
     focus: 'picker',
     alt: 'The add-city screen listing cities with their current local times',
   },
@@ -39,20 +46,26 @@ const steps = [
     title: 'Drag through the day',
     text: 'Slide the time and every city follows, with the right day, the right offset and daylight saving for that date.',
     shot: 'popover',
+    w: 758,
+    h: 1463,
     focus: 'top',
-    alt: 'The clock list and the time-travel slider showing Thursday 19 November, 14:00 in London',
+    alt: 'The clock list, with a checkbox on each city and Singapore and Sydney left unticked, and the time-travel slider showing Thursday 19 November, 14:00 in London',
   },
   {
     title: 'Find the overlap',
-    text: 'A 24-hour timeline shows when everyone is in working hours. Green means all of them. Drag the block to pick a time.',
+    text: 'Tick the cities in the meeting. A 24-hour timeline shows when they are all in working hours. Green means all of them. Drag the block to pick a time.',
     shot: 'popover',
+    w: 758,
+    h: 1463,
     focus: 'bottom',
-    alt: 'The meeting timeline with a green window from 14:00 to 16:00',
+    alt: 'The meeting planner comparing London, New York and Berlin, with a green window from 14:00 to 16:00',
   },
   {
     title: 'No overlap? It says so',
     text: 'When nobody shares working hours it tells you, then suggests the next best times and shows who is outside working hours.',
     shot: 'nooverlap',
+    w: 758,
+    h: 1723,
     focus: 'nooverlap',
     alt: 'The planner reporting no shared working hours, with three alternative times',
   },
@@ -63,7 +76,17 @@ const bento = [
   { n: '02', title: 'Light and dark, properly', text: 'It follows your Mac, or you can pick one.' },
   { n: '03', title: 'Private by design', text: 'No account, no analytics, and the app has no network access. Your cities stay on your Mac.' },
   { n: '04', title: 'Hands the event to your calendar', text: 'The meeting opens in Calendar or Outlook for you to check and save.' },
-  { n: '05', title: 'Built for the keyboard', text: 'Arrow keys move the meeting block. The usual shortcuts work.' },
+  {
+    n: '05',
+    title: "Choose who's in the meeting",
+    text: 'Each city has a checkbox. Untick one and it stays on your clock list, dimmed, but the planner leaves it out.',
+  },
+  {
+    n: '06',
+    title: 'Pop it out of the menu bar',
+    text: 'The pin button turns WorldBar into a floating window that stays on top. It remembers where you left it, even after a relaunch. Right-click the menu bar icon to put it back.',
+  },
+  { n: '07', title: 'Built for the keyboard', text: 'Arrow keys move the meeting block. The usual shortcuts work.' },
 ];
 
 const facts = [
@@ -78,7 +101,8 @@ const site = 'https://njvan.net/';
 const shotUrls = ['popover-dark.png', 'popover-light.png', 'picker-dark.png', 'nooverlap-dark.png'].map(
   (f) => `${site}assets/worldbar/${f}`,
 );
-// Answers are taken from the support and privacy pages, so the three always agree.
+// Answers are taken from the support and privacy pages, so the three agree. The two about the
+// checkboxes and the floating window are for 1.0.1 and are not on the support page yet.
 const faqs = [
   {
     q: 'Is WorldBar free?',
@@ -91,6 +115,14 @@ const faqs = [
   {
     q: 'How does it find a meeting time?',
     a: 'You set working hours for each city, and WorldBar shows where they overlap. Green means everyone is inside their working hours. If nobody overlaps, it lists the three least inconvenient times and who pays for each one.',
+  },
+  {
+    q: 'Can I leave a city out of the meeting search?',
+    a: 'Yes. Every city has a checkbox. Untick a city and it stays on your clock list, dimmed, but the planner leaves it out. The planner says which cities it is comparing, and "All cities" puts them all back.',
+  },
+  {
+    q: 'Can I keep WorldBar on screen?',
+    a: 'Yes. The pin button at the top of the panel pops WorldBar out into a floating window that stays on top of your other windows. It remembers where you put it, and it is back there after you relaunch the app. Right-click the menu bar icon to return it to the menu bar.',
   },
   {
     q: 'Does it read my calendar?',
@@ -126,6 +158,8 @@ const softwareApp = {
     'World clocks for up to 8 cities in the menu bar',
     'Drag through the day to see every city at that time',
     'Meeting planner that finds when everyone is in working hours',
+    'Tick cities in or out of the meeting search',
+    'Pin it into a floating window that stays on top',
     'Hands the event to Calendar or Outlook',
     'Works offline, with no account and no tracking',
   ],
@@ -197,15 +231,15 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
           <span class="wb-iso__floor" data-wb-floor></span>
           <div class="wb-iso__world" data-wb-world>
             <figure class="wb-slab wb-slab--planner" data-wb-slab="0">
-              <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" fetchpriority="high" />
+              <img src={`${shots}popover-dark.png`} alt="" width="758" height="1463" fetchpriority="high" />
               <figcaption class="t-annotation">03 · Meeting planner</figcaption>
             </figure>
             <figure class="wb-slab wb-slab--travel" data-wb-slab="1">
-              <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" fetchpriority="high" />
+              <img src={`${shots}popover-dark.png`} alt="" width="758" height="1463" fetchpriority="high" />
               <figcaption class="t-annotation">02 · Time travel</figcaption>
             </figure>
             <figure class="wb-slab wb-slab--clocks" data-wb-slab="2">
-              <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" fetchpriority="high" />
+              <img src={`${shots}popover-dark.png`} alt="" width="758" height="1463" fetchpriority="high" />
               <figcaption class="t-annotation">01 · World clocks</figcaption>
             </figure>
           </div>
@@ -267,9 +301,13 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
           ))
         }
       </ul>
-      <div class="wb-demo__overlap" data-demo-overlap aria-hidden="true">
-        <span class="wb-demo__overlap-label t-annotation">Everyone ticked</span>
-        <div class="wb-row__bar wb-row__bar--all" data-bar-all></div>
+      <div class="wb-demo__overlap" data-demo-overlap>
+        <p class="wb-demo__comparing">
+          <span class="wb-demo__overlap-label t-annotation" data-demo-comparing>{comparing}</span>
+          <!-- Puts every city back in, like the app's "All cities". Needs the script, so it starts hidden. -->
+          <button class="wb-demo__reset t-annotation" type="button" hidden data-demo-reset>All cities</button>
+        </p>
+        <div class="wb-row__bar wb-row__bar--all" data-bar-all aria-hidden="true"></div>
       </div>
       <p class="wb-demo__result" data-demo-result aria-live="polite">Best overlap: 14:00 – 16:00 (2 hours)</p>
       <p class="wb-demo__note t-annotation muted">
@@ -305,8 +343,8 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
             {
               steps.map((s, i) => (
                 <div class="wb-shot" data-wb-shot={i} data-focus={s.focus ?? 'all'}>
-                  <img class="wb-shot__img wb-theme-dark" src={`${shots}${s.shot}-dark.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
-                  <img class="wb-shot__img wb-theme-light" src={`${shots}${s.shot}-light.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+                  <img class="wb-shot__img wb-theme-dark" src={`${shots}${s.shot}-dark.png`} alt="" width={s.w} height={s.h} loading="lazy" decoding="async" />
+                  <img class="wb-shot__img wb-theme-light" src={`${shots}${s.shot}-light.png`} alt="" width={s.w} height={s.h} loading="lazy" decoding="async" />
                 </div>
               ))
             }
@@ -324,8 +362,8 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
             <span class="wb-step__num t-annotation">{String(i + 1).padStart(2, '0')}</span>
             <h3 class="wb-step__title">{s.title}</h3>
             <p class="t-body muted">{s.text}</p>
-            <img class="wb-theme-dark" src={`${shots}${s.shot}-dark.png`} alt={s.alt} width="756" height="1404" loading="lazy" decoding="async" />
-            <img class="wb-theme-light" src={`${shots}${s.shot}-light.png`} alt={s.alt} width="756" height="1404" loading="lazy" decoding="async" />
+            <img class="wb-theme-dark" src={`${shots}${s.shot}-dark.png`} alt={s.alt} width={s.w} height={s.h} loading="lazy" decoding="async" />
+            <img class="wb-theme-light" src={`${shots}${s.shot}-light.png`} alt={s.alt} width={s.w} height={s.h} loading="lazy" decoding="async" />
           </li>
         ))
       }
@@ -357,8 +395,8 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
         <h3 class="wb-card__title">{bento[1].title}</h3>
         <p class="wb-card__text t-body">{bento[1].text}</p>
         <div class="wb-wipe" data-wb-wipe aria-hidden="true">
-          <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
-          <img class="wb-wipe__top" src={`${shots}popover-light.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+          <img src={`${shots}popover-dark.png`} alt="" width="758" height="1463" loading="lazy" decoding="async" />
+          <img class="wb-wipe__top" src={`${shots}popover-light.png`} alt="" width="758" height="1463" loading="lazy" decoding="async" />
           <span class="wb-wipe__handle"></span>
         </div>
       </article>
@@ -385,11 +423,41 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
         </div>
       </article>
 
-      <!-- Keyboard -->
+      <!-- Choose the cities: the real checkboxes, ticking and unticking on a loop -->
       <article class="wb-card wb-card--wide" data-wb-card>
         <span class="wb-card__n t-annotation">{bento[4].n}</span>
         <h3 class="wb-card__title">{bento[4].title}</h3>
         <p class="wb-card__text t-body">{bento[4].text}</p>
+        <div class="wb-pick" aria-hidden="true">
+          <ul class="wb-pick__list">
+            <li class="wb-pick__item wb-pick__item--on"><i class="wb-pick__box"></i><span>London</span></li>
+            <li class="wb-pick__item wb-pick__item--on"><i class="wb-pick__box"></i><span>New York</span></li>
+            <li class="wb-pick__item wb-pick__item--on"><i class="wb-pick__box"></i><span>Berlin</span></li>
+            <li class="wb-pick__item wb-pick__item--swing"><i class="wb-pick__box"></i><span>Singapore</span></li>
+            <li class="wb-pick__item wb-pick__item--swing wb-pick__item--late"><i class="wb-pick__box"></i><span>Sydney</span></li>
+          </ul>
+          <p class="wb-pick__line t-annotation"><span>Comparing London, New York and Berlin</span></p>
+        </div>
+      </article>
+
+      <!-- The floating window: the real capture, lifting and settling -->
+      <article class="wb-card" data-wb-card>
+        <span class="wb-card__n t-annotation">{bento[5].n}</span>
+        <h3 class="wb-card__title">{bento[5].title}</h3>
+        <p class="wb-card__text t-body">{bento[5].text}</p>
+        <div class="wb-float" aria-hidden="true">
+          <div class="wb-float__win">
+            <img class="wb-theme-dark" src={`${shots}float-dark.png`} alt="" width="758" height="1510" loading="lazy" decoding="async" />
+            <img class="wb-theme-light" src={`${shots}float-light.png`} alt="" width="758" height="1510" loading="lazy" decoding="async" />
+          </div>
+        </div>
+      </article>
+
+      <!-- Keyboard -->
+      <article class="wb-card wb-card--wide" data-wb-card>
+        <span class="wb-card__n t-annotation">{bento[6].n}</span>
+        <h3 class="wb-card__title">{bento[6].title}</h3>
+        <p class="wb-card__text t-body">{bento[6].text}</p>
         <div class="wb-keys" aria-hidden="true">
           <span><kbd>←</kbd><kbd>→</kbd> Move the meeting 15 min</span>
           <span><kbd>⌘</kbd><kbd>N</kbd> Back to now</span>
@@ -665,7 +733,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     --w: 54cqw;
     --h: 102cqw;
     /* Plan height of the whole popover, and the top that centres it in the box. */
-    --plan: calc(var(--w) * 1404 / 756);
+    --plan: calc(var(--w) * 1463 / 758);
     --top0: calc((var(--h) - var(--plan)) / 2);
     position: relative;
     width: 100%;
@@ -761,35 +829,35 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     opacity: var(--open, 1);
   }
 
-  /* Bands of the 756 x 1404 capture: clocks 0-640, travel 640-842, planner 842-1404. Each plate is
+  /* Bands of the 758 x 1463 capture: clocks 0-648, travel 648-848, planner 848-1463. Each plate is
      1px taller than its band so neighbours overlap (same pixels) and no hairline shows between them. */
   .wb-slab--clocks {
     --top: var(--top0);
     --i: 2;
-    height: calc(var(--w) * 640 / 756 + 1px);
+    height: calc(var(--w) * 648 / 758 + 1px);
     border-radius: var(--ro) var(--ro) var(--ri) var(--ri);
   }
 
   .wb-slab--travel {
-    --top: calc(var(--top0) + (var(--w) * 640 / 756));
+    --top: calc(var(--top0) + (var(--w) * 648 / 758));
     --i: 1;
-    height: calc(var(--w) * 202 / 756 + 1px);
+    height: calc(var(--w) * 200 / 758 + 1px);
     border-radius: var(--ri);
   }
 
   .wb-slab--travel img {
-    transform: translateY(-45.58%);
+    transform: translateY(-44.29%);
   }
 
   .wb-slab--planner {
-    --top: calc(var(--top0) + (var(--w) * 842 / 756));
+    --top: calc(var(--top0) + (var(--w) * 848 / 758));
     --i: 0;
-    height: calc(var(--w) * 562 / 756);
+    height: calc(var(--w) * 615 / 758);
     border-radius: var(--ri) var(--ri) var(--ro) var(--ro);
   }
 
   .wb-slab--planner img {
-    transform: translateY(-59.97%);
+    transform: translateY(-57.96%);
   }
 
   /* Live clock pills floating around the stack. */
@@ -987,8 +1055,19 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     transition: opacity 0.2s var(--ease-entrance);
   }
 
-  .wb-row[data-on='false'] {
-    opacity: 0.55;
+  /* An unticked city stays on the list, dimmed, like the app. The checkbox itself stays clear. */
+  .wb-row__name,
+  .wb-row__time,
+  .wb-row__date,
+  .wb-row__bar {
+    transition: opacity 0.2s var(--ease-entrance);
+  }
+
+  .wb-row[data-on='false'] .wb-row__name,
+  .wb-row[data-on='false'] .wb-row__time,
+  .wb-row[data-on='false'] .wb-row__date,
+  .wb-row[data-on='false'] .wb-row__bar {
+    opacity: 0.45;
   }
 
   .wb-row__check {
@@ -1007,29 +1086,31 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     cursor: pointer;
   }
 
+  /* The app's checkbox: a filled grey rounded square, and system blue with a white tick once on. */
   .wb-row__box {
     position: absolute;
     inset: 0;
-    border: var(--border-strong) solid var(--color-muted);
-    border-radius: 6px;
-    transition:
-      background-color 0.14s var(--ease-entrance),
-      border-color 0.14s var(--ease-entrance);
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--color-foreground) 14%, transparent);
+    transition: background-color 0.14s var(--ease-entrance);
   }
 
   .wb-row__check input:checked + .wb-row__box {
-    background: var(--color-worldbar);
-    border-color: var(--color-worldbar);
+    background: #0a84ff;
+  }
+
+  :global(html[data-theme='light']) .wb-row__check input:checked + .wb-row__box {
+    background: #007aff;
   }
 
   .wb-row__check input:checked + .wb-row__box::after {
     content: '';
     position: absolute;
-    left: 6px;
-    top: 2px;
+    left: 7px;
+    top: 3px;
     width: 6px;
     height: 11px;
-    border: solid var(--color-on-worldbar);
+    border: solid #fff;
     border-width: 0 2.5px 2.5px 0;
     transform: rotate(45deg);
   }
@@ -1111,8 +1192,35 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     margin-top: 0;
   }
 
+  .wb-demo__comparing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px var(--gutter);
+    margin: 0;
+  }
+
   .wb-demo__overlap-label {
     color: var(--color-muted);
+  }
+
+  .wb-demo__reset {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 8px 0;
+    margin: -8px 0;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+
+  .wb-demo__reset:hover {
+    color: var(--color-foreground);
+  }
+
+  .wb-demo__reset[hidden] {
+    display: none;
   }
 
   .wb-demo__result {
@@ -1296,7 +1404,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     .wb-stage__frame {
       position: relative;
       height: 100%;
-      aspect-ratio: 756 / 1000;
+      aspect-ratio: 758 / 1000;
       max-width: 100%;
       overflow: hidden;
       border-radius: 22px;
@@ -1534,6 +1642,166 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     padding: 7px 12px;
     border: var(--border-strong) solid var(--color-border);
     border-radius: var(--radius-lg);
+  }
+
+  /* Choose the cities: the checkboxes from the app. Singapore and Sydney tick and untick on a loop,
+     and the "Comparing" line goes while everyone is in, as it does in the app. Resting state (and
+     reduced motion): the capture's, with those two unticked and dimmed. */
+  .wb-pick {
+    margin-top: auto;
+    padding-top: 12px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .wb-pick__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 26px;
+  }
+
+  .wb-pick__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .wb-pick__box {
+    position: relative;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--color-foreground) 14%, transparent);
+  }
+
+  .wb-pick__box::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid #fff;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+
+  .wb-pick__item--on .wb-pick__box,
+  .wb-pick__item--swing .wb-pick__box {
+    background: #0a84ff;
+  }
+
+  :global(html[data-theme='light']) .wb-pick__item--on .wb-pick__box,
+  :global(html[data-theme='light']) .wb-pick__item--swing .wb-pick__box {
+    background: #007aff;
+  }
+
+  .wb-pick__item--on .wb-pick__box::after {
+    opacity: 1;
+  }
+
+  .wb-pick__item--swing {
+    opacity: 0.45;
+  }
+
+  .wb-pick__item--swing .wb-pick__box {
+    background: color-mix(in srgb, var(--color-foreground) 14%, transparent);
+  }
+
+  .wb-pick__line {
+    margin: 0;
+    min-height: 1.5em;
+    color: var(--color-muted);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .wb-pick__item--swing {
+      animation: wb-pick-dim 9s ease-in-out infinite;
+    }
+
+    .wb-pick__item--swing .wb-pick__box {
+      animation: wb-pick-box 9s ease-in-out infinite;
+    }
+
+    .wb-pick__item--swing .wb-pick__box::after {
+      animation: wb-pick-tick 9s ease-in-out infinite;
+    }
+
+    .wb-pick__item--late,
+    .wb-pick__item--late .wb-pick__box,
+    .wb-pick__item--late .wb-pick__box::after {
+      animation-delay: 0.5s;
+    }
+
+    .wb-pick__line {
+      animation: wb-pick-line 9s ease-in-out infinite;
+    }
+  }
+
+  /* 0-30%: unticked and dimmed. 36-84%: ticked. 90% on: unticked again. */
+  @keyframes wb-pick-dim {
+    0%, 30%, 90%, 100% { opacity: 0.45; }
+    36%, 84% { opacity: 1; }
+  }
+
+  @keyframes wb-pick-box {
+    0%, 30%, 90%, 100% { background-color: color-mix(in srgb, var(--color-foreground) 14%, transparent); }
+    36%, 84% { background-color: #0a84ff; }
+  }
+
+  @keyframes wb-pick-tick {
+    0%, 30%, 90%, 100% { opacity: 0; }
+    36%, 84% { opacity: 1; }
+  }
+
+  /* The line is there while a city is out, and fades while all five are in. */
+  @keyframes wb-pick-line {
+    0%, 36%, 88%, 100% { opacity: 1; }
+    46%, 84% { opacity: 0; }
+  }
+
+  /* The floating window: the app's own capture (title bar and all), cropped to its top, lifting
+     and settling. */
+  .wb-float {
+    position: relative;
+    margin-top: auto;
+    height: 200px;
+    padding-top: 12px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 68%, transparent);
+    mask-image: linear-gradient(#000 68%, transparent);
+  }
+
+  .wb-float__win {
+    width: min(86%, 270px);
+    margin-inline: auto;
+    filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.45)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+  }
+
+  /* No display rule here: the page's theme switch hides the dark or the light capture. */
+  .wb-float__win img {
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .wb-float__win {
+      animation: wb-float-lift 6.5s ease-in-out infinite;
+    }
+  }
+
+  @keyframes wb-float-lift {
+    0%, 100% { transform: translateY(8px) rotate(-0.6deg); }
+    50% { transform: translateY(-2px) rotate(0.6deg); }
   }
 
   .wb-keys {

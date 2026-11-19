@@ -17,7 +17,7 @@ const bands = [
     {
       bands.map((b) => (
         <figure class={`wbs__slab wbs__slab--${b.key}`} data-wbs-slab={b.i}>
-          <img src={`${shots}popover-dark.png`} alt="" width="756" height="1404" loading="lazy" decoding="async" />
+          <img src={`${shots}popover-dark.png`} alt="" width="758" height="1463" loading="lazy" decoding="async" />
         </figure>
       ))
     }
@@ -44,7 +44,7 @@ const bands = [
     --u: min(100cqi, 58svh);
     --w: calc(var(--u) * 0.58);
     --h: calc(var(--u) * 1.14);
-    --plan: calc(var(--w) * 1404 / 756);
+    --plan: calc(var(--w) * 1463 / 758);
     --top0: calc((var(--h) - var(--plan)) / 2);
     display: grid;
     place-items: center;
@@ -79,32 +79,32 @@ const bands = [
     height: auto;
   }
 
-  /* Bands of the 756 x 1404 capture: clocks 0-640, travel 640-842, planner 842-1404. Each plate is
+  /* Bands of the 758 x 1463 capture: clocks 0-648, travel 648-848, planner 848-1463. Each plate is
      1px taller than its band so neighbours overlap and no hairline shows between them. */
   .wbs__slab--clocks {
     --top: var(--top0);
-    height: calc(var(--w) * 640 / 756 + 1px);
+    height: calc(var(--w) * 648 / 758 + 1px);
     border-radius: var(--ro, 1.6cqi) var(--ro, 1.6cqi) var(--ri, 0px) var(--ri, 0px);
   }
 
   .wbs__slab--travel {
-    --top: calc(var(--top0) + var(--w) * 640 / 756);
-    height: calc(var(--w) * 202 / 756 + 1px);
+    --top: calc(var(--top0) + var(--w) * 648 / 758);
+    height: calc(var(--w) * 200 / 758 + 1px);
     border-radius: var(--ri, 0px);
   }
 
   .wbs__slab--travel img {
-    transform: translateY(-45.58%);
+    transform: translateY(-44.29%);
   }
 
   .wbs__slab--planner {
-    --top: calc(var(--top0) + var(--w) * 842 / 756);
-    height: calc(var(--w) * 562 / 756);
+    --top: calc(var(--top0) + var(--w) * 848 / 758);
+    height: calc(var(--w) * 615 / 758);
     border-radius: var(--ri, 0px) var(--ri, 0px) var(--ro, 1.6cqi) var(--ro, 1.6cqi);
   }
 
   .wbs__slab--planner img {
-    transform: translateY(-59.97%);
+    transform: translateY(-57.96%);
   }
 
   /* The whole popover gets one shadow once the plates have closed. */
