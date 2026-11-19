@@ -43,6 +43,12 @@ export interface Project {
   links: ProjectLink[];
 }
 
+/**
+ * WorldBar's public TestFlight link, for the "Join the TestFlight beta" buttons on the WorldBar
+ * page and its homepage scene. Remove those buttons (and this) once the app is on the Mac App Store.
+ */
+export const WORLDBAR_TESTFLIGHT = 'https://testflight.apple.com/join/XmJFkvgd';
+
 export const projects: Project[] = [
   {
     id: 'tavren',
@@ -126,6 +132,7 @@ export const projects: Project[] = [
     notes: ['macOS 15 or later', 'No account · No tracking'],
     links: [
       { label: 'See WorldBar', href: '/worldbar/', variant: 'solid' },
+      { label: 'Join the TestFlight beta', href: WORLDBAR_TESTFLIGHT, external: true, variant: 'outline' },
       // The listing returns 404 until Apple releases the app, so this branch waits for that.
       { label: 'Download WorldBar on the Mac App Store', href: 'https://apps.apple.com/app/id6836081075', external: true, variant: 'outline', badge: 'mac-app-store' },
     ],

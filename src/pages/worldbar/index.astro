@@ -4,6 +4,7 @@
 // Motion and the live demo live in src/scripts/worldbar-page.ts; the screenshots are real
 // captures of the app (public/assets/worldbar/), never mock-ups.
 import Base from '../../layouts/Base.astro';
+import { WORLDBAR_TESTFLIGHT } from '../../data/projects';
 
 const base = import.meta.env.BASE_URL;
 const shots = `${base}assets/worldbar/`;
@@ -216,11 +217,13 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
           everyone is in working hours.
         </p>
         <div class="wb-hero__links" data-wb-rise>
+          <!-- The app is not on the store yet: the public TestFlight beta is the way in. -->
+          <a class="btn btn--lg wb-btn wb-btn--solid" href={WORLDBAR_TESTFLIGHT} target="_blank" rel="noopener">Join the TestFlight beta ↗</a>
           <!-- Apple's own badge, unaltered: black on this light field. -->
           <a class="wb-badge" href={STORE} target="_blank" rel="noopener" aria-label="Download WorldBar on the Mac App Store">
             <img src={`${shots}badge-mac-app-store-black.svg`} alt="Download on the Mac App Store" width="156" height="40" />
           </a>
-          <a class="btn btn--lg wb-btn wb-btn--solid" href="#try">Try it below ↓</a>
+          <a class="btn btn--lg wb-btn" href="#try">Try it below ↓</a>
         </div>
         <p class="wb-hero__note t-annotation" data-wb-rise>Free · macOS 15 or later · No account · No tracking</p>
       </div>
@@ -505,6 +508,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
         <img class="wb-theme-dark" src={`${shots}badge-mac-app-store-white.svg`} alt="Download on the Mac App Store" width="156" height="40" />
         <img class="wb-theme-light" src={`${shots}badge-mac-app-store-black.svg`} alt="" width="156" height="40" />
       </a>
+      <a class="btn btn--lg btn--inverse" href={WORLDBAR_TESTFLIGHT} target="_blank" rel="noopener">Join the TestFlight beta ↗</a>
       <a class="btn btn--lg" href={SUPPORT}>Support</a>
       <a class="btn btn--lg" href={PRIVACY}>Privacy</a>
     </div>
