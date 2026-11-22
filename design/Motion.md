@@ -51,6 +51,7 @@ On wide screens the browser's own CSS scroll snapping stops on each scene (`scro
 | **Cotrip** | `cotrip` | A route line draws itself across a stylised map (SVG `strokeDashoffset`), dropping pins at each stop; phone screenshots stack beside it. |
 | **Campaign Tower** | `tower` | The tower builds itself floor by floor in pixel blocks (stepped ease, no smoothing). A small pixel lift rides up the side as the scroll indicator. |
 | **WorldBar** | `worldbar` | Three plates cut from the real capture (the same bands as the /worldbar/ hero) fall in angled and apart, leaning toward the title, then close into the whole popover and turn almost face-on, with a small settle and one shadow. Flat 2D matrices, no 3D context. The clock pills fade in with live times. Values are `WORLDBAR_SCENE` in `motion.ts`; the script is `src/scripts/worldbar-moment.ts`. Reduced motion and no-script show the closed popover. |
+| **PastePerfect** | `pasteperfect` | The real window capture lands (rises and straightens), tracking chips appear around it one after another and are crossed out, then flung outward and away in the same order, while the link under the window shows its tracking tail, crosses it out and folds it away. Flat: an ink outline instead of a shadow. Values are `PASTEPERFECT_SCENE` in `motion.ts`; the script is `src/scripts/pasteperfect-moment.ts`. Reduced motion and no-script show the window and the clean link. |
 
 Rules for project moments:
 
