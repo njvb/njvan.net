@@ -1,0 +1,1196 @@
+---
+// PastePerfect's landing page, served at njvan.net/pasteperfect/.
+// An app-specific page like /worldbar/: it may use glows and shadows (the homepage stays flat), with
+// one accent (soft blue) and the site's own header, footer, type and tokens. The window capture is a
+// real screenshot of the app, never a mock-up. The demo is in src/scripts/pasteperfect-page.ts.
+// The app is not on the Mac App Store yet, so the store button is a labelled placeholder. When the
+// listing is live, link it (https://apps.apple.com/app/id6837888565) using Apple's badge, as /worldbar/ does.
+import Base from '../../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+const assets = `${base}assets/pasteperfect/`;
+const SUPPORT = `${base}pasteperfect/support/`;
+const PRIVACY = `${base}pasteperfect/privacy/`;
+
+const description =
+  'PastePerfect is a Mac app that cleans copied text and URLs before you paste. It strips tracking parameters and stray formatting. No account, no network access.';
+
+// Shortcuts and parameter names are marked up here (these are the page's own constants, not user input).
+const kbd = (keys: string) => `<kbd>${keys}</kbd>`;
+const mono = (text: string) => `<span class="pp-mono">${text}</span>`;
+
+const steps = [
+  { title: 'Copy as usual', text: `Copy a link or a block of text from any app, with ${kbd('⌘C')}.` },
+  { title: `Press ${kbd('⇧⌘V')}`, text: 'PastePerfect cleans the clipboard from any app. You can change the shortcut in Settings.' },
+  { title: `Paste with ${kbd('⌘V')}`, text: 'What lands is clean text and tidy links, without the tracking tail.' },
+];
+
+const features = [
+  {
+    title: 'Strips tracking parameters',
+    text: `Removes ${['utm_*', 'fbclid', 'gclid', 'msclkid', 'igshid', 'mc_cid'].map(mono).join(', ')} and more, and keeps the ones the page needs.`,
+  },
+  { title: 'Three URL modes', text: `Tracking only, All parameters, or Custom rules with wildcards such as ${mono('promo_*')}.` },
+  { title: 'Remove formatting', text: 'Turn rich text into plain text so it takes on the style of wherever you paste.' },
+  {
+    title: 'Tidy text',
+    text: 'Fixes repeated spaces, extra blank lines, line endings and zero-width characters. Lists, paragraphs and code are left alone.',
+  },
+  { title: 'Live preview', text: 'See the cleaned result in a pale green panel before you copy it.' },
+  { title: 'A global shortcut', text: `${kbd('⇧⌘V')} cleans the clipboard from any app. It is configurable.` },
+  {
+    title: 'Lives in the menu bar',
+    text: 'Open, Clean Clipboard, Settings and Quit are one click away. Launch it at login if you like.',
+  },
+  { title: 'Light and dark', text: 'It follows your Mac, or you can pick one.' },
+];
+
+const faqs = [
+  {
+    q: 'When is it available?',
+    a: 'PastePerfect is not on the Mac App Store yet. It is being tested now, and this page will link to the listing when it is live.',
+  },
+  { q: 'What do I need to run it?', a: 'A Mac running macOS 15 or later, Apple silicon or Intel.' },
+  {
+    q: 'Does it send my clipboard anywhere?',
+    a: 'No. The app has no network access and no analytics, so it cannot send anything off your Mac.',
+  },
+  {
+    q: 'Will cleaning break my links?',
+    a: `Not in the default mode. Tracking only removes known tracking parameters and keeps functional ones such as ${mono('id')}, ${mono('q')} and ${mono('page')}. All parameters removes every one, so use it when you know a link works without them.`,
+  },
+  {
+    q: 'Does Tidy text change my code or lists?',
+    a: 'No. It fixes repeated spaces, blank lines, line endings and zero-width characters, and keeps lists, paragraphs and code.',
+  },
+  {
+    q: 'How do I use it from any app?',
+    a: `Copy, press ${kbd('⇧⌘V')} to clean the clipboard, then paste with ${kbd('⌘V')}. You can change the shortcut in Settings.`,
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'PastePerfect',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'macOS 15 or later',
+  description,
+  url: 'https://njvan.net/pasteperfect/',
+  image: 'https://njvan.net/og/pasteperfect.jpg',
+  screenshot: 'https://njvan.net/assets/pasteperfect/app-window.png',
+  featureList: [
+    'Strips tracking parameters from copied links',
+    'Three URL modes: tracking only, all parameters, custom rules',
+    'Removes formatting and tidies text',
+    'A global shortcut that cleans the clipboard from any app',
+    'Works offline, with no account and no tracking',
+  ],
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  author: { '@type': 'Person', name: 'Nathan VanderByl', url: 'https://njvan.net/' },
+};
+---
+
+<Base
+  title="PastePerfect: Copy anything. Paste perfectly."
+  description={description}
+  image="/og/pasteperfect.jpg"
+  imageAlt="PastePerfect: copy anything, paste perfectly. A Mac app that cleans copied text and URLs."
+  jsonLd={jsonLd}
+>
+  <!-- There is no intro on this page: show the header settled at once. -->
+  <script is:inline slot="head">
+    (function () {
+      // The hero holds its first frame hidden until the script lays out the intro (a failsafe lifts it).
+      var calm = document.documentElement.dataset.motion === 'reduced' || (document.documentElement.dataset.motion !== 'full' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (!calm) {
+        document.documentElement.dataset.ppIntro = '';
+        setTimeout(function () { delete document.documentElement.dataset.ppIntro; }, 2500);
+      }
+      clearTimeout(window.__motionBootTimer);
+      document.documentElement.dataset.motionBoot = 'settled';
+      document.addEventListener('DOMContentLoaded', function () { document.body.dataset.phase = 'settled'; });
+    })();
+  </script>
+
+  <div class="pp">
+    <!-- ============ Hero ============ -->
+    <section class="pp-hero" aria-labelledby="pp-title">
+      <div class="pp-hero__field" aria-hidden="true">
+        <span class="pp-orb pp-orb--a"></span>
+        <span class="pp-orb pp-orb--b"></span>
+      </div>
+      <div class="shell pp-hero__inner">
+        <div class="pp-hero__copy">
+          <img class="pp-icon" src={`${assets}icon.webp`} width="84" height="84" alt="" />
+          <h1 class="pp-hero__name" id="pp-title">PastePerfect</h1>
+          <p class="pp-hero__line">Copy anything. Paste perfectly.</p>
+          <p class="pp-hero__more t-body">
+            A Mac app that cleans up copied text and URLs before you paste. It strips tracking junk from links,
+            removes stray formatting and tidies messy text, all on your Mac.
+          </p>
+          <div class="pp-links">
+            <!-- Not on the store yet: a labelled placeholder, not a link. -->
+            <span class="btn btn--lg pp-solid" role="note">Coming soon to the Mac App Store</span>
+            <a class="btn btn--lg" href="#try">Try it below ↓</a>
+          </div>
+          <p class="pp-hero__note t-annotation">Free · macOS 15 or later · No account · No tracking</p>
+        </div>
+
+        <div class="pp-stage" data-pp-stage>
+        <figure class="pp-shot" data-pp-shot>
+          <img
+            class="pp-theme-dark"
+            src={`${assets}app-window.png`}
+            width="1200"
+            height="923"
+            alt="The PastePerfect window: a copied link with utm tracking parameters, the Remove formatting, Tidy text and Clean URLs options, and the cleaned result in a green panel reading https://example.com/article?id=123"
+            fetchpriority="high"
+          />
+          <img
+            class="pp-theme-light"
+            src={`${assets}app-window-light.png`}
+            width="1200"
+            height="923"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+          <div class="pp-chips" aria-hidden="true"><span class="pp-chip pp-chip--0" data-pp-chip>utm_source=newsletter</span><span class="pp-chip pp-chip--1" data-pp-chip>fbclid=IwAR0abc</span><span class="pp-chip pp-chip--2" data-pp-chip>gclid=Cj0KCQ</span><span class="pp-chip pp-chip--3" data-pp-chip>utm_medium=email</span><span class="pp-chip pp-chip--4" data-pp-chip>msclkid=8f2a1c</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ The junk, crossed out ============ -->
+    <div class="pp-mq" aria-hidden="true" data-pp-mq>
+      <div class="pp-mq__track" data-pp-mq-track>
+        <div class="pp-mq__row"><span class="pp-mq__item">utm_source</span><span class="pp-mq__item">utm_medium</span><span class="pp-mq__item">utm_campaign</span><span class="pp-mq__item">fbclid</span><span class="pp-mq__item">gclid</span><span class="pp-mq__item">msclkid</span><span class="pp-mq__item">igshid</span><span class="pp-mq__item">mc_cid</span><span class="pp-mq__item">_hsenc</span><span class="pp-mq__item">yclid</span><span class="pp-mq__item">twclid</span><span class="pp-mq__item">dclid</span></div>
+        <div class="pp-mq__row"><span class="pp-mq__item">utm_source</span><span class="pp-mq__item">utm_medium</span><span class="pp-mq__item">utm_campaign</span><span class="pp-mq__item">fbclid</span><span class="pp-mq__item">gclid</span><span class="pp-mq__item">msclkid</span><span class="pp-mq__item">igshid</span><span class="pp-mq__item">mc_cid</span><span class="pp-mq__item">_hsenc</span><span class="pp-mq__item">yclid</span><span class="pp-mq__item">twclid</span><span class="pp-mq__item">dclid</span></div>
+      </div>
+    </div>
+
+    <!-- ============ Try it ============ -->
+    <section class="pp-section shell" id="try" aria-labelledby="pp-try-title">
+      <h2 class="pp-h2" id="pp-try-title">Paste something messy. See it clean.</h2>
+      <p class="pp-lede t-body">
+        This demo runs in your browser and sends nothing anywhere. The app does the same on your clipboard.
+      </p>
+      <div class="pp-win" data-pp-win>
+        <div class="pp-win__bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="pp-win__head">
+          <img src={`${assets}icon.webp`} width="52" height="52" alt="" />
+          <div>
+            <b>PastePerfect</b>
+            <span>Clean up copied text and URLs before you paste.</span>
+          </div>
+        </div>
+        <label class="pp-label" for="pp-demo-in">What you copied</label>
+        <textarea class="pp-pane pp-pane--in" id="pp-demo-in" data-pp="in" rows="4" spellcheck="false">Check this out:  https://example.com/article?utm_source=newsletter&utm_medium=email&utm_campaign=update&fbclid=IwAR0abc&id=123&page=2   Thanks!</textarea>
+        <div class="pp-opts">
+          <label class="pp-opt">
+            <input type="checkbox" data-pp="tidy" />
+            <span class="pp-opt__box" aria-hidden="true"></span>
+            <span class="pp-opt__text"><b>Tidy text</b><small>Fix line breaks, spaces, etc.</small></span>
+          </label>
+          <label class="pp-opt">
+            <input type="checkbox" data-pp="urls" />
+            <span class="pp-opt__box" aria-hidden="true"></span>
+            <span class="pp-opt__text"><b>Clean URLs</b><small>Remove tracking parameters</small></span>
+          </label>
+          <label class="pp-opt pp-opt--mode">
+            <span class="pp-opt__text"><b>Mode</b></span>
+            <select data-pp="mode">
+              <option value="tracking">Tracking only</option>
+              <option value="all">All parameters</option>
+              <option value="custom">Custom rules</option>
+            </select>
+          </label>
+          <label class="pp-opt pp-opt--mode" data-pp="custom-wrap" hidden>
+            <span class="pp-opt__text"><b>Rules</b></span>
+            <input class="pp-rules" data-pp="custom" value="promo_*, ref" size="14" />
+          </label>
+        </div>
+        <div class="pp-arrow" aria-hidden="true">↓</div>
+        <span class="pp-label">What you paste</span>
+        <div class="pp-pane pp-pane--result" data-pp="out" aria-live="polite"></div>
+        <p class="pp-removed" data-pp="removed"></p>
+        <div class="pp-win__foot">
+          <button class="pp-replay" data-pp="replay" type="button" hidden>Watch it run again</button>
+          <span class="pp-demo__status" data-pp="status" role="status"></span>
+          <button class="btn btn--lg pp-solid pp-copy" data-pp="copy" type="button">Clean and Copy <kbd>⇧⌘V</kbd></button>
+        </div>
+        <div class="pp-cursor" data-pp="cursor" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 2l15 10-6.5 1.3L9.6 20z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span class="pp-cursor__ring"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ How it works ============ -->
+    <section class="pp-section shell" id="how" aria-labelledby="pp-how-title">
+      <h2 class="pp-h2" id="pp-how-title">Three steps, one shortcut.</h2>
+      <ol class="pp-steps">
+        {
+          steps.map((s) => (
+            <li>
+              <h3 set:html={s.title} />
+              <p set:html={s.text} />
+            </li>
+          ))
+        }
+      </ol>
+      <div class="pp-ba">
+        <div>
+          <span class="pp-label">Before</span>
+          <div class="pp-pane" data-pp-before>https://example.com/article?<span class="pp-tr" data-pp-tr>utm_source=newsletter&amp;utm_medium=email&amp;</span>id=123</div>
+        </div>
+        <div class="pp-arrow pp-arrow--go" aria-hidden="true" data-pp-go>→</div>
+        <div>
+          <span class="pp-label">After</span>
+          <div class="pp-pane pp-pane--result" data-pp-after>https://example.com/article?id=123</div>
+        </div>
+      </div>
+      <p class="pp-lede pp-lede--after t-body">
+        Functional parameters such as <span class="pp-mono">id</span>, <span class="pp-mono">q</span> and <span class="pp-mono">page</span> stay, so the link still works.
+      </p>
+    </section>
+
+    <!-- ============ Details ============ -->
+    <section class="pp-section shell" aria-labelledby="pp-feat-title">
+      <h2 class="pp-h2" id="pp-feat-title">A small utility, in detail.</h2>
+      <div class="pp-grid">
+        {
+          features.map((f, i) => (
+            <div class="pp-cell">
+              <span class="pp-cell__n t-annotation">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{f.title}</h3>
+              <p set:html={f.text} />
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ============ Privacy ============ -->
+    <section class="pp-privacy" id="privacy" aria-labelledby="pp-priv-title">
+      <div class="shell pp-section">
+        <h2 class="pp-h2" id="pp-priv-title">Your clipboard stays yours.</h2>
+        <p class="pp-lede t-body">
+          The clipboard holds passwords, drafts and private links. PastePerfect is built so none of that can leave
+          your Mac.
+        </p>
+        <ul class="pp-checks">
+          <li>No account or sign-in</li>
+          <li>No network access: the app is sandboxed without it</li>
+          <li>No analytics, ads or tracking</li>
+          <li>Works fully offline</li>
+          <li>Clipboard text never leaves your Mac</li>
+        </ul>
+        <p class="pp-privacy__link"><a href={PRIVACY}>Read the privacy policy</a></p>
+      </div>
+    </section>
+
+    <!-- ============ Questions ============ -->
+    <section class="pp-section shell" aria-labelledby="pp-faq-title">
+      <h2 class="pp-h2" id="pp-faq-title">Common questions.</h2>
+      <div class="pp-faq">
+        {
+          faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p set:html={f.a} />
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ============ Closing ============ -->
+    <section class="pp-end shell" aria-labelledby="pp-end-title">
+      <ul class="pp-facts t-annotation">
+        <li>macOS 15 or later</li>
+        <li>Menu bar app</li>
+        <li>Works offline</li>
+      </ul>
+      <h2 class="pp-end__title" id="pp-end-title">Copy anything. Paste perfectly.</h2>
+      <div class="pp-links pp-links--center">
+        <span class="btn btn--lg pp-solid" role="note">Coming soon to the Mac App Store</span>
+        <a class="btn btn--lg" href={SUPPORT}>Support</a>
+        <a class="btn btn--lg" href={PRIVACY}>Privacy</a>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import '../../scripts/pasteperfect-page';
+</script>
+
+<style>
+  /* The homepage's panel snapping is for its full-screen scenes; this page scrolls freely. */
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  /* The header sits on the canvas above the hero, like the other landing pages. */
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  /* One accent (soft blue) and the pale green result panel, for dark and light. */
+  .pp {
+    --accent: var(--color-pasteperfect);
+    --on: var(--color-on-pasteperfect);
+    --result-bg: #0f2a1b;
+    --result-line: #1f5a38;
+    --result-text: #a7f0c1;
+    --bad: #ff8a80;
+    --lift: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  :global(html[data-theme='light']) .pp {
+    --result-bg: #e9f8ee;
+    --result-line: #b7e3c4;
+    --result-text: #14532d;
+    --bad: #b3261e;
+    --lift: 0 1px 2px rgba(20, 40, 90, 0.06), 0 12px 32px rgba(40, 80, 170, 0.14);
+  }
+
+  /* Shortcuts and parameter names inside the text above are injected markup, so they need :global. */
+  .pp :global(.pp-mono),
+  .pp-mono {
+    font-family: var(--font-mono);
+  }
+
+  .pp :global(kbd) {
+    display: inline-block;
+    padding: 2px 7px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-bottom-width: 2px;
+    border-radius: 7px;
+    background: var(--color-surface);
+    font: 600 0.85em var(--font-mono);
+    color: var(--color-foreground);
+    white-space: nowrap;
+  }
+
+  /* Buttons: the site's own, with the accent as the solid fill. */
+  .pp-solid {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on);
+  }
+
+  span.pp-solid {
+    cursor: default;
+  }
+
+  button.pp-solid {
+    cursor: pointer;
+  }
+
+  button.pp-solid:hover {
+    background: color-mix(in srgb, var(--accent) 85%, var(--color-foreground));
+  }
+
+  /* ================= Hero ================= */
+
+  .pp-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: 56px 96px;
+  }
+
+  /* The glow fades out top and bottom instead of ending in a hard edge where the section is clipped. */
+  .pp-hero__field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 68%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 68%, transparent);
+  }
+
+  .pp-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+
+  .pp-orb--a {
+    width: 520px;
+    height: 520px;
+    top: -160px;
+    right: -80px;
+  }
+
+  .pp-orb--b {
+    width: 420px;
+    height: 420px;
+    bottom: -140px;
+    left: -100px;
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  .pp-hero__inner {
+    position: relative;
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .pp-hero__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+
+  .pp-icon {
+    width: 84px;
+    height: 84px;
+    border-radius: 20px;
+    box-shadow: var(--lift);
+  }
+
+  .pp-hero__name {
+    font-size: clamp(3rem, 9vw, 5.75rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    margin: 18px 0 14px;
+  }
+
+  .pp-hero__line {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+  }
+
+  .pp-hero__more {
+    color: var(--color-muted);
+    max-width: 34em;
+    margin: 0 0 26px;
+  }
+
+  .pp-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .pp-links--center {
+    justify-content: center;
+    margin-top: 26px;
+  }
+
+  .pp-hero__note {
+    margin: 18px 0 0;
+    color: var(--color-muted);
+  }
+
+  .pp-shot {
+    margin: 0;
+  }
+
+  /* The window follows the site theme (dark unless the visitor chose light). */
+  .pp-shot .pp-theme-light,
+  :global(html[data-theme='light']) .pp-shot .pp-theme-dark {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .pp-shot .pp-theme-light {
+    display: block;
+  }
+
+  .pp-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: var(--lift);
+  }
+
+  /* ================= Sections ================= */
+
+  .pp-section {
+    padding-block: 84px;
+  }
+
+  @media (max-width: 819px) {
+    .pp-section {
+      padding-block: 60px;
+    }
+  }
+
+  .pp-h2 {
+    font-size: clamp(1.9rem, 4.6vw, 3.25rem);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 14px;
+    max-width: 18em;
+  }
+
+  .pp-lede {
+    color: var(--color-muted);
+    max-width: 40em;
+    margin: 0 0 30px;
+  }
+
+  .pp-lede--after {
+    margin: 16px 0 0;
+  }
+
+  /* ================= Demo: a window that plays itself ================= */
+
+  .pp-win {
+    --win-bg: #232326;
+    --win-pane: #2c2c30;
+    --win-line: rgba(255, 255, 255, 0.09);
+    position: relative;
+    max-width: 820px;
+    padding: 0 22px 22px;
+    border: var(--border-hairline) solid var(--win-line);
+    border-radius: 18px;
+    background: var(--win-bg);
+    box-shadow: var(--lift);
+  }
+
+  :global(html[data-theme='light']) .pp-win {
+    --win-bg: #ececec;
+    --win-pane: #f8f8f8;
+    --win-line: rgba(0, 0, 0, 0.1);
+  }
+
+  .pp-win__bar {
+    display: flex;
+    gap: 8px;
+    padding: 14px 0 12px;
+  }
+
+  .pp-win__bar i {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+
+  .pp-win__bar i:nth-child(2) {
+    background: #febc2e;
+  }
+
+  .pp-win__bar i:nth-child(3) {
+    background: #28c840;
+  }
+
+  .pp-win__head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 4px 0 18px;
+  }
+
+  .pp-win__head img {
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
+  }
+
+  .pp-win__head b {
+    display: block;
+    font-size: 24px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .pp-win__head span {
+    color: var(--color-muted);
+    font-size: 15px;
+  }
+
+  .pp-label {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .pp-pane {
+    display: block;
+    width: 100%;
+    min-height: 4.4em;
+    padding: 14px 16px;
+    border: var(--border-hairline) solid var(--win-line, var(--color-border));
+    border-radius: 14px;
+    background: var(--win-pane, var(--color-surface-hover));
+    color: var(--color-foreground);
+    font: 14px/1.55 var(--font-mono);
+    overflow-wrap: anywhere;
+    resize: vertical;
+  }
+
+  .pp-pane--in:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .pp-pane--result {
+    background: var(--result-bg);
+    border-color: var(--result-line);
+    color: var(--result-text);
+    min-height: 5.6em;
+  }
+
+  /* A parameter on its way out: crossed out and red, then it collapses. */
+  .pp-pane :global(.pp-strip),
+  .pp-tr {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+
+  .pp-pane :global(.pp-strip) {
+    color: var(--bad);
+    text-decoration: line-through;
+  }
+
+  .pp-arrow {
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 22px;
+    line-height: 1;
+    margin: 10px 0;
+  }
+
+  .pp-opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 14px 0 4px;
+  }
+
+  .pp-opt {
+    display: flex;
+    flex: 1 1 200px;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: var(--border-hairline) solid var(--win-line);
+    border-radius: 14px;
+    background: var(--win-pane);
+    cursor: pointer;
+    transition: border-color var(--dur-micro, 0.14s) ease;
+  }
+
+  .pp-opt:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  .pp-opt[hidden] {
+    display: none;
+  }
+
+  .pp-opt input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .pp-opt__box {
+    position: relative;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    border: 2px solid var(--color-muted);
+    transition: background 0.18s ease, border-color 0.18s ease;
+  }
+
+  .pp-opt__box::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid var(--on);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .pp-opt input:checked + .pp-opt__box {
+    background: var(--accent);
+    border-color: var(--accent);
+    animation: pp-pop 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .pp-opt input:checked + .pp-opt__box::after {
+    transform: rotate(45deg) scale(1);
+  }
+
+  .pp-opt input:focus-visible + .pp-opt__box {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @keyframes pp-pop {
+    50% {
+      transform: scale(1.22);
+    }
+  }
+
+  .pp-opt__text b {
+    display: block;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  .pp-opt__text small {
+    display: block;
+    margin-top: 2px;
+    color: var(--color-muted);
+    font-size: 12.5px;
+  }
+
+  .pp-opt--mode {
+    flex: 1 1 160px;
+    justify-content: space-between;
+    cursor: default;
+  }
+
+  .pp-opt select,
+  .pp-rules {
+    padding: 6px 10px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+    color: var(--color-foreground);
+    font: inherit;
+    font-size: 14px;
+  }
+
+  .pp-rules {
+    font-family: var(--font-mono);
+  }
+
+  .pp-win__foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+  }
+
+  .pp-copy {
+    margin-left: auto;
+  }
+
+  .pp-copy :global(kbd) {
+    margin-left: 6px;
+    padding: 1px 6px;
+    background: color-mix(in srgb, var(--on) 14%, transparent);
+    border-color: color-mix(in srgb, var(--on) 25%, transparent);
+    color: inherit;
+  }
+
+  .pp-demo__status {
+    font-size: 14px;
+    color: var(--result-text);
+  }
+
+  .pp-replay {
+    padding: 8px 14px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-foreground);
+    font: 600 13px var(--font-mono);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+
+  .pp-replay:hover {
+    border-color: var(--accent);
+  }
+
+  .pp-removed {
+    min-height: 1.5em;
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: var(--color-muted);
+  }
+
+  /* The pretend pointer that ticks the boxes. */
+  .pp-cursor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    width: 26px;
+    height: 26px;
+    margin: -2px 0 0 -4px;
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+    will-change: transform;
+  }
+
+  .pp-cursor__ring {
+    position: absolute;
+    left: 2px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    margin: -8px 0 0 -8px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    opacity: 0;
+  }
+
+  /* ================= Hero stage: chips and the crossed-out strip ================= */
+
+  .pp-stage {
+    position: relative;
+    perspective: 1200px;
+  }
+
+  .pp-chips {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .pp-chip {
+    position: absolute;
+    padding: 6px 12px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    box-shadow: var(--lift);
+    font: 600 12.5px var(--font-mono);
+    color: var(--color-foreground);
+    white-space: nowrap;
+    opacity: 0;
+  }
+
+  .pp-chip :global(.pp-chip__x) {
+    background: linear-gradient(var(--bad), var(--bad)) no-repeat 0 55% / 0 2px;
+    transition: background-size 0.3s ease;
+  }
+
+  .pp-chip.is-struck :global(.pp-chip__x) {
+    background-size: 100% 2px;
+  }
+
+  .pp-chip--0 { left: -6%; top: 12%; }
+  .pp-chip--1 { right: -4%; top: 30%; }
+  .pp-chip--2 { left: -14%; bottom: 20%; }
+  .pp-chip--3 { right: -2%; bottom: 10%; }
+  .pp-chip--4 { left: 30%; top: -7%; }
+
+  @media (max-width: 899px) {
+    .pp-chip--0,
+    .pp-chip--2 {
+      left: 0;
+    }
+    .pp-chip--1,
+    .pp-chip--3 {
+      right: 0;
+    }
+  }
+
+  .pp-mq {
+    overflow: hidden;
+    padding-block: 18px;
+    border-block: var(--border-hairline) solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .pp-mq__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .pp-mq__row {
+    display: flex;
+    flex: none;
+    gap: 14px;
+    padding-right: 14px;
+  }
+
+  .pp-mq__item {
+    flex: none;
+    padding: 6px 14px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 999px;
+    font: 500 14px var(--font-mono);
+    color: var(--color-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--bad);
+    text-decoration-thickness: 2px;
+  }
+
+  /* ================= Hover polish ================= */
+
+  .pp-steps li,
+  .pp-cell {
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.25s ease;
+  }
+
+  /* A soft accent glow follows the pointer over a card (--mx/--my are set by the script). */
+  .pp-steps li::after,
+  .pp-cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%);
+    transition: opacity 0.25s ease;
+  }
+
+  .pp-steps li:hover,
+  .pp-cell:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--color-border));
+  }
+
+  .pp-steps li:hover::after,
+  .pp-cell:hover::after {
+    opacity: 1;
+  }
+
+  .pp-arrow--go {
+    display: inline-block;
+  }
+
+  /* Until the intro is laid out the hero copy and window wait, so nothing flashes. */
+  :global(html[data-pp-intro]) .pp-hero__copy > *,
+  :global(html[data-pp-intro]) .pp-shot {
+    opacity: 0;
+  }
+
+  .pp-hero__name :global(.pp-char),
+  .pp-end__title :global(.pp-char) {
+    display: inline-block;
+  }
+
+  /* ================= Steps and before/after ================= */
+
+  .pp-steps {
+    list-style: none;
+    counter-reset: s;
+    padding: 0;
+    margin: 0 0 48px;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .pp-steps li {
+    counter-increment: s;
+    padding: 24px;
+    background: var(--color-surface);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 20px;
+    box-shadow: var(--lift);
+  }
+
+  .pp-steps li::before {
+    content: '0' counter(s);
+    font: 600 13px var(--font-mono);
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+  }
+
+  .pp-steps h3 {
+    margin: 8px 0 6px;
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 700;
+  }
+
+  .pp-steps p,
+  .pp-cell p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 16px;
+  }
+
+  .pp-ba {
+    display: grid;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .pp-ba .pp-arrow {
+    align-self: center;
+    margin: 0;
+  }
+
+  @media (min-width: 820px) {
+    .pp-ba {
+      grid-template-columns: 1fr auto 1fr;
+    }
+  }
+
+  /* ================= Details ================= */
+
+  .pp-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  }
+
+  .pp-cell {
+    padding: 24px;
+    background: var(--color-surface);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 20px;
+  }
+
+  .pp-cell__n {
+    color: var(--color-muted);
+  }
+
+  .pp-cell h3 {
+    margin: 6px 0;
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 700;
+  }
+
+  /* ================= Privacy ================= */
+
+  .pp-privacy {
+    background: var(--color-surface);
+    border-block: var(--border-hairline) solid var(--color-border);
+  }
+
+  .pp-checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .pp-checks li {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .pp-checks li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: scale(var(--s, 1));
+  }
+
+  .pp-checks li::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0.62em;
+    width: 5px;
+    height: 9px;
+    border: solid var(--on);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(var(--s, 1));
+  }
+
+  .pp-privacy__link {
+    margin: 22px 0 0;
+  }
+
+  .pp-privacy__link a {
+    color: var(--color-foreground);
+  }
+
+  /* ================= Questions ================= */
+
+  .pp-faq details {
+    max-width: 820px;
+    padding: 18px 0;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .pp-faq details:last-child {
+    border-bottom: var(--border-hairline) solid var(--color-border);
+  }
+
+  .pp-faq summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .pp-faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .pp-faq summary::after {
+    content: '+';
+    font-size: 24px;
+    line-height: 1;
+    color: var(--color-muted);
+  }
+
+  .pp-faq details[open] summary::after {
+    content: '\2212';
+  }
+
+  .pp-faq p {
+    max-width: 44em;
+    margin: 10px 0 0;
+    color: var(--color-muted);
+  }
+
+  /* ================= Closing ================= */
+
+  .pp-end {
+    padding-block: 96px 112px;
+    text-align: center;
+  }
+
+  .pp-facts {
+    list-style: none;
+    margin: 0 0 22px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 22px;
+    color: var(--color-muted);
+  }
+
+  .pp-end__title {
+    max-width: 14em;
+    margin: 0 auto;
+    font-size: clamp(2.4rem, 7vw, 4.75rem);
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+</style>
