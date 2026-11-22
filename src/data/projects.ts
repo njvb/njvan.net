@@ -1,8 +1,8 @@
-// Copy and metadata for the five projects. Source: design/Projects.md and the frames.
+// Copy and metadata for the six projects. Source: design/Projects.md and the frames.
 // A link with no href is a placeholder still waiting on Nathan: it renders as a
 // labelled placeholder, never as a guessed URL.
 
-export type ProjectId = 'tavren' | 'kora' | 'cotrip' | 'tower' | 'worldbar';
+export type ProjectId = 'tavren' | 'kora' | 'cotrip' | 'tower' | 'worldbar' | 'pasteperfect';
 
 export interface ProjectLink {
   label: string;
@@ -136,6 +136,18 @@ export const projects: Project[] = [
       // The listing returns 404 until Apple releases the app, so this branch waits for that.
       { label: 'Download WorldBar on the Mac App Store', href: 'https://apps.apple.com/app/id6836081075', external: true, variant: 'outline', badge: 'mac-app-store' },
     ],
+  },
+  {
+    id: 'pasteperfect',
+    number: '06',
+    name: 'PastePerfect',
+    kind: 'Tool',
+    indexLine: 'Copy anything, paste perfectly. Cleans tracking junk out of copied links and text.',
+    indexStack: 'Menu bar · macOS',
+    line: 'Copy anything. Paste perfectly.',
+    more: 'A Mac app that cleans up copied text and URLs before you paste. It strips tracking parameters, removes stray formatting and tidies messy text, all on your Mac.',
+    notes: ['macOS 15 or later', 'No account · No tracking'],
+    links: [{ label: 'See PastePerfect', href: '/pasteperfect/', variant: 'solid' }],
   },
 ];
 

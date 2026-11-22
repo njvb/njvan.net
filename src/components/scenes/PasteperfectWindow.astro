@@ -1,0 +1,104 @@
+---
+// PastePerfect's visual: the real window capture (the same one as the hero on /pasteperfect/),
+// with tracking chips around it and the link it cleans below. Flat, like the other scenes: an ink
+// outline instead of a shadow. Without JavaScript, or under reduced motion, it shows the settled
+// frame: the window and the clean link, no chips.
+// src/scripts/pasteperfect-moment.ts plays the signature moment: the window lands, chips appear on
+// it and are crossed out, then flung away while the link sheds its tracking tail.
+const shots = `${import.meta.env.BASE_URL}assets/pasteperfect/`;
+const chips = ['utm_source=newsletter', 'fbclid=IwAR0abc', 'gclid=Cj0KCQ', 'utm_medium=email', 'msclkid=8f2a1c'];
+---
+
+<div class="pps" data-pps>
+  <figure class="pps__win" data-pps-win>
+    <img src={`${shots}app-window.png`} alt="" width="1200" height="923" loading="lazy" decoding="async" />
+  </figure>
+  {chips.map((c, i) => <span class={`pps__chip pps__chip--${i}`} data-pps-chip><i>{c}</i></span>)}
+  <p class="pps__link" data-pps-link>
+    <span>example.com/article?</span><span class="pps__tail" data-pps-tail>utm_source=newsletter&amp;utm_medium=email&amp;</span><span>id=123</span>
+  </p>
+</div>
+
+<script>
+  import { mountPasteperfect } from '../../scripts/pasteperfect-moment';
+  document.querySelectorAll<HTMLElement>('[data-pps]').forEach((root) => {
+    try {
+      mountPasteperfect(root);
+    } catch (error) {
+      console.error('[pasteperfect] moment failed, keeping the settled frame', error);
+    }
+  });
+</script>
+
+<style>
+  .pps {
+    position: relative;
+    display: grid;
+    gap: 5cqi;
+    justify-items: center;
+    padding-block: 4cqi 0;
+  }
+
+  .pps__win {
+    position: relative;
+    width: min(100cqi, 64svh * 1200 / 923);
+    margin: 0;
+    border-radius: 2.6cqi;
+    outline: 2px solid var(--on);
+    outline-offset: 0;
+    overflow: hidden;
+    background: #232326;
+  }
+
+  .pps__win img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Chips: flat pills in the scene's ink, hidden in the settled frame. */
+  .pps__chip {
+    position: absolute;
+    padding: 0.7cqi 1.8cqi;
+    border: 2px solid var(--on);
+    border-radius: 999px;
+    background: var(--field);
+    color: var(--on);
+    font: 600 clamp(11px, 1.9cqi, 15px) var(--font-mono);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .pps__chip i {
+    font-style: normal;
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 55% / calc(var(--x, 0) * 100%) 2px;
+  }
+
+  .pps__chip--0 { left: -3%; top: 16%; }
+  .pps__chip--1 { right: -3%; top: 30%; }
+  .pps__chip--2 { left: -4%; top: 58%; }
+  .pps__chip--3 { right: -2%; top: 74%; }
+  .pps__chip--4 { left: 34%; top: -2%; }
+
+  .pps__link {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    max-width: 100%;
+    padding: 1.2cqi 2.6cqi;
+    border: 2px solid var(--on);
+    border-radius: 999px;
+    font: 600 clamp(12px, 2.3cqi, 18px) var(--font-mono);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .pps__tail {
+    display: inline-block;
+    overflow: hidden;
+    /* The settled frame has already shed it. */
+    max-width: 0;
+    opacity: 0;
+  }
+</style>

@@ -1,6 +1,6 @@
 # njvan.net
 
-Nathan VanderByl's personal site: a showcase of five side projects (Tavren, Kora, Cotrip, Campaign Tower, WorldBar). A monochrome editorial site in the Animaxxing style, where each project takes over the page in its own colour as you scroll. Motion is the point of the site; it has to feel slick.
+Nathan VanderByl's personal site: a showcase of six side projects (Tavren, Kora, Cotrip, Campaign Tower, WorldBar, PastePerfect). A monochrome editorial site in the Animaxxing style, where each project takes over the page in its own colour as you scroll. Motion is the point of the site; it has to feel slick.
 
 ## Read first
 
@@ -26,7 +26,7 @@ The live versions are on claude.ai: the njvan design system (https://claude.ai/a
 
 - **WorldBar's page** is served at njvan.net/worldbar/ (with /worldbar/support/ and /worldbar/privacy/, the App Store's Support and Privacy URLs). Accent: azure #4DA3FF (`worldbar`, text `on-worldbar`). App landing pages may use gradients, glows and shadows (the flat rule is for the homepage only). The screenshots in `public/assets/worldbar/` are real captures of the app, never mock-ups; recapture them if the UI changes. The Mac App Store button is a labelled placeholder until there is a real URL. Until the app is released, "Join the TestFlight beta" buttons (hero, closing section and homepage scene) link to its public TestFlight (`WORLDBAR_TESTFLIGHT` in `src/data/projects.ts`); remove them and the constant when the app is on the store. It is the fifth scene on the homepage (index row 05 and a full scene in azure, linking to /worldbar/), added at Nathan's request.
 
-- **PastePerfect's page** is served at njvan.net/pasteperfect/ (with /pasteperfect/support/ and /pasteperfect/privacy/), ported from the app's own website. Accent: soft blue (`pasteperfect`, text `on-pasteperfect`). The window capture is a real screenshot of the app. The app is not on the Mac App Store yet (TestFlight is internal only), so its store button is a labelled "Coming soon" placeholder: link https://apps.apple.com/app/id6837888565 with Apple's badge once it is live, and do not add a TestFlight link. It has no homepage scene or index row; ask Nathan before adding one. The demo is `src/scripts/pasteperfect-page.ts`.
+- **PastePerfect's page** is served at njvan.net/pasteperfect/ (with /pasteperfect/support/ and /pasteperfect/privacy/), ported from the app's own website. Accent: soft blue (`pasteperfect`, text `on-pasteperfect`). The window capture is a real screenshot of the app. The app is not on the Mac App Store yet (TestFlight is internal only), so its store button is a labelled "Coming soon" placeholder: link https://apps.apple.com/app/id6837888565 with Apple's badge once it is live, and do not add a TestFlight link. It is the sixth scene on the homepage (index row 06 and a full scene in soft blue, linking to /pasteperfect/), added at Nathan's request. The page's demo and motion are `src/scripts/pasteperfect-page.ts`; the scene's moment is `src/scripts/pasteperfect-moment.ts`.
 
 ## Stack
 

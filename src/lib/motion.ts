@@ -126,7 +126,7 @@ export const SCENE = {
   /** The signature moment plays once, the first time the scene is active. */
   moment: { at: 0.7, duration: 2.8 },
   /** Scenes whose moment tells a longer story get their own length, in seconds. */
-  momentLength: { cotrip: 5, kora: 4.5, worldbar: 3.6 } as Record<string, number>,
+  momentLength: { cotrip: 5, kora: 4.5, worldbar: 3.6, pasteperfect: 3.4 } as Record<string, number>,
   /** A moment whose visual loads late waits for it, up to this many seconds. */
   momentWait: 4,
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
@@ -318,4 +318,20 @@ export const PASTEPERFECT = {
   reveal: { y: 34, duration: 0.7, stagger: 0.08, start: 'top 85%' },
   /** The strip-line of crossed-out parameters moves at this many pixels a second. */
   marquee: 70,
+} as const;
+
+/**
+ * PastePerfect's homepage scene (src/scripts/pasteperfect-moment.ts): the window lands, tracking
+ * chips appear on it and are crossed out, then flung away as the link below sheds its tail.
+ * Each pair is the [start, end] share of the moment's progress.
+ */
+export const PASTEPERFECT_SCENE = {
+  window: [0, 0.32] as const,
+  chipsIn: [0.18, 0.4] as const,
+  strike: [0.42, 0.58] as const,
+  fling: [0.58, 0.92] as const,
+  link: [0.3, 0.5] as const,
+  linkStrike: [0.5, 0.62] as const,
+  linkFold: [0.66, 0.86] as const,
+  ease: 'power3.out',
 } as const;

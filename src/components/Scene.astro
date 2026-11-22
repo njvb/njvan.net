@@ -164,6 +164,7 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
   .scene[data-project='cotrip'] { --field: var(--color-cotrip); --on: var(--color-on-cotrip); }
   .scene[data-project='tower'] { --field: var(--color-tower); --on: var(--color-on-tower); }
   .scene[data-project='worldbar'] { --field: var(--color-worldbar); --on: var(--color-on-worldbar); }
+  .scene[data-project='pasteperfect'] { --field: var(--color-pasteperfect); --on: var(--color-on-pasteperfect); }
 
   .scene ::selection {
     background: var(--on);
@@ -242,6 +243,11 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
   }
 
   .scene[data-project='tower'] .scene__name {
+    font-size: clamp(3rem, 16cqi, 8rem);
+  }
+
+  /* A long name: a little smaller so it keeps clear of the visual. */
+  .scene[data-project='pasteperfect'] .scene__name {
     font-size: clamp(3rem, 16cqi, 8rem);
   }
 
