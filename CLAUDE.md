@@ -64,6 +64,14 @@ Show Nathan each step running locally (`npm run dev`) before moving on. He tunes
 - Kora's status (live, beta or in development).
 - Links: play Tavren, Cotrip on the App Store, Kora. Ask before inventing any URL.
 
+## Testing
+
+The site has Playwright UI tests (`tests/`, config in `playwright.config.ts`) that run against the built site. They run in CI on every pull request and **before every deploy**: if they fail, nothing is deployed.
+
+- Run `npm test` (builds, then tests) before opening a PR and after any further change. `npm run test:only` reuses the existing build.
+- Add or update a test with every change to behaviour, a page, a project or a rule on this page. Do not skip, delete or loosen a test to get green; if a change is intended, update the test in the same PR.
+- Full guide (what each spec covers, how to add tests, how to read a CI failure): `.claude/skills/ui-tests/SKILL.md` (the `ui-tests` skill).
+
 ## Deploy
 
 The site is live at https://njvan.net on GitHub Pages, built by the official Astro action (`.github/workflows/deploy.yml`) on every push to `main`. `public/CNAME` holds `njvan.net` and HTTPS is enforced. There are no `SITE` or `BASE` overrides: assets load from the site root.

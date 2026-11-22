@@ -27,7 +27,7 @@ const visuals = {
 
 <div class="stage" data-stage role="dialog" aria-modal="true" aria-label="Project">
   <div class="stage__bar" data-stage-bar>
-    <div class="stage__pills" role="tablist" aria-label="Projects">
+    <div class="stage__pills" role="group" aria-label="Projects">
       {
         projects.map((p) => (
           <button class="stage__pill t-annotation" type="button" data-stage-pill={p.id}>
@@ -150,7 +150,7 @@ const visuals = {
     border-color: currentColor;
   }
 
-  .stage__pill[aria-selected='true'] {
+  .stage__pill[aria-current='true'] {
     background: var(--on, var(--color-foreground));
     color: var(--field, var(--color-canvas));
     border-color: var(--on, var(--color-foreground));

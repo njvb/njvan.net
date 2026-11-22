@@ -66,6 +66,11 @@ export function setupStage(): void {
   let entering: Scene | null = null;
   let busy = false;
   let pushed = false;
+  /** A close asked for while a move was still playing: done as soon as it has settled. */
+  let closeWanted = false;
+  let closing = false;
+  /** A move asked for while another was still playing: done as soon as it has settled. */
+  let queued: { id: string; dir: 1 | -1 } | null = null;
   let opener: HTMLElement | null = null;
 
   /* ---------- a scene's own sequence ---------- */
@@ -136,7 +141,7 @@ export function setupStage(): void {
     return { field: cs.getPropertyValue('--field').trim(), on: cs.getPropertyValue('--on').trim() };
   };
 
-  const markPills = (id: string) => pills.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.stagePill === id)));
+  const markPills = (id: string) => pills.forEach((b) => b.setAttribute('aria-current', String(b.dataset.stagePill === id)));
 
   const setInert = (on: boolean) => $$<HTMLElement>(PAGE_PARTS).forEach((el) => (on ? el.setAttribute('inert', '') : el.removeAttribute('inert')));
 
@@ -169,6 +174,20 @@ export function setupStage(): void {
 
   /* ---------- open, switch, close ---------- */
 
+  /** A move has settled: take the next one waiting, if any. */
+  const settled = () => {
+    busy = false;
+    if (closeWanted) {
+      closeWanted = false;
+      queued = null;
+      close();
+    } else if (queued) {
+      const q = queued;
+      queued = null;
+      swap(q.id, q.dir);
+    }
+  };
+
   const open = (id: string, from: HTMLElement | null) => {
     const s = byId(id);
     if (!s || busy || current) return;
@@ -191,7 +210,7 @@ export function setupStage(): void {
       gsap.fromTo(
         stage,
         { clipPath: inset(cardRect(id)) },
-        { clipPath: FULL, duration: STAGE.open.duration, ease: 'animaxxing', clearProps: 'clipPath', onComplete: () => (busy = false) }
+        { clipPath: FULL, duration: STAGE.open.duration, ease: 'animaxxing', clearProps: 'clipPath', onComplete: settled }
       );
       if (bar) gsap.fromTo(bar, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4, delay: STAGE.bar, ease: 'power2.out', clearProps: 'opacity,transform' });
       playIntro(s);
@@ -202,7 +221,12 @@ export function setupStage(): void {
   const swap = (id: string, dir: 1 | -1) => {
     const next = byId(id);
     const prev = current;
-    if (!next || !prev || busy || next === prev) return;
+    if (!next || !prev || closing) return;
+    if (busy) {
+      queued = { id, dir };
+      return;
+    }
+    if (next === prev) return;
     busy = true;
     entering = next;
     preload(id);
@@ -218,10 +242,10 @@ export function setupStage(): void {
       resetScene(prev);
       current = next;
       entering = null;
-      busy = false;
       stage.style.setProperty('--field', field);
       stage.style.setProperty('--on', on);
       history.replaceState(history.state, '', `#${id}`);
+      settled();
     };
     if (reduced) {
       done();
@@ -252,6 +276,7 @@ export function setupStage(): void {
     setInert(false);
     current = null;
     busy = false;
+    closing = false;
     pushed = false;
     const target = opener ?? $<HTMLElement>(`[data-open-project="${s.id}"]`);
     target?.focus({ preventScroll: true });
@@ -260,8 +285,13 @@ export function setupStage(): void {
 
   const close = () => {
     const s = current;
-    if (!s || busy) return;
+    if (!s) return;
+    if (busy) {
+      closeWanted = true;
+      return;
+    }
     busy = true;
+    closing = true;
     stage.dataset.closing = '';
     if (reduced) {
       delete stage.dataset.closing;
@@ -284,7 +314,7 @@ export function setupStage(): void {
 
   /** The visitor asked to close: step back in history if this open added an entry, else just close and clear the hash. */
   const requestClose = () => {
-    if (!current || busy) return;
+    if (!current || closeWanted || closing) return;
     if (pushed) history.back();
     else {
       history.replaceState(null, '', location.pathname + location.search);

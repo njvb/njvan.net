@@ -194,6 +194,7 @@
   const reels = box => box.querySelectorAll('b').forEach(b => {
     const v = b.textContent.trim();
     if (!/^\d+$/.test(v)) return;
+    b.setAttribute('role', 'img');
     b.setAttribute('aria-label', v);
     b.innerHTML = [...v].map((d, i) => `<span class="reel" aria-hidden="true"><span style="--to:${10 + Number(d)};--i:${i}">${'01234567890123456789'.split('').join('<br>')}</span></span>`).join('');
   });
