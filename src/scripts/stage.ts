@@ -300,27 +300,55 @@ export function setupStage(): void {
     card.addEventListener('pointerenter', warm, { passive: true });
     card.addEventListener('focus', warm);
     card.addEventListener('touchstart', warm, { passive: true });
-    // The card's art leans toward the pointer.
-    const art = $<HTMLElement>('[data-card-art]', card);
-    if (art && !reduced && matchMedia('(hover: hover)').matches) {
-      const rx = gsap.quickTo(art, 'rotateX', { duration: 0.5, ease: 'power3.out' });
-      const ry = gsap.quickTo(art, 'rotateY', { duration: 0.5, ease: 'power3.out' });
-      const sc = gsap.quickTo(art, 'scale', { duration: 0.5, ease: 'power3.out' });
-      const yy = gsap.quickTo(art, 'y', { duration: 0.5, ease: 'power3.out' });
-      card.addEventListener('pointerenter', () => {
-        sc(1.06);
-        yy(-8);
-      });
-      card.addEventListener('pointermove', (e) => {
-        const r = card.getBoundingClientRect();
-        ry(((e.clientX - r.left) / r.width - 0.5) * 14);
-        rx(-((e.clientY - r.top) / r.height - 0.5) * 10);
-      });
-      card.addEventListener('pointerleave', () => {
+    // The card's art leans toward the pointer, and a short loop of the project's own moment plays over it.
+    const tilt = $<HTMLElement>('[data-card-tilt]', card);
+    const slot = $<HTMLElement>('[data-card-loop]', card);
+    const loopUrl = card.dataset.loop;
+    if (tilt && slot && loopUrl && !reduced && matchMedia('(hover: hover)').matches) {
+      const rx = gsap.quickTo(tilt, 'rotateX', { duration: 0.5, ease: 'power3.out' });
+      const ry = gsap.quickTo(tilt, 'rotateY', { duration: 0.5, ease: 'power3.out' });
+      const sc = gsap.quickTo(tilt, 'scale', { duration: 0.5, ease: 'power3.out' });
+      const yy = gsap.quickTo(tilt, 'y', { duration: 0.5, ease: 'power3.out' });
+      let visit = 0;
+      const start = () => {
+        const mine = ++visit;
+        sc(1.05);
+        yy(-6);
+        // A fresh image each time, so the loop starts from its first frame.
+        const img = new Image();
+        img.alt = '';
+        img.decoding = 'async';
+        img.src = loopUrl;
+        void img
+          .decode()
+          .then(() => {
+            if (mine !== visit) return;
+            slot.replaceChildren(img);
+            card.classList.add('is-looping');
+          })
+          .catch(() => {});
+      };
+      const stop = () => {
+        visit++;
+        card.classList.remove('is-looping');
         rx(0);
         ry(0);
         sc(1);
         yy(0);
+        window.setTimeout(() => {
+          if (!card.classList.contains('is-looping')) slot.replaceChildren();
+        }, 300);
+      };
+      card.addEventListener('pointerenter', start);
+      card.addEventListener('pointerleave', stop);
+      card.addEventListener('focus', () => {
+        if (card.matches(':focus-visible')) start();
+      });
+      card.addEventListener('blur', stop);
+      card.addEventListener('pointermove', (e) => {
+        const r = card.getBoundingClientRect();
+        ry(((e.clientX - r.left) / r.width - 0.5) * 12);
+        rx(-((e.clientY - r.top) / r.height - 0.5) * 9);
       });
     }
     card.addEventListener('click', (e) => {

@@ -4,6 +4,7 @@
 // The cards keep the ledger's hooks (data-ledger-*), so src/scripts/ledger.ts plays their entrance
 // (hairlines draw, labels decode, names rise, one accent at a time sweeps) and waves the names on hover.
 import { projects } from '../data/projects';
+const loop = (id: string) => `${import.meta.env.BASE_URL}assets/loops/${id}.webp`;
 const thumb = (id: string) => `${import.meta.env.BASE_URL}assets/thumbs/${id}.webp`;
 // Each card shows the project's real hero piece, cut out (captured from its own scene), at its own shape.
 const sizes: Record<string, [number, number]> = {
@@ -33,6 +34,7 @@ const sizes: Record<string, [number, number]> = {
               href={`#${p.id}`}
               data-project={p.id}
               data-open-project={p.id}
+              data-loop={loop(p.id)}
               aria-label={`${p.number}, ${p.kind}: ${p.name}. ${p.indexLine}`}
             >
               <span class="ledger-row__meta t-annotation">
@@ -42,15 +44,17 @@ const sizes: Record<string, [number, number]> = {
               <span class="ledger-row__name card__name" data-ledger-name>{p.name}</span>
               <span class="ledger-row__line" data-ledger-line>{p.indexLine}</span>
               <span class="card__thumb" aria-hidden="true">
-                <img
-                  src={thumb(p.id)}
-                  alt=""
-                  width={sizes[p.id]?.[0]}
-                  height={sizes[p.id]?.[1]}
-                  loading="lazy"
-                  decoding="async"
-                  data-card-art
-                />
+                <span class="card__tilt" data-card-tilt>
+                  <img
+                    src={thumb(p.id)}
+                    alt=""
+                    width={sizes[p.id]?.[0]}
+                    height={sizes[p.id]?.[1]}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="card__loop" data-card-loop></span>
+                </span>
               </span>
               <span class="card__open t-annotation" aria-hidden="true">
                 <span>Open</span>
@@ -196,29 +200,62 @@ const sizes: Record<string, [number, number]> = {
     transition: color 0.3s var(--ease-entrance);
   }
 
-  /* The project's real hero piece, cut out. Grey until the card floods; it leans toward the pointer (src/scripts/stage.ts). */
+  /* The project's real hero piece, cut out. Grey until the card floods; on hover a short loop of its own moment plays
+     over it (src/scripts/stage.ts), and the whole thing leans toward the pointer. */
   .card__thumb {
     flex: 1;
-    display: grid;
-    place-items: end center;
-    min-height: 230px;
+    min-height: 240px;
     margin-top: var(--space-2);
     padding-top: var(--space-4);
     perspective: 900px;
   }
 
-  .card__thumb img {
+  .card__tilt {
+    position: relative;
+    display: grid;
+    place-items: end center;
+    width: 100%;
+    height: 100%;
+    transform-origin: 50% 80%;
+    will-change: transform;
+  }
+
+  .card__tilt > img {
     display: block;
     width: auto;
     height: auto;
     max-width: 100%;
     max-height: 250px;
     filter: grayscale(1) brightness(0.92);
-    transform-origin: 50% 80%;
     transition:
       filter 0.4s var(--ease-entrance),
-      transform 0.6s var(--ease-entrance);
-    will-change: transform;
+      opacity 0.2s linear;
+  }
+
+  .card__loop {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s linear;
+  }
+
+  .card__loop :global(img) {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .card.is-looping .card__loop {
+    opacity: 1;
+  }
+
+  .card.is-looping .card__tilt > img {
+    opacity: 0;
   }
 
   .card__open {
@@ -264,7 +301,7 @@ const sizes: Record<string, [number, number]> = {
     .card:hover .card__open {
       color: var(--card-on);
     }
-    .card:hover .card__thumb img {
+    .card:hover .card__tilt > img {
       filter: none;
     }
     .card:hover .card__arrow {
@@ -284,7 +321,7 @@ const sizes: Record<string, [number, number]> = {
     color: var(--card-on);
   }
 
-  .card:focus-visible .card__thumb img {
+  .card:focus-visible .card__tilt > img {
     filter: none;
   }
 </style>
