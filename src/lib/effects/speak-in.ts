@@ -136,7 +136,7 @@ function speak(el: HTMLElement, emphasis: readonly Emphasis[], delay: number): S
         : [normalize(e.word), { ...(e.finish && { finish: e.finish }), ...(e.angle !== undefined && { angle: e.angle }) }]
     )
   );
-  const split = SplitText.create(el, { type: 'words' });
+  const split = SplitText.create(el, { type: 'words', aria: 'none' });
   const words = split.words as HTMLElement[];
   const letterSplits: SplitText[] = [];
 
@@ -152,7 +152,7 @@ function speak(el: HTMLElement, emphasis: readonly Emphasis[], delay: number): S
     const letters = normalize(text).length;
 
     if (wanted.has(normalize(text))) {
-      const inner = SplitText.create(word, { type: 'chars' });
+      const inner = SplitText.create(word, { type: 'chars', aria: 'none' });
       letterSplits.push(inner);
       const chars = inner.chars as HTMLElement[];
       gsap.set(chars, { autoAlpha: 0 });
