@@ -67,19 +67,10 @@ html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data
 }
 
 /*
- * Panel snapping: the browser's own CSS scroll snap, so wheels, trackpad
- * momentum, keys, touch and the scrollbar all behave natively and nothing in
- * JavaScript ever holds the scroll. Matches SCENE.pageQuery in motion.ts.
- *   - The hero, the project index and each scene are full-screen panels, and
- *     scroll-snap-stop keeps a hard flick from skipping past one. A panel whose
- *     content is taller than the screen scrolls freely within itself.
- *   - The header sits over the hero, so the hero panel starts at the very top.
- *   - The footer snaps to the bottom, so it can always be reached.
+ * The hero is a full-screen panel and the header sits over it, so the hero starts at the very top.
+ * (The projects open from cards into the stage, so the page itself no longer snaps.)
  */
 @media (min-width: 1024px) and (min-height: 600px) {
-  html {
-    scroll-snap-type: y mandatory;
-  }
   .site-header {
     position: absolute;
     inset: 0 0 auto;
@@ -91,39 +82,12 @@ html[data-motion-boot='pending'] [data-motion-owner][data-phase='initial'] [data
     flex-direction: column;
     justify-content: center;
   }
-  [data-snap-panel],
-  [data-scene] {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-  .site-footer {
-    scroll-snap-align: end;
-  }
 }
 
 /* In-page links glide, except under reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
-  }
-}
-
-/*
- * Scenes that will snap and play start staged: canvas ground, foreground ink,
- * no wash yet. Mirrors SCENE.pageQuery and the staging in src/scripts/scenes.ts.
- * Only colours change here; nothing is hidden.
- */
-@media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
-  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene] {
-    background: var(--color-canvas);
-  }
-  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene] [data-ink] {
-    --on: var(--color-foreground);
-  }
-  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene-wash],
-  html[data-motion-boot='pending']:not([data-motion='reduced']) [data-phase='initial'] [data-scene-backdrop] {
-    display: block;
-    clip-path: inset(0 0 100% 0);
   }
 }
 

@@ -1,0 +1,189 @@
+---
+// The stage: each project's full-colour scene, opened from its card. All six scenes sit here,
+// stacked, one visible at a time. src/scripts/stage.ts opens a card into it (the card grows to fill
+// the screen), plays the scene's sequence and signature moment, and moves between projects with
+// Prev / Next, the arrow keys or the pills. Without JavaScript the scenes are ordinary sections
+// below the cards and the cards link to them.
+import Scene from './Scene.astro';
+import TavrenBoard from './scenes/TavrenBoard.astro';
+import KoraPanels from './scenes/KoraPanels.astro';
+import CotripRoute from './scenes/CotripRoute.astro';
+import TowerPhone from './scenes/TowerPhone.astro';
+import TowerBackdrop from './scenes/TowerBackdrop.astro';
+import WorldbarBackdrop from './scenes/WorldbarBackdrop.astro';
+import WorldbarStack from './scenes/WorldbarStack.astro';
+import PasteperfectWindow from './scenes/PasteperfectWindow.astro';
+import { projects } from '../data/projects';
+
+const visuals = {
+  tavren: TavrenBoard,
+  kora: KoraPanels,
+  cotrip: CotripRoute,
+  tower: TowerPhone,
+  worldbar: WorldbarStack,
+  pasteperfect: PasteperfectWindow,
+};
+---
+
+<div class="stage" data-stage role="dialog" aria-modal="true" aria-label="Project">
+  <div class="stage__bar" data-stage-bar>
+    <div class="stage__pills" role="tablist" aria-label="Projects">
+      {
+        projects.map((p) => (
+          <button class="stage__pill t-annotation" type="button" data-stage-pill={p.id}>
+            {p.number} {p.name}
+          </button>
+        ))
+      }
+    </div>
+    <div class="stage__nav">
+      <button class="stage__btn t-annotation" type="button" data-stage-prev aria-label="Previous project">← Prev</button>
+      <button class="stage__btn t-annotation" type="button" data-stage-next aria-label="Next project">Next →</button>
+      <button class="stage__close" type="button" data-stage-close aria-label="Close project">×</button>
+    </div>
+  </div>
+  {
+    projects.map((p) => {
+      const Visual = visuals[p.id];
+      return (
+        <Scene project={p} total={projects.length}>
+          {p.id === 'tower' && <TowerBackdrop slot="backdrop" />}
+          {p.id === 'worldbar' && <WorldbarBackdrop slot="backdrop" />}
+          <Visual />
+        </Scene>
+      );
+    })
+  }
+</div>
+
+<style>
+  /* Without JavaScript: plain sections under the cards. */
+  .stage {
+    position: relative;
+  }
+
+  .stage__bar {
+    display: none;
+  }
+
+  /* With JavaScript (the head script adds the class): a full-screen layer, closed until a card opens it. */
+  :global(html.has-stage) .stage {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    visibility: hidden;
+    pointer-events: none;
+    background: var(--field, var(--color-canvas));
+    color: var(--on, var(--color-foreground));
+  }
+
+  :global(html.has-stage) .stage.is-open {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  :global(html.has-stage) .stage :global(.scene) {
+    position: absolute;
+    inset: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    visibility: hidden;
+    padding-block: 88px 40px;
+  }
+
+  :global(html.has-stage) .stage :global(.scene.is-current),
+  :global(html.has-stage) .stage :global(.scene.is-entering) {
+    visibility: visible;
+  }
+
+  :global(html.has-stage) .stage :global(.scene.is-entering) {
+    z-index: 2;
+  }
+
+  /* The bar replaces each scene's own top row. */
+  :global(html.has-stage) .stage :global(.scene__top) {
+    visibility: hidden;
+  }
+
+  :global(html.has-stage) .stage__bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 22px max(var(--pad, 24px), calc((100vw - 1280px) / 2));
+    color: var(--on, var(--color-foreground));
+    pointer-events: none;
+  }
+
+  .stage__pills,
+  .stage__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    pointer-events: auto;
+  }
+
+  .stage__pill,
+  .stage__btn {
+    padding: 7px 12px;
+    border: var(--border-hairline) solid color-mix(in srgb, currentColor 38%, transparent);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition:
+      background-color 0.25s var(--ease-entrance),
+      color 0.25s var(--ease-entrance),
+      border-color 0.25s var(--ease-entrance);
+  }
+
+  .stage__pill:hover,
+  .stage__btn:hover {
+    border-color: currentColor;
+  }
+
+  .stage__pill[aria-selected='true'] {
+    background: var(--on, var(--color-foreground));
+    color: var(--field, var(--color-canvas));
+    border-color: var(--on, var(--color-foreground));
+  }
+
+  .stage__close {
+    width: 40px;
+    height: 40px;
+    border: var(--border-strong) solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.35s var(--ease-entrance);
+  }
+
+  .stage__close:hover {
+    transform: rotate(90deg);
+  }
+
+  .stage :focus-visible {
+    outline: var(--border-strong) solid var(--on, var(--color-foreground));
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 1023px) {
+    .stage__pills {
+      display: none;
+    }
+    .stage__nav {
+      margin-left: auto;
+    }
+  }
+</style>

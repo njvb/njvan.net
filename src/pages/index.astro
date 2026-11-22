@@ -2,25 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import ProjectIndex from '../components/ProjectIndex.astro';
-import Scene from '../components/Scene.astro';
-import TavrenBoard from '../components/scenes/TavrenBoard.astro';
-import KoraPanels from '../components/scenes/KoraPanels.astro';
-import CotripRoute from '../components/scenes/CotripRoute.astro';
-import TowerPhone from '../components/scenes/TowerPhone.astro';
-import TowerBackdrop from '../components/scenes/TowerBackdrop.astro';
-import WorldbarBackdrop from '../components/scenes/WorldbarBackdrop.astro';
-import WorldbarStack from '../components/scenes/WorldbarStack.astro';
-import PasteperfectWindow from '../components/scenes/PasteperfectWindow.astro';
-import { projects, contact } from '../data/projects';
-
-const visuals = {
-  tavren: TavrenBoard,
-  kora: KoraPanels,
-  cotrip: CotripRoute,
-  tower: TowerPhone,
-  worldbar: WorldbarStack,
-  pasteperfect: PasteperfectWindow,
-};
+import Stage from '../components/Stage.astro';
+import { contact } from '../data/projects';
 
 // Tells search engines who the site is about and links the name to LinkedIn.
 const siteUrl = 'https://njvan.net/';
@@ -54,18 +37,11 @@ const jsonLd = {
   imageAlt="Nathan VanderByl. Games, tools and apps I've built."
   jsonLd={jsonLd}
 >
+  <script is:inline slot="head">
+    // Scenes open from the cards as a full-screen stage. Without this (no JavaScript) they stay plain sections.
+    document.documentElement.classList.add('has-stage');
+  </script>
   <Hero />
   <ProjectIndex />
-  {
-    projects.map((p) => {
-      const Visual = visuals[p.id];
-      return (
-        <Scene project={p} total={projects.length}>
-          {p.id === 'tower' && <TowerBackdrop slot="backdrop" />}
-          {p.id === 'worldbar' && <WorldbarBackdrop slot="backdrop" />}
-          <Visual />
-        </Scene>
-      );
-    })
-  }
+  <Stage />
 </Base>

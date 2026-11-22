@@ -54,3 +54,28 @@ export function momentReady(id: string, timeoutMs: number): Promise<void> {
   if (!hold) return Promise.resolve();
   return Promise.race([hold, new Promise<void>((resolve) => setTimeout(resolve, timeoutMs))]);
 }
+
+/**
+ * Heavy visuals (Tavren's 3D board, Campaign Tower's video) load on demand. The stage announces
+ * a project as its card nears, is hovered or focused, and when it opens; a visual listens for its
+ * own id (or "all", sent once the cards are near).
+ */
+const preloaded = new Set<string>();
+const preloadListeners = new Map<string, Set<() => void>>();
+
+export function preload(id: string): void {
+  if (preloaded.has(id)) return;
+  preloaded.add(id);
+  preloadListeners.get(id)?.forEach((fn) => fn());
+}
+
+/** Runs `fn` once, when `id` is first preloaded (at once if it already has been). */
+export function onPreload(id: string, fn: () => void): void {
+  if (preloaded.has(id) || preloaded.has('all')) return fn();
+  let set = preloadListeners.get(id);
+  if (!set) preloadListeners.set(id, (set = new Set()));
+  set.add(fn);
+  let all = preloadListeners.get('all');
+  if (!all) preloadListeners.set('all', (all = new Set()));
+  all.add(fn);
+}

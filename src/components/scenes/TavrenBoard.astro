@@ -39,10 +39,10 @@ const rows = counts.map((n, r) =>
 </div>
 
 <script>
-  import { holdMoment } from '../../lib/moments';
+  import { holdMoment, onPreload } from '../../lib/moments';
 
-  // Load the 3D board as the visitor nears the project index, so the hero never
-  // waits on Three.js but the board is ready by the time Tavren is on screen.
+  // Load the 3D board as the visitor nears the project cards (or hovers Tavren's), so the hero never
+  // waits on Three.js but the board is ready by the time Tavren opens.
   // The scene holds its moment until the board has mounted (or failed), so the
   // tiles always play their entrance rather than arriving settled.
   const stage = document.querySelector<HTMLElement>('[data-tavren-stage]');
@@ -57,21 +57,15 @@ const rows = counts.map((n, r) =>
   if (stage && id && gl) {
     let ready!: () => void;
     holdMoment(id, new Promise<void>((resolve) => (ready = resolve)));
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((e) => e.isIntersecting)) return;
-        io.disconnect();
-        import('../../scripts/tavren-3d')
-          .then((m) => m.mountTavren(stage))
-          .catch((error) => {
-            console.error('[tavren] 3D board failed, keeping the CSS board', error);
-            stage.classList.add('is-fallback');
-          })
-          .finally(ready);
-      },
-      { rootMargin: '400% 0px' }
-    );
-    io.observe(stage);
+    onPreload(id, () => {
+      import('../../scripts/tavren-3d')
+        .then((m) => m.mountTavren(stage))
+        .catch((error) => {
+          console.error('[tavren] 3D board failed, keeping the CSS board', error);
+          stage.classList.add('is-fallback');
+        })
+        .finally(ready);
+    });
   } else {
     stage?.classList.add('is-fallback');
   }

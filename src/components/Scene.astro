@@ -13,9 +13,7 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
 ---
 
 <section class="scene" id={p.id} data-project={p.id} data-scene aria-labelledby={`${p.id}-title`}>
-  <!-- The accent wash. Hidden until the scene is staged for pinning; the section itself is the field otherwise. -->
-  <div class="scene__wash" aria-hidden="true" data-scene-wash></div>
-  <!-- An optional backdrop (Campaign Tower's drifting city), clipped with the wash when staged. -->
+  <!-- An optional backdrop (Campaign Tower's drifting city, WorldBar's glow), part of the field. -->
   <slot name="backdrop" />
   <div class="shell scene__inner">
     <div class="scene__top t-caption" data-ink data-scene-rise>
@@ -131,26 +129,9 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
     color: var(--on);
   }
 
-  .scene__wash {
-    display: none;
-    position: absolute;
-    inset: 0;
-    background: var(--field);
-    pointer-events: none;
-  }
-
   .scene__inner {
     position: relative;
     z-index: 1;
-  }
-
-  /* Staged by src/scripts/scenes.ts: canvas ground, the wash grows over it when the scene is active. */
-  .scene:global(.is-staged) {
-    background: var(--color-canvas);
-  }
-
-  .scene:global(.is-staged) .scene__wash {
-    display: block;
   }
 
   /* Room for ascenders and descenders inside the name's line masks (tight 0.84 line height). */
