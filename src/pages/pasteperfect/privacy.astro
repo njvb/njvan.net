@@ -1,0 +1,48 @@
+---
+// PastePerfect's privacy policy. The text is the policy as written for the app's website, moved here
+// unchanged. Keep it in step with the app if that changes.
+import Doc from '../../layouts/Doc.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Doc
+  title="Privacy policy · PastePerfect"
+  description="PastePerfect collects no personal data, has no accounts and makes no network requests. Clipboard text stays on your Mac."
+  image="/og/pasteperfect.jpg"
+  imageAlt="PastePerfect: copy anything, paste perfectly."
+  project="PastePerfect"
+  projectHref={`${base}pasteperfect/`}
+  section="Privacy"
+  heading="Privacy policy"
+  meta="Effective 22 November 2026 · Applies to the PastePerfect app for Mac"
+  accent="var(--color-pasteperfect)"
+  links={[
+    { label: 'PastePerfect', href: `${base}pasteperfect/` },
+    { label: 'Support', href: `${base}pasteperfect/support/` },
+  ]}
+>
+    <div class="doc__panel"><p><strong>The short version.</strong> PastePerfect has no accounts and no servers. It does not collect, send or share any personal data. The text you copy stays on your Mac.</p></div>
+
+    <h2>1. Who makes it</h2>
+    <p>PastePerfect is made and published by an independent developer. Contact: <a href="mailto:njvanderbyl@gmail.com?subject=PastePerfect%20privacy">njvanderbyl@gmail.com</a>.</p>
+
+    <h2>2. What PastePerfect does not do</h2>
+    <p>It has no sign-in, no analytics, no advertising, no crash reporting and no tracking. The app runs in the macOS App Sandbox without network access, so it cannot send anything off your Mac. Cleaning works offline.</p>
+
+    <h2>3. What it does with your clipboard</h2>
+    <p>When you clean the clipboard, PastePerfect reads the copied text, changes it on your Mac and writes the result back to the clipboard. It does not keep a history and does not save your clipboard to disk or send it anywhere.</p>
+
+    <h2>4. What is stored on your Mac</h2>
+    <p>Your settings only: the URL mode and custom rules, which cleaning options are on, your keyboard shortcut, launch at login and appearance. They live in the app's own preferences inside its sandbox. Deleting the app's data removes them. They are never synced or uploaded.</p>
+
+    <h2>5. Permissions</h2>
+    <p>PastePerfect does not request access to your contacts, calendar, location, photos, camera or microphone.</p>
+
+    <h2>6. Children</h2>
+    <p>The app collects nothing from anyone, including children.</p>
+
+    <h2>7. Changes</h2>
+    <p>If this policy changes, the new version will be posted here with a new effective date.</p>
+
+</Doc>

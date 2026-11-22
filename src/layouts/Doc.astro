@@ -167,6 +167,21 @@ const { title, description, image, imageAlt, project, projectHref, section, head
     color: var(--color-muted);
   }
 
+  .doc code,
+  .doc kbd {
+    padding: 1px 6px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface-hover);
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    white-space: nowrap;
+  }
+
+  .doc kbd {
+    border-bottom-width: 2px;
+  }
+
   .doc__note {
     color: var(--color-muted);
     margin-top: 32px;

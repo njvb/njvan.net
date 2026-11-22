@@ -1,0 +1,44 @@
+---
+// PastePerfect's support page. The text is the page as written for the app's website, moved here
+// with its links pointing at this site.
+import Doc from '../../layouts/Doc.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Doc
+  title="Support · PastePerfect"
+  description="Help with PastePerfect: shortcuts, URL modes, tidy text and how to get in touch."
+  image="/og/pasteperfect.jpg"
+  imageAlt="PastePerfect: copy anything, paste perfectly."
+  project="PastePerfect"
+  projectHref={`${base}pasteperfect/`}
+  section="Support"
+  heading="Support"
+  accent="var(--color-pasteperfect)"
+  links={[
+    { label: 'PastePerfect', href: `${base}pasteperfect/` },
+    { label: 'Privacy policy', href: `${base}pasteperfect/privacy/` },
+  ]}
+>
+    <div class="doc__panel"><p><strong>Need a hand?</strong> Email <a href="mailto:njvanderbyl@gmail.com?subject=PastePerfect%20support">njvanderbyl@gmail.com</a> and say which macOS version you use. I read everything.</p></div>
+
+    <h2>Cleaning from any app</h2>
+    <p>Copy something, press <kbd>&#8679;&#8984;V</kbd> to clean the clipboard, then paste with <kbd>&#8984;V</kbd>. You can change the shortcut in Settings. If it does nothing, check that another app is not using the same shortcut.</p>
+
+    <h2>URL modes</h2>
+    <p><strong>Tracking only</strong> removes known tracking parameters (<code>utm_*</code>, <code>fbclid</code>, <code>gclid</code>, <code>msclkid</code>, <code>igshid</code>, <code>mc_cid</code> and others) and keeps functional ones such as <code>id</code>, <code>q</code> and <code>page</code>. <strong>All parameters</strong> removes every query parameter. <strong>Custom rules</strong> removes the parameters you list, and a <code>*</code> matches any text, so <code>promo_*</code> covers <code>promo_code</code> and <code>promo_id</code>.</p>
+
+    <h2>Remove formatting and Tidy text</h2>
+    <p>Remove formatting turns rich text into plain text. Tidy text fixes repeated spaces, extra blank lines, line endings and zero-width characters, and keeps lists, paragraphs and code.</p>
+
+    <h2>Launch at login</h2>
+    <p>Turn it on in Settings. You can also open PastePerfect from its menu bar icon: Open, Clean Clipboard, Settings, Quit.</p>
+
+    <h2>Requirements</h2>
+    <p>macOS 15 or later, Apple silicon or Intel.</p>
+
+    <h2>Privacy</h2>
+    <p>PastePerfect has no network access and collects no data. See the <a href={`${base}pasteperfect/privacy/`}>privacy policy</a>.</p>
+
+</Doc>
