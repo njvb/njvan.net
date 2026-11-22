@@ -50,7 +50,7 @@ What each project is, as the site should describe it, and what its section draws
 - **Line.** Copy anything. Paste perfectly.
 - **More.** A Mac app that cleans up copied text and URLs before you paste. It strips tracking parameters, removes stray formatting and tidies messy text, all on your Mac.
 - **Index.** "Copy anything, paste perfectly. Cleans tracking junk out of copied links and text." · `MENU BAR · MACOS`
-- **Accent.** `pasteperfect` (#FF6BAB dark, #D81B74 light), text in `on-pasteperfect`.
+- **Accent.** `pasteperfect` (#F1EDDD cream dark, #D8C9A3 sand light), text in `on-pasteperfect`.
 - **Background.** Flat accent field, like the other scenes.
 - **Moment.** The real window capture lands, tracking chips appear around it and are crossed out, then flung away while the link under it sheds its tracking tail. Values are `PASTEPERFECT_SCENE` in `motion.ts`.
 - **Links.** "See PastePerfect" goes to /pasteperfect/. No store link until the app is live.
