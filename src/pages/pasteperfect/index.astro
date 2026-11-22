@@ -133,11 +133,21 @@ const jsonLd = {
 
         <figure class="pp-shot">
           <img
+            class="pp-theme-dark"
             src={`${assets}app-window.png`}
             width="1200"
             height="923"
             alt="The PastePerfect window: a copied link with utm tracking parameters, the Remove formatting, Tidy text and Clean URLs options, and the cleaned result in a green panel reading https://example.com/article?id=123"
             fetchpriority="high"
+          />
+          <img
+            class="pp-theme-light"
+            src={`${assets}app-window-light.png`}
+            width="1200"
+            height="923"
+            alt=""
+            loading="lazy"
+            decoding="async"
           />
         </figure>
       </div>
@@ -447,6 +457,16 @@ const jsonLd = {
 
   .pp-shot {
     margin: 0;
+  }
+
+  /* The window follows the site theme (dark unless the visitor chose light). */
+  .pp-shot .pp-theme-light,
+  :global(html[data-theme='light']) .pp-shot .pp-theme-dark {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .pp-shot .pp-theme-light {
+    display: block;
   }
 
   .pp-shot img {
