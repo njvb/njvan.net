@@ -1,44 +1,201 @@
 ---
-// PastePerfect's support page. The text is the page as written for the app's website, moved here
-// with its links pointing at this site.
-import Doc from '../../layouts/Doc.astro';
+// PastePerfect support: the Support URL for the App Store listing. Mirrors WorldBar's support page.
+// The text is the page as written for the app's own website (website/support.html).
+import Base from '../../layouts/Base.astro';
 
 const base = import.meta.env.BASE_URL;
+const EMAIL = 'njvanderbyl@gmail.com';
+
+const faqs = [
+  {
+    q: "Where is PastePerfect? I can't see a window.",
+    a: "PastePerfect lives in the menu bar. Click its icon at the top of your screen for Open, Clean Clipboard, Settings and Quit. If you hide the menu bar icon, the Dock icon comes back so the app is never out of reach.",
+  },
+  {
+    q: "How do I clean what I just copied?",
+    a: "Copy as usual, press Shift-Command-V, then paste with Command-V. The shortcut cleans the clipboard in place from any app. It does not move focus or paste for you, so you press Command-V yourself.",
+  },
+  {
+    q: "The shortcut does nothing.",
+    a: "Another app may be using Shift-Command-V. Pick a different shortcut under Settings and try again. You can also choose Clean Clipboard from the menu bar icon.",
+  },
+  {
+    q: "What do the URL modes do?",
+    a: "Tracking only removes known tracking parameters (utm_*, fbclid, gclid, msclkid, igshid, mc_cid and others) and keeps functional ones such as id, q and page. All parameters removes every query parameter. Custom rules removes the parameters you list, and a * matches any text, so promo_* covers promo_code and promo_id.",
+  },
+  {
+    q: "A link broke after cleaning.",
+    a: "Use Tracking only, which keeps the parameters a page needs. All parameters removes every one, so it can break links that depend on them. Email me the link (with anything private removed) and I'll check it.",
+  },
+  {
+    q: "What do Remove formatting and Tidy text change?",
+    a: "Remove formatting turns rich text into plain text, and the result is always written as plain text. Tidy text fixes repeated spaces, extra blank lines, line endings and zero-width characters, and keeps lists, paragraphs and code.",
+  },
+  {
+    q: "What is the difference between Copy and Clean and Copy?",
+    a: "Copy puts the result on the clipboard. Clean and Copy (Command-Return) does the same and then hides PastePerfect, so focus goes back to the app you were in.",
+  },
+  {
+    q: "Does it watch my clipboard all the time?",
+    a: "No. It reads the clipboard only when the window opens, when the app is activated, when you press the reload button, or when you use the shortcut or Clean Clipboard. There is no polling, and it keeps no history.",
+  },
+  {
+    q: "Will it overwrite what I typed in the window?",
+    a: "No. Your edits are not replaced when the clipboard changes. Press the reload button to pull in the clipboard again.",
+  },
+  {
+    q: "What happens to images or files on the clipboard?",
+    a: "They are left alone. A clean action never clears non-text clipboard contents.",
+  },
+  {
+    q: "Can I start it when I log in?",
+    a: "Yes. Turn on Launch at login under Settings. If macOS asks, allow it in System Settings, General, Login Items. It works best from the Applications folder.",
+  },
+  {
+    q: "Does it send my clipboard anywhere?",
+    a: "No. The app runs in the macOS sandbox without network access and has no analytics, so it cannot send anything off your Mac.",
+  },
+  {
+    q: "What do I need to run it?",
+    a: "A Mac running macOS 15 or later, Apple silicon or Intel.",
+  },
+  {
+    q: "How do I remove PastePerfect and its data?",
+    a: "Quit it from the menu bar icon, then drag it to the Bin. Your settings are kept in the app's own folder, ~/Library/Containers/com.njvan.PastePerfect, so delete that folder too if you want them gone.",
+  },
+];
 ---
 
-<Doc
+<Base
   title="Support · PastePerfect"
   description="Help with PastePerfect: shortcuts, URL modes, tidy text and how to get in touch."
   image="/og/pasteperfect.jpg"
   imageAlt="PastePerfect: copy anything, paste perfectly."
-  project="PastePerfect"
-  projectHref={`${base}pasteperfect/`}
-  section="Support"
-  heading="Support"
-  accent="var(--color-pasteperfect)"
-  links={[
-    { label: 'PastePerfect', href: `${base}pasteperfect/` },
-    { label: 'Privacy policy', href: `${base}pasteperfect/privacy/` },
-  ]}
 >
-    <div class="doc__panel"><p><strong>Need a hand?</strong> Email <a href="mailto:njvanderbyl@gmail.com?subject=PastePerfect%20support">njvanderbyl@gmail.com</a> and say which macOS version you use. I read everything.</p></div>
+  <article class="doc shell">
+    <p class="doc__crumb t-annotation"><a href={`${base}pasteperfect/`}>PastePerfect</a> · Support</p>
+    <h1 class="doc__title">Support</h1>
+    <p class="doc__lede t-body">Questions, bugs and ideas are welcome. I read everything.</p>
 
-    <h2>Cleaning from any app</h2>
-    <p>Copy something, press <kbd>&#8679;&#8984;V</kbd> to clean the clipboard, then paste with <kbd>&#8984;V</kbd>. You can change the shortcut in Settings. If it does nothing, check that another app is not using the same shortcut.</p>
+    <div class="doc__panel">
+      <p>
+        Email <a href={`mailto:${EMAIL}?subject=PastePerfect`}>{EMAIL}</a>. Include your Mac model, your macOS
+        version and what you expected to happen, and a screenshot if you can. I usually reply within a couple of days.
+      </p>
+    </div>
 
-    <h2>URL modes</h2>
-    <p><strong>Tracking only</strong> removes known tracking parameters (<code>utm_*</code>, <code>fbclid</code>, <code>gclid</code>, <code>msclkid</code>, <code>igshid</code>, <code>mc_cid</code> and others) and keeps functional ones such as <code>id</code>, <code>q</code> and <code>page</code>. <strong>All parameters</strong> removes every query parameter. <strong>Custom rules</strong> removes the parameters you list, and a <code>*</code> matches any text, so <code>promo_*</code> covers <code>promo_code</code> and <code>promo_id</code>.</p>
+    <h2 class="doc__h2">Questions</h2>
+    <dl class="faq">
+      {
+        faqs.map((f) => (
+          <div class="faq__item">
+            <dt>{f.q}</dt>
+            <dd class="muted">{f.a}</dd>
+          </div>
+        ))
+      }
+    </dl>
 
-    <h2>Remove formatting and Tidy text</h2>
-    <p>Remove formatting turns rich text into plain text. Tidy text fixes repeated spaces, extra blank lines, line endings and zero-width characters, and keeps lists, paragraphs and code.</p>
+    <h2 class="doc__h2">Known issues</h2>
+    <p class="muted">None yet. Found one? Email me.</p>
 
-    <h2>Launch at login</h2>
-    <p>Turn it on in Settings. You can also open PastePerfect from its menu bar icon: Open, Clean Clipboard, Settings, Quit.</p>
+    <p class="doc__links t-annotation">
+      <a href={`${base}pasteperfect/`}>PastePerfect</a> · <a href={`${base}pasteperfect/privacy/`}>Privacy</a>
+    </p>
+  </article>
+</Base>
 
-    <h2>Requirements</h2>
-    <p>macOS 15 or later, Apple silicon or Intel.</p>
+<style>
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
 
-    <h2>Privacy</h2>
-    <p>PastePerfect has no network access and collects no data. See the <a href={`${base}pasteperfect/privacy/`}>privacy policy</a>.</p>
+  :global(.site-header) {
+    position: static !important;
+  }
 
-</Doc>
+  .doc {
+    padding-block: 56px 112px;
+    max-width: calc(820px + 2 * var(--pad));
+  }
+
+  .doc__crumb {
+    color: var(--color-muted);
+    margin-bottom: 18px;
+  }
+
+  .doc__crumb a {
+    text-decoration: none;
+  }
+
+  .doc__crumb a:hover {
+    text-decoration: underline;
+  }
+
+  .doc__title {
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .doc__lede,
+  .doc__meta {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+  }
+
+  .doc__panel {
+    padding: 20px 22px;
+    margin-bottom: 48px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-left: 4px solid var(--color-pasteperfect);
+    border-radius: 14px;
+    background:
+      radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--color-pasteperfect) 14%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  .doc__panel p {
+    margin: 0;
+  }
+
+  .doc__h2 {
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+  }
+
+  .faq {
+    margin: 0 0 56px;
+  }
+
+  .faq__item {
+    padding-block: 18px;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .faq__item dt {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  .faq__item dd {
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  .muted {
+    color: var(--color-muted);
+  }
+
+  .doc__links {
+    margin-top: 48px;
+    color: var(--color-muted);
+  }
+</style>
