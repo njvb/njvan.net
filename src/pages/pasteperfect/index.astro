@@ -101,6 +101,12 @@ const jsonLd = {
   <!-- There is no intro on this page: show the header settled at once. -->
   <script is:inline slot="head">
     (function () {
+      // The hero holds its first frame hidden until the script lays out the intro (a failsafe lifts it).
+      var calm = document.documentElement.dataset.motion === 'reduced' || (document.documentElement.dataset.motion !== 'full' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (!calm) {
+        document.documentElement.dataset.ppIntro = '';
+        setTimeout(function () { delete document.documentElement.dataset.ppIntro; }, 2500);
+      }
       clearTimeout(window.__motionBootTimer);
       document.documentElement.dataset.motionBoot = 'settled';
       document.addEventListener('DOMContentLoaded', function () { document.body.dataset.phase = 'settled'; });
@@ -131,7 +137,8 @@ const jsonLd = {
           <p class="pp-hero__note t-annotation">Free · macOS 15 or later · No account · No tracking</p>
         </div>
 
-        <figure class="pp-shot">
+        <div class="pp-stage" data-pp-stage>
+        <figure class="pp-shot" data-pp-shot>
           <img
             class="pp-theme-dark"
             src={`${assets}app-window.png`}
@@ -150,8 +157,18 @@ const jsonLd = {
             decoding="async"
           />
         </figure>
+          <div class="pp-chips" aria-hidden="true"><span class="pp-chip pp-chip--0" data-pp-chip>utm_source=newsletter</span><span class="pp-chip pp-chip--1" data-pp-chip>fbclid=IwAR0abc</span><span class="pp-chip pp-chip--2" data-pp-chip>gclid=Cj0KCQ</span><span class="pp-chip pp-chip--3" data-pp-chip>utm_medium=email</span><span class="pp-chip pp-chip--4" data-pp-chip>msclkid=8f2a1c</span></div>
+        </div>
       </div>
     </section>
+
+    <!-- ============ The junk, crossed out ============ -->
+    <div class="pp-mq" aria-hidden="true" data-pp-mq>
+      <div class="pp-mq__track" data-pp-mq-track>
+        <div class="pp-mq__row"><span class="pp-mq__item">utm_source</span><span class="pp-mq__item">utm_medium</span><span class="pp-mq__item">utm_campaign</span><span class="pp-mq__item">fbclid</span><span class="pp-mq__item">gclid</span><span class="pp-mq__item">msclkid</span><span class="pp-mq__item">igshid</span><span class="pp-mq__item">mc_cid</span><span class="pp-mq__item">_hsenc</span><span class="pp-mq__item">yclid</span><span class="pp-mq__item">twclid</span><span class="pp-mq__item">dclid</span></div>
+        <div class="pp-mq__row"><span class="pp-mq__item">utm_source</span><span class="pp-mq__item">utm_medium</span><span class="pp-mq__item">utm_campaign</span><span class="pp-mq__item">fbclid</span><span class="pp-mq__item">gclid</span><span class="pp-mq__item">msclkid</span><span class="pp-mq__item">igshid</span><span class="pp-mq__item">mc_cid</span><span class="pp-mq__item">_hsenc</span><span class="pp-mq__item">yclid</span><span class="pp-mq__item">twclid</span><span class="pp-mq__item">dclid</span></div>
+      </div>
+    </div>
 
     <!-- ============ Try it ============ -->
     <section class="pp-section shell" id="try" aria-labelledby="pp-try-title">
@@ -159,32 +176,53 @@ const jsonLd = {
       <p class="pp-lede t-body">
         This demo runs in your browser and sends nothing anywhere. The app does the same on your clipboard.
       </p>
-      <div class="pp-card pp-demo">
+      <div class="pp-win" data-pp-win>
+        <div class="pp-win__bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="pp-win__head">
+          <img src={`${assets}icon.webp`} width="52" height="52" alt="" />
+          <div>
+            <b>PastePerfect</b>
+            <span>Clean up copied text and URLs before you paste.</span>
+          </div>
+        </div>
         <label class="pp-label" for="pp-demo-in">What you copied</label>
-        <textarea class="pp-pane" id="pp-demo-in" data-pp="in" rows="4" spellcheck="false">Check this out:  https://example.com/article?utm_source=newsletter&utm_medium=email&utm_campaign=update&fbclid=IwAR0abc&id=123&page=2   Thanks!</textarea>
+        <textarea class="pp-pane pp-pane--in" id="pp-demo-in" data-pp="in" rows="4" spellcheck="false">Check this out:  https://example.com/article?utm_source=newsletter&utm_medium=email&utm_campaign=update&fbclid=IwAR0abc&id=123&page=2   Thanks!</textarea>
         <div class="pp-opts">
-          <label><input type="checkbox" data-pp="urls" checked /> Clean URLs</label>
-          <label><input type="checkbox" data-pp="tidy" checked /> Tidy text</label>
-          <label>
-            Mode
+          <label class="pp-opt">
+            <input type="checkbox" data-pp="tidy" />
+            <span class="pp-opt__box" aria-hidden="true"></span>
+            <span class="pp-opt__text"><b>Tidy text</b><small>Fix line breaks, spaces, etc.</small></span>
+          </label>
+          <label class="pp-opt">
+            <input type="checkbox" data-pp="urls" />
+            <span class="pp-opt__box" aria-hidden="true"></span>
+            <span class="pp-opt__text"><b>Clean URLs</b><small>Remove tracking parameters</small></span>
+          </label>
+          <label class="pp-opt pp-opt--mode">
+            <span class="pp-opt__text"><b>Mode</b></span>
             <select data-pp="mode">
               <option value="tracking">Tracking only</option>
               <option value="all">All parameters</option>
               <option value="custom">Custom rules</option>
             </select>
           </label>
-          <label data-pp="custom-wrap" hidden>
-            Rules
-            <input class="pp-rules" data-pp="custom" value="promo_*, ref" size="16" />
+          <label class="pp-opt pp-opt--mode" data-pp="custom-wrap" hidden>
+            <span class="pp-opt__text"><b>Rules</b></span>
+            <input class="pp-rules" data-pp="custom" value="promo_*, ref" size="14" />
           </label>
         </div>
         <div class="pp-arrow" aria-hidden="true">↓</div>
         <span class="pp-label">What you paste</span>
         <div class="pp-pane pp-pane--result" data-pp="out" aria-live="polite"></div>
         <p class="pp-removed" data-pp="removed"></p>
-        <div class="pp-demo__actions">
-          <button class="btn btn--lg pp-solid" data-pp="copy" type="button">Clean and Copy</button>
+        <div class="pp-win__foot">
+          <button class="pp-replay" data-pp="replay" type="button" hidden>Watch it run again</button>
           <span class="pp-demo__status" data-pp="status" role="status"></span>
+          <button class="btn btn--lg pp-solid pp-copy" data-pp="copy" type="button">Clean and Copy <kbd>⇧⌘V</kbd></button>
+        </div>
+        <div class="pp-cursor" data-pp="cursor" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 2l15 10-6.5 1.3L9.6 20z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span class="pp-cursor__ring"></span>
         </div>
       </div>
     </section>
@@ -205,17 +243,16 @@ const jsonLd = {
       <div class="pp-ba">
         <div>
           <span class="pp-label">Before</span>
-          <div class="pp-pane">https://example.com/article?utm_source=newsletter&utm_medium=email&id=123</div>
+          <div class="pp-pane" data-pp-before>https://example.com/article?<span class="pp-tr" data-pp-tr>utm_source=newsletter&amp;utm_medium=email&amp;</span>id=123</div>
         </div>
-        <div class="pp-arrow" aria-hidden="true">→</div>
+        <div class="pp-arrow pp-arrow--go" aria-hidden="true" data-pp-go>→</div>
         <div>
           <span class="pp-label">After</span>
-          <div class="pp-pane pp-pane--result">https://example.com/article?id=123</div>
+          <div class="pp-pane pp-pane--result" data-pp-after>https://example.com/article?id=123</div>
         </div>
       </div>
       <p class="pp-lede pp-lede--after t-body">
-        Functional parameters such as <span class="pp-mono">id</span>, <span class="pp-mono">q</span> and
-        <span class="pp-mono">page</span> stay, so the link still works.
+        Functional parameters such as <span class="pp-mono">id</span>, <span class="pp-mono">q</span> and <span class="pp-mono">page</span> stay, so the link still works.
       </p>
     </section>
 
@@ -508,18 +545,71 @@ const jsonLd = {
     margin: 16px 0 0;
   }
 
-  /* ================= Demo ================= */
+  /* ================= Demo: a window that plays itself ================= */
 
-  .pp-card {
-    background: var(--color-surface);
-    border: var(--border-hairline) solid var(--color-border);
-    border-radius: 22px;
+  .pp-win {
+    --win-bg: #232326;
+    --win-pane: #2c2c30;
+    --win-line: rgba(255, 255, 255, 0.09);
+    position: relative;
+    max-width: 820px;
+    padding: 0 22px 22px;
+    border: var(--border-hairline) solid var(--win-line);
+    border-radius: 18px;
+    background: var(--win-bg);
     box-shadow: var(--lift);
-    padding: 20px;
   }
 
-  .pp-demo {
-    max-width: 820px;
+  :global(html[data-theme='light']) .pp-win {
+    --win-bg: #ececec;
+    --win-pane: #f8f8f8;
+    --win-line: rgba(0, 0, 0, 0.1);
+  }
+
+  .pp-win__bar {
+    display: flex;
+    gap: 8px;
+    padding: 14px 0 12px;
+  }
+
+  .pp-win__bar i {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+
+  .pp-win__bar i:nth-child(2) {
+    background: #febc2e;
+  }
+
+  .pp-win__bar i:nth-child(3) {
+    background: #28c840;
+  }
+
+  .pp-win__head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 4px 0 18px;
+  }
+
+  .pp-win__head img {
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
+  }
+
+  .pp-win__head b {
+    display: block;
+    font-size: 24px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .pp-win__head span {
+    color: var(--color-muted);
+    font-size: 15px;
   }
 
   .pp-label {
@@ -537,19 +627,39 @@ const jsonLd = {
     width: 100%;
     min-height: 4.4em;
     padding: 14px 16px;
-    border: var(--border-hairline) solid var(--color-border);
+    border: var(--border-hairline) solid var(--win-line, var(--color-border));
     border-radius: 14px;
-    background: var(--color-surface-hover);
+    background: var(--win-pane, var(--color-surface-hover));
     color: var(--color-foreground);
     font: 14px/1.55 var(--font-mono);
     overflow-wrap: anywhere;
     resize: vertical;
   }
 
+  .pp-pane--in:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   .pp-pane--result {
     background: var(--result-bg);
     border-color: var(--result-line);
     color: var(--result-text);
+    min-height: 5.6em;
+  }
+
+  /* A parameter on its way out: crossed out and red, then it collapses. */
+  .pp-pane :global(.pp-strip),
+  .pp-tr {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+
+  .pp-pane :global(.pp-strip) {
+    color: var(--bad);
+    text-decoration: line-through;
   }
 
   .pp-arrow {
@@ -563,29 +673,101 @@ const jsonLd = {
   .pp-opts {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px 22px;
-    margin: 16px 0 4px;
+    gap: 10px;
+    margin: 14px 0 4px;
   }
 
-  .pp-opts label {
+  .pp-opt {
     display: flex;
+    flex: 1 1 200px;
     align-items: center;
-    gap: 8px;
-    font-size: 15px;
+    gap: 12px;
+    padding: 12px 14px;
+    border: var(--border-hairline) solid var(--win-line);
+    border-radius: 14px;
+    background: var(--win-pane);
     cursor: pointer;
+    transition: border-color var(--dur-micro, 0.14s) ease;
   }
 
-  .pp-opts label[hidden] {
+  .pp-opt:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  .pp-opt[hidden] {
     display: none;
   }
 
-  .pp-opts input[type='checkbox'] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--accent);
+  .pp-opt input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
   }
 
-  .pp-opts select,
+  .pp-opt__box {
+    position: relative;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    border: 2px solid var(--color-muted);
+    transition: background 0.18s ease, border-color 0.18s ease;
+  }
+
+  .pp-opt__box::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid var(--on);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .pp-opt input:checked + .pp-opt__box {
+    background: var(--accent);
+    border-color: var(--accent);
+    animation: pp-pop 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .pp-opt input:checked + .pp-opt__box::after {
+    transform: rotate(45deg) scale(1);
+  }
+
+  .pp-opt input:focus-visible + .pp-opt__box {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @keyframes pp-pop {
+    50% {
+      transform: scale(1.22);
+    }
+  }
+
+  .pp-opt__text b {
+    display: block;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  .pp-opt__text small {
+    display: block;
+    margin-top: 2px;
+    color: var(--color-muted);
+    font-size: 12.5px;
+  }
+
+  .pp-opt--mode {
+    flex: 1 1 160px;
+    justify-content: space-between;
+    cursor: default;
+  }
+
+  .pp-opt select,
   .pp-rules {
     padding: 6px 10px;
     border: var(--border-hairline) solid var(--color-border);
@@ -593,23 +775,51 @@ const jsonLd = {
     background: var(--color-surface);
     color: var(--color-foreground);
     font: inherit;
+    font-size: 14px;
   }
 
   .pp-rules {
     font-family: var(--font-mono);
   }
 
-  .pp-demo__actions {
+  .pp-win__foot {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
     margin-top: 16px;
   }
 
+  .pp-copy {
+    margin-left: auto;
+  }
+
+  .pp-copy :global(kbd) {
+    margin-left: 6px;
+    padding: 1px 6px;
+    background: color-mix(in srgb, var(--on) 14%, transparent);
+    border-color: color-mix(in srgb, var(--on) 25%, transparent);
+    color: inherit;
+  }
+
   .pp-demo__status {
     font-size: 14px;
-    color: var(--color-muted);
+    color: var(--result-text);
+  }
+
+  .pp-replay {
+    padding: 8px 14px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-foreground);
+    font: 600 13px var(--font-mono);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+
+  .pp-replay:hover {
+    border-color: var(--accent);
   }
 
   .pp-removed {
@@ -617,6 +827,163 @@ const jsonLd = {
     margin: 10px 0 0;
     font-size: 14px;
     color: var(--color-muted);
+  }
+
+  /* The pretend pointer that ticks the boxes. */
+  .pp-cursor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    width: 26px;
+    height: 26px;
+    margin: -2px 0 0 -4px;
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+    will-change: transform;
+  }
+
+  .pp-cursor__ring {
+    position: absolute;
+    left: 2px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    margin: -8px 0 0 -8px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    opacity: 0;
+  }
+
+  /* ================= Hero stage: chips and the crossed-out strip ================= */
+
+  .pp-stage {
+    position: relative;
+    perspective: 1200px;
+  }
+
+  .pp-chips {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .pp-chip {
+    position: absolute;
+    padding: 6px 12px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    box-shadow: var(--lift);
+    font: 600 12.5px var(--font-mono);
+    color: var(--color-foreground);
+    white-space: nowrap;
+    opacity: 0;
+  }
+
+  .pp-chip :global(.pp-chip__x) {
+    background: linear-gradient(var(--bad), var(--bad)) no-repeat 0 55% / 0 2px;
+    transition: background-size 0.3s ease;
+  }
+
+  .pp-chip.is-struck :global(.pp-chip__x) {
+    background-size: 100% 2px;
+  }
+
+  .pp-chip--0 { left: -6%; top: 12%; }
+  .pp-chip--1 { right: -4%; top: 30%; }
+  .pp-chip--2 { left: -14%; bottom: 20%; }
+  .pp-chip--3 { right: -2%; bottom: 10%; }
+  .pp-chip--4 { left: 30%; top: -7%; }
+
+  @media (max-width: 899px) {
+    .pp-chip--0,
+    .pp-chip--2 {
+      left: 0;
+    }
+    .pp-chip--1,
+    .pp-chip--3 {
+      right: 0;
+    }
+  }
+
+  .pp-mq {
+    overflow: hidden;
+    padding-block: 18px;
+    border-block: var(--border-hairline) solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .pp-mq__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .pp-mq__row {
+    display: flex;
+    flex: none;
+    gap: 14px;
+    padding-right: 14px;
+  }
+
+  .pp-mq__item {
+    flex: none;
+    padding: 6px 14px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 999px;
+    font: 500 14px var(--font-mono);
+    color: var(--color-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--bad);
+    text-decoration-thickness: 2px;
+  }
+
+  /* ================= Hover polish ================= */
+
+  .pp-steps li,
+  .pp-cell {
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.25s ease;
+  }
+
+  /* A soft accent glow follows the pointer over a card (--mx/--my are set by the script). */
+  .pp-steps li::after,
+  .pp-cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%);
+    transition: opacity 0.25s ease;
+  }
+
+  .pp-steps li:hover,
+  .pp-cell:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--color-border));
+  }
+
+  .pp-steps li:hover::after,
+  .pp-cell:hover::after {
+    opacity: 1;
+  }
+
+  .pp-arrow--go {
+    display: inline-block;
+  }
+
+  /* Until the intro is laid out the hero copy and window wait, so nothing flashes. */
+  :global(html[data-pp-intro]) .pp-hero__copy > *,
+  :global(html[data-pp-intro]) .pp-shot {
+    opacity: 0;
+  }
+
+  .pp-hero__name :global(.pp-char),
+  .pp-end__title :global(.pp-char) {
+    display: inline-block;
   }
 
   /* ================= Steps and before/after ================= */
@@ -734,6 +1101,7 @@ const jsonLd = {
     height: 18px;
     border-radius: 50%;
     background: var(--accent);
+    transform: scale(var(--s, 1));
   }
 
   .pp-checks li::after {
@@ -745,7 +1113,7 @@ const jsonLd = {
     height: 9px;
     border: solid var(--on);
     border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+    transform: rotate(45deg) scale(var(--s, 1));
   }
 
   .pp-privacy__link {

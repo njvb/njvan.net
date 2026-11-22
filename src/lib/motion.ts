@@ -295,3 +295,27 @@ export const WORLDBAR = {
   storySteps: 4,
 } as const;
 
+
+/**
+ * PastePerfect's page (src/scripts/pasteperfect-page.ts). The hero drops the name in letter by letter,
+ * the window floats and follows the pointer while tracking-parameter chips are peeled off it, and the
+ * "Try it" window plays itself (a cursor ticks the boxes) until the visitor touches it.
+ */
+export const PASTEPERFECT = {
+  /** "PastePerfect" drops in letter by letter. */
+  letters: { stagger: 0.045, duration: 0.85, from: 115 },
+  /** The window arrives from the right, turns face-on, then bobs. */
+  window: { delay: 0.35, duration: 1.1, from: { x: 90, rotateY: -24, rotateX: 8 }, float: { amplitude: 8, duration: 3.6 } },
+  /** The window follows the pointer: degrees of tilt at the edge of the hero. */
+  parallax: { turn: 6, tilt: 4, follow: 0.8 },
+  /** Tracking chips around the window: they appear, get struck through, then are flung away. Seconds. */
+  chips: { appear: 0.5, hold: 1.1, strike: 0.35, fling: 0.9, gap: [1.4, 2.6] },
+  /** Orbs drift: pixels, then seconds per pass. */
+  orbs: { drift: 40, duration: 9 },
+  /** The "Try it" window plays itself: cursor glide, the pause after each click, the pause before it restarts. Seconds. */
+  demo: { glide: 0.8, beat: 0.55, strip: 0.6, rest: 3.2 },
+  /** Scroll reveals: section copy and cards rise in. */
+  reveal: { y: 34, duration: 0.7, stagger: 0.08, start: 'top 85%' },
+  /** The strip-line of crossed-out parameters moves at this many pixels a second. */
+  marquee: 70,
+} as const;
