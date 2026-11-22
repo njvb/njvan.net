@@ -15,7 +15,7 @@ import { blastOff, type BlastOff } from '../lib/effects/blast-off';
 import { attachParticleEffect, type ParticleEffectControls } from '../lib/effects/particles/attach';
 import { reactor } from '../lib/effects/particles/reactor';
 import { ledgerRevealItems, setupLedgerHover, setupLedgerIntro } from './ledger';
-import { setupScenes } from './scenes';
+import { setupStage } from './stage';
 import { setupProgress } from './progress';
 import { setMoment } from '../lib/moments';
 
@@ -304,11 +304,12 @@ async function main() {
 
   // Index name waves on hover and keyboard focus. A no-op under reduced motion.
   setupLedgerHover();
-  // Scenes are staged before the boot gate releases, so their pre-paint colours hand over cleanly.
+  // The stage (each project's scene, opened from its card). Without it the scenes stay plain sections.
   try {
-    setupScenes();
+    setupStage();
   } catch (error) {
-    console.error('[scenes] setup failed, scenes stay static fields', error);
+    console.error('[stage] setup failed, scenes stay plain sections', error);
+    document.documentElement.classList.remove('has-stage');
     document.querySelectorAll<HTMLElement>('[data-scene]').forEach((scene) => setMoment(scene.id, 1));
   }
   setupProgress();

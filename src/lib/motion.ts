@@ -220,7 +220,6 @@ export const TOWER = {
   /** Once the moment passes this point, the gameplay video plays. */
   playAt: 0.75,
   /** Start loading the video when the scene is this close (viewport heights). */
-  preloadMargin: '400%',
 } as const;
 
 /**
@@ -334,4 +333,22 @@ export const PASTEPERFECT_SCENE = {
   linkStrike: [0.5, 0.62] as const,
   linkFold: [0.66, 0.86] as const,
   ease: 'power3.out',
+} as const;
+
+/**
+ * The stage (src/scripts/stage.ts): a project card grows to fill the screen, its sequence plays,
+ * then its signature moment. Times are seconds from the open (or from the switch).
+ */
+export const STAGE = {
+  /** The card grows to fill the screen; closing shrinks it back. */
+  open: { duration: 0.75 },
+  close: { duration: 0.55, contentOut: 0.2 },
+  /** Moving to another project: the new colour wipes across, the old content slides away. */
+  swap: { duration: 0.7, slide: 80, slideOut: 0.45 },
+  /** Corner radius of the card as it starts and ends, px. */
+  radius: 12,
+  /** When each part of the opened scene arrives. */
+  intro: { name: 0.3, rise: 0.42, visual: 0.46, moment: 0.7 },
+  /** The close/next bar fades in at this time. */
+  bar: 0.35,
 } as const;

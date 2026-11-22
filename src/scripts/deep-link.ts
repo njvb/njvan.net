@@ -25,7 +25,8 @@ const target = (): HTMLElement | null => {
 };
 
 function landOnHash(): void {
-  if (!target()) return;
+  // A project's address (#cotrip) opens it in the stage (src/scripts/stage.ts); there is nothing to scroll to.
+  if (!target() || target()!.closest('[data-stage]')) return;
 
   const stopEvents = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
   let timer = 0;
@@ -37,7 +38,7 @@ function landOnHash(): void {
   };
   const check = () => {
     const el = target();
-    if (!el) return stop();
+    if (!el || el.closest('[data-stage]')) return stop();
     // "instant" overrides the page's smooth scrolling for this jump.
     if (Math.abs(el.getBoundingClientRect().top) > TOLERANCE_PX) el.scrollIntoView({ block: 'start', behavior: 'instant' });
   };

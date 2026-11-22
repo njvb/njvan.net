@@ -9,7 +9,7 @@
 // Under reduced motion, or without JavaScript, the poster frame shows instead.
 import gsap from 'gsap';
 import { TOWER } from '../lib/motion';
-import { onMoment } from '../lib/moments';
+import { onMoment, onPreload } from '../lib/moments';
 import { prefersReducedMotion } from '../lib/effects/util';
 
 const span = ([a, b]: [number, number]) => ({ at: a, duration: b - a });
@@ -20,17 +20,11 @@ export function mountTower(root: HTMLElement): void {
   const video = root.querySelector<HTMLVideoElement>('[data-tower-video]');
   if (!id || !screen || !video) return;
 
-  // Load the video as the scene approaches, not with the page.
-  const preload = new IntersectionObserver(
-    (entries) => {
-      if (!entries.some((e) => e.isIntersecting)) return;
-      preload.disconnect();
-      video.preload = 'auto';
-      video.load();
-    },
-    { rootMargin: `${TOWER.preloadMargin} 0px` }
-  );
-  preload.observe(root);
+  // Load the video as the project's card nears, not with the page.
+  onPreload(id, () => {
+    video.preload = 'auto';
+    video.load();
+  });
 
   let p = 0;
   let onScreen = false;
