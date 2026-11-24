@@ -43,7 +43,7 @@ What each project is, as the site should describe it, and what its section draws
 - **Accent.** `worldbar` (#4DA3FF), text in `on-worldbar`.
 - **Background.** The same light field as the hero on /worldbar/ (soft glows, two blurred orbs, a faint grid) over the azure. The one scene allowed gradients, because it is an app's own look; it is clipped with the accent wash like Campaign Tower's city.
 - **Moment.** Three plates cut from the real capture fall in angled and apart, then close into the whole popover and turn to face you. The clock pills fade in with live times.
-- **Links.** "See WorldBar" goes to /worldbar/, which has its own page. "Mac App Store ↗" goes to the store listing (live once Apple releases the app).
+- **Links.** Live on the Mac App Store (app id 6836081075, `WORLDBAR_MAC_APP_STORE` in `src/data/projects.ts`): Apple's badge is the main button, and "See WorldBar" goes to /worldbar/, which has its own page. The TestFlight beta buttons were removed when it went live.
 
 ## 06 · PastePerfect
 
