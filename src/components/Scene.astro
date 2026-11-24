@@ -74,9 +74,13 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
               >
                 {/* Apple's badge as supplied (black on the accent field), only sized. */}
                 <img
-                  src={`${import.meta.env.BASE_URL}assets/worldbar/badge-${l.badge}-black.svg`}
-                  alt="Download on the Mac App Store"
-                  width="156"
+                  src={
+                    l.badge === 'app-store'
+                      ? `${import.meta.env.BASE_URL}campaign-tower/img/app-store-badge.svg`
+                      : `${import.meta.env.BASE_URL}assets/worldbar/badge-${l.badge}-black.svg`
+                  }
+                  alt={l.badge === 'app-store' ? 'Download on the App Store' : 'Download on the Mac App Store'}
+                  width={l.badge === 'app-store' ? 120 : 156}
                   height="40"
                 />
               </a>
