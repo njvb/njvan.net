@@ -1,0 +1,180 @@
+---
+// Emergency Tower's privacy policy: the Privacy Policy URL for the App Store listing. Mirrors PastePerfect's.
+// It describes only what the app does. Keep it in step with the app if that changes.
+import Base from '../../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+const EMAIL = 'njvanderbyl@gmail.com';
+---
+
+<Base
+  title="Privacy policy · Emergency Tower"
+  description="Emergency Tower has no accounts and no servers of its own, collects no personal data and uses no analytics. How ads, purchases, Game Center and iCloud work."
+  image="/og/emergency-tower.jpg"
+  imageAlt="Emergency Tower: three patients are waiting, one lift, who rides first?"
+>
+  <article class="doc shell">
+    <p class="doc__crumb t-annotation">Emergency Tower · Privacy</p>
+    <h1 class="doc__title">Privacy policy</h1>
+    <p class="doc__meta t-annotation">Effective 24 November 2026 · Applies to the Emergency Tower app for iOS</p>
+
+    <div class="doc__panel">
+      <p>
+        <strong>The short version.</strong> Emergency Tower has no accounts and no servers of its own. Your game lives on your device and, if you
+      choose, in your own iCloud. I don't collect personal data. Purchases go through Apple, and Game Center
+      through your Apple account. If you watch a rewarded ad, the ad provider may process limited device data,
+      described below.
+      </p>
+    </div>
+
+    <h2>1. Who I am</h2>
+    <p>
+      Emergency Tower is published by Nathan VanderByl, an independent developer. Contact: <a
+      href={`mailto:${EMAIL}?subject=Emergency%20Tower%20privacy`}>{EMAIL}</a>.
+    </p>
+
+    <h2>2. What the app does not do</h2>
+    <p>
+      I do not ask for or store your name, email address, location, contacts, photos, or any account
+      credentials. The app contains no analytics SDKs, and it does not use the advertising identifier (IDFA)
+      for tracking. The device name you set in iOS Settings is stored with your iCloud save so you can tell
+      your devices apart; it never leaves your iCloud account.
+    </p>
+
+    <h2>3. Ads and consent</h2>
+    <p>
+      The app offers optional rewarded video ads ("watch an ad to earn a bonus"). An ad never plays unless you
+      tap to start one. Ads are served by Google AdMob (Google LLC) and are non-personalised: the app does not
+      ask for App Tracking Transparency permission, and it asks Google not to use your data for ad
+      personalisation. To deliver and measure an ad, Google may process device information such as IP address,
+      device model, operating system version and coarse location, under Google's Privacy Policy and its rules
+      for how it uses data from ads. In the UK and EEA you will see Google's consent message (User Messaging
+      Platform) before the first ad, and you can change your choice at any time from Shop, then Settings, then
+      "Privacy options".
+    </p>
+
+    <h2>4. In-app purchases</h2>
+    <p>
+      Awards packs and the HQ Pass are sold through Apple's App Store. Apple handles payment and keeps the
+      transaction record. I receive no payment details. Refunds are handled by Apple.
+    </p>
+
+    <h2>5. Game Center and iCloud</h2>
+    <p>
+      If you are signed in to Game Center, the app reports your achievements and posts your best scores to its
+      leaderboards through Apple's Game Center, under your Game Center profile. If you are signed in to
+      iCloud, the app keeps a copy of your save in your personal iCloud key-value storage, so your progress
+      can follow you between your own devices and survive a reinstall. Both are part of your Apple account and
+      covered by Apple's privacy terms; I cannot see either. Sign out of Game Center or iCloud in iOS Settings
+      to stop them.
+    </p>
+
+    <h2>6. Stored on your device</h2>
+    <p>
+      Your tower, responders, currencies, settings and progress are saved in the app's private storage on your
+      device. With your permission, the app also schedules local notifications (for example when a floor
+      finishes building); these are made on your device and no data leaves it. Deleting the app deletes this
+      data, apart from any copy in your iCloud.
+    </p>
+
+    <h2>7. Children</h2>
+    <p>
+      Emergency Tower is a general-audience game and is not directed at children under 13. I do not knowingly
+      collect personal information from anyone, including children.
+    </p>
+
+    <h2>8. Changes</h2>
+    <p>
+      If this policy changes, the new version will be posted at this address with a new effective date.
+    </p>
+
+    <h2>9. Questions</h2>
+    <p>
+      Because I hold no personal data about you, there is nothing for me to access, correct or delete on
+      request: your data is on your device and in your iCloud, both under your control. If you have a question
+      about this policy, email <a href={`mailto:${EMAIL}?subject=Emergency%20Tower%20privacy`}>{EMAIL}</a>.
+    </p>
+
+    <p class="doc__links t-annotation">Emergency Tower · <a href={`${base}emergency-tower/support/`}>Support</a></p>
+  </article>
+</Base>
+
+<style>
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .doc {
+    --doc-accent: var(--color-foreground);
+    padding-block: 56px 112px;
+    max-width: calc(820px + 2 * var(--pad));
+  }
+
+  .doc__crumb {
+    color: var(--color-muted);
+    margin-bottom: 18px;
+  }
+
+  .doc__crumb a {
+    text-decoration: none;
+  }
+
+  .doc__crumb a:hover {
+    text-decoration: underline;
+  }
+
+  .doc__title {
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .doc__lede,
+  .doc__meta {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+  }
+
+  .doc__panel {
+    padding: 20px 22px;
+    margin-bottom: 40px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-left: 4px solid var(--doc-accent);
+    border-radius: 14px;
+    background:
+      radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--doc-accent) 12%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  .doc__panel p {
+    margin: 0;
+  }
+
+  .doc__links {
+    margin-top: 48px;
+    color: var(--color-muted);
+  }
+
+  h2 {
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 36px 0 10px;
+  }
+
+  article p {
+    max-width: 66ch;
+    margin: 0 0 14px;
+  }
+
+  .doc__panel p {
+    margin: 0;
+  }
+</style>
