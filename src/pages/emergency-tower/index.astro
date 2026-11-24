@@ -1,0 +1,633 @@
+---
+// Emergency Tower's landing page, served at njvan.net/emergency-tower/ (with /support/ and /privacy/, the App Store's
+// Support and Privacy URLs). The text is the content file written by the Emergency Tower session
+// (marketing/emergency/website.txt in its repo). The screenshots are the game's whole-screen App Store captures:
+// its licence allows the sprites only inside whole-screen screenshots, never on their own. The icon and the title
+// wordmark are free to use alone. The game is not on the App Store yet, so its store button is a labelled "Coming
+// soon" placeholder: link its listing, with Apple's badge, once it is live. The page's motion is src/scripts/emergency-page.ts.
+import Base from '../../layouts/Base.astro';
+import EmergencyPhone from '../../components/scenes/EmergencyPhone.astro';
+
+const base = import.meta.env.BASE_URL;
+const assets = `${base}assets/emergency-tower/`;
+const SUPPORT = `${base}emergency-tower/support/`;
+const PRIVACY = `${base}emergency-tower/privacy/`;
+
+const description =
+  'Emergency Tower is a pixel-art idle game for iPhone about building a city\'s emergency services into one tower. Patients arrive tagged red, amber or green, and you choose who rides the lift first.';
+
+const steps = [
+  {
+    title: 'Patients wait',
+    text: 'They wait in the Waiting Room at the bottom of the tower, each with a tag: red is critical, amber urgent, green minor. The number on the tag is their floor, and the bar under it is their patience.',
+  },
+  {
+    title: 'You choose',
+    text: 'Tap who goes first, then press and hold anywhere to ride up, and let go when the line in the shaft turns green.',
+  },
+  {
+    title: 'It pays, or it costs',
+    text: 'Critical cases tip the most and cost a fine if they wait too long or reach the wrong floor. Minor cases just leave. Pick up the red ones first and the fines stay rare.',
+  },
+];
+
+const features = [
+  { title: 'Triage the lift', text: 'Up to three patients wait at once, each tagged critical, urgent or minor, with a patience bar.' },
+  {
+    title: 'Build the service',
+    text: '22 floor types across Wards, Diagnostics, Response, Logistics and Admin, from A&E and Intensive Care to the Engine Bay, Dispatch and the Holding Cells.',
+  },
+  { title: 'Responders in uniform', text: 'Nurses, surgeons, firefighters and police, each on the floor they trained for.' },
+  {
+    title: 'Answer the call',
+    text: 'Partners call in incidents. Handle them by the book, or take the risk for an extra award and a shot at the Golden Sirens.',
+  },
+  { title: 'The Response League', text: 'A three-day season against six rival services.' },
+  { title: 'A themed week', text: 'Every Monday a new event starts, with three goals and a trophy to win.' },
+  { title: 'Two daily mini-games', text: 'Surge, a 60-second lift frenzy, and Blue-light Run, a race across town to a call.' },
+  { title: 'Go regional', text: 'At 50 floors you can reset for permanent shares and build again, taller.' },
+];
+
+const shots = [
+  { file: '01-triage', caption: 'The Waiting Room', alt: 'The Waiting Room under the tower, full of tagged patients, with nurses, police and doctors at work on the floors above' },
+  { file: '02-incident', caption: 'An incident call', alt: 'An incident call, "Multiple casualties, ETA ten minutes", with the choice to go by the book or take the risk' },
+  { file: '03-floor', caption: "A&E's care team", alt: "A&E's care team: a doctor and two nurses" },
+  { file: '04-hq', caption: 'HQ', alt: 'HQ: Tender Season, the Golden Sirens, the Response League, Surge and Blue-light Run' },
+  { file: '05-top', caption: 'The next floor', alt: 'The top of the tower, with the next floor ready to build' },
+];
+
+const faqs = [
+  {
+    q: 'How do I earn awards without paying?',
+    a: 'Take VIPs up in the lift, place responders on the floor they dream of, finish daily missions, weekly event goals and achievements, keep a login streak, and watch optional rewarded ads in the Shop.',
+  },
+  {
+    q: 'Does my progress follow me between devices?',
+    a: 'It is restored from iCloud if you were signed in when you last played, so it survives a reinstall and follows you between your own devices.',
+  },
+  {
+    q: 'Do I need to be online to play?',
+    a: 'No account or sign-in is needed. Game Center, for achievements and leaderboards, and iCloud, for your save, are optional.',
+  },
+  {
+    q: 'What do the purchases do?',
+    a: 'Pocket of Awards (10 awards) and Shelf of Awards (50 awards) are packs. The HQ Pass is a one-off: your service keeps earning for longer while you are away. Purchases are handled by Apple, and you can restore them in the Shop.',
+  },
+  {
+    q: 'What data does it collect?',
+    a: 'None about you: no accounts, no servers of its own and no analytics. If you choose to watch a rewarded ad, the ad provider may process limited device data. The privacy policy has the details.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Emergency Tower',
+  applicationCategory: 'GameApplication',
+  operatingSystem: 'iOS 17 or later',
+  description,
+  url: 'https://njvan.net/emergency-tower/',
+  image: 'https://njvan.net/og/emergency-tower.jpg',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  author: { '@type': 'Person', name: 'Nathan VanderByl', url: 'https://njvan.net/' },
+};
+---
+
+<Base
+  title="Emergency Tower: Three patients are waiting. One lift."
+  description={description}
+  image="/og/emergency-tower.jpg"
+  imageAlt="Emergency Tower: three patients are waiting, one lift, who rides first?"
+  jsonLd={jsonLd}
+>
+  <!-- The hero holds its first frame hidden until the script lays out the intro (a failsafe lifts it). -->
+  <script is:inline slot="head">
+    (function () {
+      var m = document.documentElement.dataset.motion;
+      var calm = m === 'reduced' || (m !== 'full' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (!calm) {
+        document.documentElement.dataset.emIntro = '';
+        setTimeout(function () { delete document.documentElement.dataset.emIntro; }, 2500);
+      }
+      clearTimeout(window.__motionBootTimer);
+      document.documentElement.dataset.motionBoot = 'settled';
+      document.addEventListener('DOMContentLoaded', function () { document.body.dataset.phase = 'settled'; });
+    })();
+  </script>
+
+  <div class="em">
+    <!-- ============ Hero ============ -->
+    <section class="em-hero" aria-labelledby="em-title">
+      <div class="shell em-hero__inner">
+        <div class="em-hero__copy">
+          <img class="em-icon" src={`${assets}icon.webp`} width="84" height="84" alt="" />
+          <h1 class="em-hero__name" id="em-title">
+            <img src={`${assets}wordmark-1000.webp`} srcset={`${assets}wordmark-600.webp 600w, ${assets}wordmark-1000.webp 1000w`} sizes="(min-width: 900px) 30rem, 90vw" width="992" height="328" alt="Emergency Tower" fetchpriority="high" />
+          </h1>
+          <p class="em-hero__line">Three patients are waiting. One lift. Who rides first?</p>
+          <p class="em-hero__more t-body">
+            A pixel-art idle game about building a city's emergency services into one tower: wards, diagnostics, fire
+            crews, ambulances and police, one floor at a time. Patients arrive with a triage tag, red, amber or green,
+            and you choose who rides the lift first, because critical cases can't wait.
+          </p>
+          <div class="em-links">
+            <!-- Not on the App Store yet: a labelled placeholder, not a link. -->
+            <span class="btn btn--lg em-solid" role="note">Coming soon to the App Store</span>
+            <a class="btn btn--lg em-ghost" href="#how">How it works ↓</a>
+          </div>
+          <p class="em-hero__note t-annotation">Free · iPhone · iOS 17 or later · Optional rewarded ads</p>
+        </div>
+        <EmergencyPhone class="em-hero__phone" />
+      </div>
+    </section>
+
+    <!-- ============ How it works ============ -->
+    <section class="em-section shell" id="how" aria-labelledby="em-how-title">
+      <h2 class="em-h2" id="em-how-title">Who rides first?</h2>
+      <ol class="em-steps">
+        {
+          steps.map((s) => (
+            <li>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- ============ The game ============ -->
+    <section class="em-section shell" aria-labelledby="em-feat-title">
+      <h2 class="em-h2" id="em-feat-title">One tower, a whole city's emergency services.</h2>
+      <div class="em-grid">
+        {
+          features.map((f, i) => (
+            <div class="em-cell">
+              <span class="em-cell__n t-annotation">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ============ Screenshots ============ -->
+    <section class="em-section em-shots-wrap" aria-labelledby="em-shots-title">
+      <div class="shell">
+        <h2 class="em-h2" id="em-shots-title">In the game.</h2>
+      </div>
+      <ul class="em-shots" role="list">
+        {
+          shots.map((s) => (
+            <li>
+              <figure>
+                <img src={`${assets}${s.file}.webp`} alt={s.alt} width="540" height="1174" loading="lazy" decoding="async" />
+                <figcaption class="t-annotation">{s.caption}</figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- ============ Free to play ============ -->
+    <section class="em-free" aria-labelledby="em-free-title">
+      <div class="shell em-section">
+        <h2 class="em-h2" id="em-free-title">Free to play, and fair about it.</h2>
+        <ul class="em-checks">
+          <li>Free to download, with no account or sign-in</li>
+          <li>Rewarded ads are optional: an ad never plays unless you tap to start one</li>
+          <li>Awards packs and a one-off HQ Pass, handled by Apple</li>
+          <li>Game Center: 36 achievements and 3 leaderboards</li>
+          <li>iCloud keeps your save safe across your own devices</li>
+          <li>No analytics, and no servers of its own</li>
+        </ul>
+        <p class="em-free__link"><a href={PRIVACY}>Read the privacy policy</a></p>
+      </div>
+    </section>
+
+    <!-- ============ Questions ============ -->
+    <section class="em-section shell" aria-labelledby="em-faq-title">
+      <h2 class="em-h2" id="em-faq-title">Common questions.</h2>
+      <div class="em-faq">
+        {
+          faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+      <p class="em-faq__more"><a href={SUPPORT}>More answers on the support page</a></p>
+    </section>
+
+    <!-- ============ Closing ============ -->
+    <section class="em-end" aria-labelledby="em-end-title">
+      <div class="shell em-end__inner">
+        <ul class="em-facts t-annotation">
+          <li>iPhone</li>
+          <li>iOS 17 or later</li>
+          <li>Free to play</li>
+        </ul>
+        <h2 class="em-end__title" id="em-end-title">Three patients are waiting.</h2>
+        <div class="em-links em-links--center">
+          <span class="btn btn--lg em-solid" role="note">Coming soon to the App Store</span>
+          <a class="btn btn--lg em-ghost" href={SUPPORT}>Support</a>
+          <a class="btn btn--lg em-ghost" href={PRIVACY}>Privacy</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import '../../scripts/emergency-page';
+</script>
+
+<style>
+  /* The homepage's panel snapping is for its full-screen scenes; this page scrolls freely. */
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  /* The header sits on the canvas above the hero, like the other landing pages. */
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .em {
+    --accent: var(--color-emergency);
+    --on: var(--color-on-emergency);
+    --pixel-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  :global(html[data-theme='light']) .em {
+    --pixel-shadow: 4px 4px 0 rgba(28, 37, 65, 0.22);
+  }
+
+  /* Buttons: navy and paper, like the game's own panels. */
+  .em-solid {
+    background: var(--on);
+    border-color: var(--on);
+    color: var(--accent);
+    cursor: default;
+  }
+
+  .em-ghost {
+    border-color: var(--on);
+    color: var(--on);
+  }
+
+  .em-ghost:hover {
+    background: color-mix(in srgb, var(--on) 12%, transparent);
+  }
+
+  /* Until the intro is laid out the hero copy and phone wait, so nothing flashes. */
+  :global(html[data-em-intro]) .em-hero__copy > *,
+  :global(html[data-em-intro]) .em-hero__phone {
+    opacity: 0;
+  }
+
+  /* ================= Hero ================= */
+
+  .em-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: 56px 96px;
+    background: var(--accent);
+    color: var(--on);
+  }
+
+  .em-hero__inner {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .em-hero__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+
+  .em-icon {
+    width: 84px;
+    height: 84px;
+    border-radius: 20px;
+    box-shadow: var(--pixel-shadow);
+  }
+
+  .em-hero__name {
+    margin: 22px 0 18px;
+    line-height: 0;
+  }
+
+  .em-hero__name img {
+    display: block;
+    width: min(100%, 30rem);
+    height: auto;
+  }
+
+  .em-hero__line {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+    max-width: 22ch;
+  }
+
+  .em-hero__more {
+    color: color-mix(in srgb, var(--on) 82%, transparent);
+    max-width: 34em;
+    margin: 0 0 26px;
+  }
+
+  .em-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .em-links--center {
+    justify-content: center;
+    margin-top: 26px;
+  }
+
+  .em-hero__note {
+    margin: 18px 0 0;
+    color: color-mix(in srgb, var(--on) 70%, transparent);
+  }
+
+  .em-hero__phone {
+    container-type: inline-size;
+  }
+
+  /* ================= Sections ================= */
+
+  .em-section {
+    padding-block: 84px;
+  }
+
+  @media (max-width: 819px) {
+    .em-section {
+      padding-block: 60px;
+    }
+  }
+
+  .em-h2 {
+    font-size: clamp(1.9rem, 4.6vw, 3.25rem);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 28px;
+    max-width: 18em;
+  }
+
+  .em-steps {
+    list-style: none;
+    counter-reset: s;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  .em-steps li {
+    counter-increment: s;
+    padding: 24px;
+    background: var(--color-surface);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: var(--pixel-shadow);
+  }
+
+  .em-steps li::before {
+    content: '0' counter(s);
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--accent);
+    color: var(--on);
+    font: 600 13px var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  .em-steps h3,
+  .em-cell h3 {
+    margin: 12px 0 6px;
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 700;
+  }
+
+  .em-steps p,
+  .em-cell p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 16px;
+  }
+
+  .em-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  }
+
+  .em-cell {
+    padding: 24px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 10px;
+  }
+
+  .em-cell__n {
+    color: var(--color-muted);
+  }
+
+  .em-cell h3 {
+    margin-top: 6px;
+    font-size: 20px;
+  }
+
+  /* The five whole-screen captures: a row you can scroll sideways on a phone. */
+  .em-shots-wrap {
+    padding-inline: 0;
+  }
+
+  .em-shots {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0 var(--pad, 24px) 12px;
+    max-width: calc(1280px + 2 * var(--pad, 24px));
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+
+  .em-shots li {
+    flex: 0 0 min(64vw, 250px);
+    scroll-snap-align: start;
+  }
+
+  .em-shots figure {
+    margin: 0;
+  }
+
+  .em-shots img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 8px solid #0a0a0a;
+    border-radius: 28px;
+    box-shadow: var(--pixel-shadow);
+  }
+
+  .em-shots figcaption {
+    margin-top: 12px;
+    color: var(--color-muted);
+  }
+
+  @media (min-width: 1100px) {
+    .em-shots {
+      overflow: visible;
+    }
+    .em-shots li {
+      flex: 1 1 0;
+    }
+  }
+
+  /* ================= Free to play ================= */
+
+  .em-free {
+    background: var(--color-surface);
+    border-block: var(--border-hairline) solid var(--color-border);
+  }
+
+  .em-checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  .em-checks li {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .em-checks li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.3em;
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+  }
+
+  .em-checks li::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0.42em;
+    width: 5px;
+    height: 9px;
+    border: solid var(--on);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .em-free__link {
+    margin: 22px 0 0;
+  }
+
+  .em-free__link a,
+  .em-faq__more a {
+    color: var(--color-foreground);
+  }
+
+  /* ================= Questions ================= */
+
+  .em-faq details {
+    max-width: 820px;
+    padding: 18px 0;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .em-faq details:last-child {
+    border-bottom: var(--border-hairline) solid var(--color-border);
+  }
+
+  .em-faq summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .em-faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .em-faq summary::after {
+    content: '+';
+    font-size: 24px;
+    line-height: 1;
+    color: var(--color-muted);
+  }
+
+  .em-faq details[open] summary::after {
+    content: '\2212';
+  }
+
+  .em-faq p {
+    max-width: 44em;
+    margin: 10px 0 0;
+    color: var(--color-muted);
+  }
+
+  .em-faq__more {
+    margin: 22px 0 0;
+  }
+
+  /* ================= Closing ================= */
+
+  .em-end {
+    background: var(--accent);
+    color: var(--on);
+    text-align: center;
+  }
+
+  .em-end__inner {
+    padding-block: 96px 112px;
+  }
+
+  .em-facts {
+    list-style: none;
+    margin: 0 0 22px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 22px;
+    color: color-mix(in srgb, var(--on) 75%, transparent);
+  }
+
+  .em-end__title {
+    max-width: 12em;
+    margin: 0 auto;
+    font-size: clamp(2.4rem, 7vw, 4.75rem);
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+</style>

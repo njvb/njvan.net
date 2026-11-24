@@ -1,0 +1,185 @@
+---
+// Emergency Tower's visual: a real whole-screen capture of the game in a phone, with three triage tags
+// beside it (critical, urgent, minor: the game's own mechanic, drawn here in HTML, not game sprites).
+// Whole-screen captures only: the game's licence allows its sprites inside composite screenshots, never alone.
+// Without JavaScript, or under reduced motion, it shows the settled frame: the phone, the three tags with
+// their patience part-drained, and the critical one marked as next.
+// src/scripts/emergency-fan.ts plays it: the phone rises, the tags drop in, the patience bars drain.
+interface Props {
+  /** The phone's height unit; the page's hero sets its own. */
+  class?: string;
+}
+const { class: extra = '' } = Astro.props;
+const base = `${import.meta.env.BASE_URL}assets/emergency-tower/`;
+const tags = [
+  { level: 'critical', label: 'Critical', floor: 7, left: 4 },
+  { level: 'urgent', label: 'Urgent', floor: 3, left: 0 },
+  { level: 'minor', label: 'Minor', floor: 1, left: 0 },
+] as const;
+---
+
+<div class:list={['em-fan', extra]} data-em-fan>
+  <div class="em-phone" data-em-phone>
+    <div class="em-phone__screen">
+      <img src={`${base}01-triage.webp`} alt="" width="540" height="1174" loading="lazy" decoding="async" />
+    </div>
+  </div>
+  {
+    tags.map((t) => (
+      <span class={`em-tag em-tag--${t.level}`} data-em-tag data-level={t.level}>
+        <span class="em-tag__row">
+          <b>{t.label}</b>
+          <i>→ {t.floor}</i>
+        </span>
+        <span class="em-tag__bar">
+          <s data-em-bar />
+        </span>
+        {t.level === 'critical' && <span class="em-tag__next" data-em-next>Rides first</span>}
+      </span>
+    ))
+  }
+</div>
+
+<script>
+  import { mountEmergencyScene } from '../../scripts/emergency-fan';
+  document.querySelectorAll<HTMLElement>('[data-em-fan]').forEach((root) => {
+    if (!root.closest('[data-scene]')) return;
+    try {
+      mountEmergencyScene(root);
+    } catch (error) {
+      console.error('[emergency] moment failed, keeping the settled frame', error);
+    }
+  });
+</script>
+
+<style>
+  .em-fan {
+    --phone-h: min(64svh, 620px);
+    --w: calc(var(--phone-h) * 540 / 1174 + 20px);
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: calc(var(--phone-h) + 20px);
+  }
+
+  @container (max-width: 559px) {
+    .em-fan {
+      --phone-h: min(calc(60cqi * 1174 / 540), 480px);
+    }
+  }
+
+  .em-phone {
+    position: relative;
+    z-index: 1;
+    width: var(--w);
+    padding: 10px;
+    border-radius: 44px;
+    background: #0a0a0a;
+    box-shadow: 10px 0 0 rgba(0, 0, 0, 0.28);
+  }
+
+  .em-phone__screen {
+    border-radius: 34px;
+    overflow: hidden;
+    background: #1c2541;
+    aspect-ratio: 540 / 1174;
+  }
+
+  .em-phone__screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* The triage tags: the game's own colours on its ink, each with a patience bar. */
+  .em-tag {
+    --tag: #e05b5b;
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    gap: 6px;
+    width: clamp(120px, 24cqi, 170px);
+    padding: 10px 12px 12px;
+    border: 3px solid var(--tag);
+    border-radius: 6px;
+    background: #10131f;
+    color: #f4f1ea;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+    font-family: var(--font-mono);
+  }
+
+  .em-tag--urgent {
+    --tag: #f2994a;
+  }
+
+  .em-tag--minor {
+    --tag: #6fcf97;
+  }
+
+  .em-tag__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .em-tag b {
+    font-size: clamp(11px, 1.9cqi, 14px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tag);
+  }
+
+  .em-tag i {
+    font-style: normal;
+    font-size: clamp(12px, 2.1cqi, 16px);
+    font-weight: 700;
+  }
+
+  .em-tag__bar {
+    display: block;
+    height: 8px;
+    background: rgba(244, 241, 234, 0.16);
+    overflow: hidden;
+  }
+
+  .em-tag__bar s {
+    display: block;
+    height: 100%;
+    width: calc(var(--p, 0.5) * 100%);
+    background: var(--tag);
+    text-decoration: none;
+  }
+
+  .em-tag--critical {
+    left: calc(50% - var(--w) * 0.5 - clamp(96px, 20cqi, 150px));
+    top: 14%;
+    --p: 0.14;
+  }
+
+  .em-tag--urgent {
+    left: calc(50% - var(--w) * 0.5 - clamp(60px, 12cqi, 90px));
+    top: 38%;
+    --p: 0.5;
+  }
+
+  .em-tag--minor {
+    right: calc(50% - var(--w) * 0.5 - clamp(70px, 14cqi, 110px));
+    top: 58%;
+    --p: 0.8;
+  }
+
+  .em-tag__next {
+    position: absolute;
+    right: -3px;
+    top: -14px;
+    padding: 2px 8px;
+    background: var(--tag);
+    color: #10131f;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>
