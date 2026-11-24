@@ -83,7 +83,7 @@ The site is live at https://njvan.net on GitHub Pages, built by the official Ast
 
 ## Domain and mail
 
-- **njvan.net** is registered through iwantmyname, and its DNS is hosted there: the four GitHub Pages A records and four AAAA records, `www` as a CNAME to `njvb.github.io`, and iCloud's MX, SPF, DKIM (`sig1._domainkey`) and `apple-domain` records. HostGator's old zone for it was edited to match, so any resolver that still asks HostGator gets the same answers. The HostGator hosting is being cancelled.
+- **njvan.net** is registered through iwantmyname, and its DNS is hosted there: the four GitHub Pages A records and four AAAA records, `www` as a CNAME to `njvb.github.io`, and iCloud's MX, SPF, DKIM (`sig1._domainkey`) and `apple-domain` records. HostGator's old zone for it was edited to match, so any resolver that still asks HostGator gets the same answers. HostGator's hosting (one Baby Plan, account 86191131) has auto-renew turned off since 24 Nov 2026 and expires 12 Mar 2027; nothing live depends on it. The only copy of its old content (WordPress files, database, old mail) is the backup in iCloud Drive, `HostGator backup 2026-11-13`.
 - **Mail** for njvan.net runs on iCloud+ as a custom domain (hello@ and i.am@). SPF and DKIM pass.
 - **epilogue.com.au** is registered and hosted at GoDaddy. Its mail is on iCloud, and it forwards with a 301 to https://njvan.net.
 - Ask Nathan before changing any DNS. Keep the iCloud and GitHub Pages records above intact, or mail or the site stops.
