@@ -1,0 +1,199 @@
+---
+// Emergency Tower support: the Support URL for the App Store listing. Mirrors PastePerfect's and WorldBar's.
+// The text is the content file written by the Emergency Tower session (marketing/emergency/website.txt).
+import Base from '../../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+const EMAIL = 'njvanderbyl@gmail.com';
+
+const faqs = [
+  {
+    q: "How does the triage lift work?",
+    a: "Patients wait in the Waiting Room at the bottom of the tower, each with a tag: red is critical, amber urgent, green minor. The number on the tag is their floor, and the bar under it is their patience. Tap who goes first, then press and hold anywhere to ride up, and let go when the line in the shaft turns green.",
+  },
+  {
+    q: "Why was I fined?",
+    a: "A critical or urgent patient who waits too long, or is taken to the wrong floor, costs a fine. Minor cases just leave. Pick up red cases first, and the fines stay rare.",
+  },
+  {
+    q: "Why do patients tip less sometimes?",
+    a: "Tips fall the longer a patient has waited. A critical case picked up straight away pays the most. A neat stop level with the floor adds a bonus.",
+  },
+  {
+    q: "My progress disappeared after reinstalling.",
+    a: "Progress is restored from iCloud if you were signed in when you last played. Open Shop, then iCloud, then Load from iCloud. If you weren't signed in, the save lived only on that device and can't be recovered - sorry.",
+  },
+  {
+    q: "The game says an iCloud save is ahead - which should I pick?",
+    a: "\"Load iCloud save\" replaces this device's tower with the one from your other device. \"Keep this device\" uploads this one instead. Pick whichever tower is further along.",
+  },
+  {
+    q: "How do I earn Awards without paying?",
+    a: "Take VIPs up in the lift, place responders on the floor they dream of, finish daily missions, weekly event goals and achievements, keep a login streak, and watch optional rewarded ads in the Shop.",
+  },
+  {
+    q: "A responder won't work on a floor.",
+    a: "Each department floor holds three responders, and each tier of work needs one more of them on the floor. Staff Quarters house five, and more once upgraded. Someone marked \"Needs a job\" can be hired from any department's Hire button.",
+  },
+  {
+    q: "What are the weekly event goals?",
+    a: "Every Monday a new event starts with three goals: easy, medium and hard. Claim each one in HQ from the event banner. Claim all three to win that week's trophy for your trophy shelf. Finished goals you forget to claim are paid when the week ends.",
+  },
+  {
+    q: "What are Surge and Blue-light Run?",
+    a: "Two daily mini-games that wait in your Waiting Room until you play. Surge is a 60-second lift frenzy. Blue-light Run sends your top responder racing across town to a call. Both keep your personal best, and both have a Game Center leaderboard.",
+  },
+  {
+    q: "What does \"Go Regional\" do?",
+    a: "At 50 floors you can reset the tower for permanent shares, each adding to what your work sells for. You keep your awards, items, perk tree, achievements and crest wall.",
+  },
+  {
+    q: "How do I see my achievements and leaderboards?",
+    a: "Sign in to Game Center in iOS Settings, then open HQ, then Achievements. Anything you had already earned goes up the first time you sign in.",
+  },
+  {
+    q: "How do I turn off the music or sound effects?",
+    a: "Shop, then Settings. Music and sound effects have separate switches. Music also steps aside on its own when you play your own audio.",
+  },
+  {
+    q: "Restoring purchases.",
+    a: "Shop, then Restore purchases. The HQ Pass is tied to your Apple ID.",
+  },
+  {
+    q: "Refunds.",
+    a: "Purchases are handled by Apple: reportaproblem.apple.com.",
+  },
+];
+---
+
+<Base
+  title="Support · Emergency Tower"
+  description="Help with Emergency Tower, the pixel-art triage game: how the lift works, fines and tips, iCloud saves, awards, purchases and how to get in touch."
+  image="/og/emergency-tower.jpg"
+  imageAlt="Emergency Tower: three patients are waiting, one lift, who rides first?"
+>
+  <article class="doc shell">
+    <p class="doc__crumb t-annotation">Emergency Tower · Support</p>
+    <h1 class="doc__title">Support</h1>
+    <p class="doc__lede t-body">Questions, bugs, ideas - I read everything.</p>
+
+    <div class="doc__panel">
+      <p>
+        Email <a href={`mailto:${EMAIL}?subject=Emergency%20Tower`}>{EMAIL}</a>. If it's a bug, include your iPhone model and iOS version, what you were doing when it happened, and a screenshot if you can. Typical reply time: a couple of days.
+      </p>
+    </div>
+
+    <h2 class="doc__h2">Questions</h2>
+    <dl class="faq">
+      {
+        faqs.map((f) => (
+          <div class="faq__item">
+            <dt>{f.q}</dt>
+            <dd class="muted">{f.a}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <h2 class="doc__h2">Known issues</h2>
+    <p class="muted">None yet. Found one? Email me.</p>
+
+    <p class="doc__links t-annotation">Emergency Tower · <a href={`${base}emergency-tower/privacy/`}>Privacy</a></p>
+  </article>
+</Base>
+
+<style>
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .doc {
+    --doc-accent: var(--color-foreground);
+    padding-block: 56px 112px;
+    max-width: calc(820px + 2 * var(--pad));
+  }
+
+  .doc__crumb {
+    color: var(--color-muted);
+    margin-bottom: 18px;
+  }
+
+  .doc__crumb a {
+    text-decoration: none;
+  }
+
+  .doc__crumb a:hover {
+    text-decoration: underline;
+  }
+
+  .doc__title {
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .doc__lede,
+  .doc__meta {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+  }
+
+  .doc__panel {
+    padding: 20px 22px;
+    margin-bottom: 48px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-left: 4px solid var(--doc-accent);
+    border-radius: 14px;
+    background:
+      radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--doc-accent) 12%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  .doc__panel p {
+    margin: 0;
+  }
+
+  .doc__links {
+    margin-top: 48px;
+    color: var(--color-muted);
+  }
+
+  .doc__h2 {
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+  }
+
+  .faq {
+    margin: 0 0 56px;
+  }
+
+  .faq__item {
+    padding-block: 18px;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .faq__item dt {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  .faq__item dd {
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  .muted {
+    color: var(--color-muted);
+  }
+</style>

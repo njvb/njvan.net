@@ -223,6 +223,12 @@ const markUrl = (w: number) => `${import.meta.env.BASE_URL}${mark!.src.replace('
     height: auto;
   }
 
+  /* Campaign Tower's skyline darkens the field at the foot of the scene: keep the notes on the plain field so they stay readable. */
+  .scene[data-project='tower'] .scene__notes span {
+    padding: 1px 6px;
+    background: var(--field);
+  }
+
   .scene[data-project='tower'] .scene__name {
     font-size: clamp(3rem, 16cqi, 8rem);
   }
