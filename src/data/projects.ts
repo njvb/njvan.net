@@ -1,8 +1,8 @@
-// Copy and metadata for the six projects. Source: design/Projects.md and the frames.
+// Copy and metadata for the seven projects. Source: design/Projects.md and the frames.
 // A link with no href is a placeholder still waiting on Nathan: it renders as a
 // labelled placeholder, never as a guessed URL.
 
-export type ProjectId = 'tavren' | 'kora' | 'cotrip' | 'tower' | 'worldbar' | 'pasteperfect';
+export type ProjectId = 'tavren' | 'kora' | 'cotrip' | 'tower' | 'worldbar' | 'pasteperfect' | 'emergency';
 
 export interface ProjectLink {
   label: string;
@@ -149,6 +149,21 @@ export const projects: Project[] = [
     more: 'A Mac app that cleans up copied text and URLs before you paste. It strips tracking parameters, removes stray formatting and tidies messy text, all on your Mac.',
     notes: ['macOS 15 or later', 'No account · No tracking'],
     links: [{ label: 'See PastePerfect', href: '/pasteperfect/', variant: 'solid' }],
+  },
+  {
+    id: 'emergency',
+    number: '07',
+    name: 'Emergency Tower',
+    kind: 'Game',
+    indexLine: 'Three patients are waiting. One lift. Who rides first? A pixel-art triage game for iPhone.',
+    indexStack: 'SwiftUI · SpriteKit · StoreKit',
+    // From the app's own content file (marketing/emergency/website.txt in its repo).
+    line: 'Three patients are waiting. One lift. Who rides first?',
+    more: "A pixel-art idle game about building a city's emergency services into one tower, one floor at a time. Patients arrive tagged red, amber or green, and you choose who rides the lift first, because critical cases can't wait.",
+    notes: ['iPhone · iOS 17 or later', 'Free · optional rewarded ads'],
+    wordmark: { src: 'assets/emergency-tower/wordmark-{w}.webp', widths: [600, 1000], ratio: 992 / 328 },
+    // Not on the App Store yet: the scene links to the page, which carries the "Coming soon" placeholder.
+    links: [{ label: 'See Emergency Tower', href: '/emergency-tower/', variant: 'solid' }],
   },
 ];
 

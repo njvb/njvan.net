@@ -126,7 +126,7 @@ export const SCENE = {
   /** The signature moment plays once, the first time the scene is active. */
   moment: { at: 0.7, duration: 2.8 },
   /** Scenes whose moment tells a longer story get their own length, in seconds. */
-  momentLength: { cotrip: 5, kora: 4.5, worldbar: 3.6, pasteperfect: 3.4 } as Record<string, number>,
+  momentLength: { cotrip: 5, kora: 4.5, worldbar: 3.6, pasteperfect: 3.4, emergency: 4 } as Record<string, number>,
   /** A moment whose visual loads late waits for it, up to this many seconds. */
   momentWait: 4,
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
@@ -354,4 +354,21 @@ export const STAGE = {
   intro: { name: 0.3, rise: 0.42, visual: 0.46, moment: 0.7 },
   /** The close/next bar fades in at this time. */
   bar: 0.35,
+} as const;
+
+/**
+ * Emergency Tower (src/scripts/emergency-fan.ts, used by its homepage scene and its page). Pixel-stepped like
+ * Campaign Tower's: the phone rises, the triage tags drop in one after another, then their patience bars drain
+ * until the red one is next. Spans are fractions of the timeline's progress (the scene's moment); the page
+ * plays the same timeline over `page.seconds`.
+ */
+export const EMERGENCY = {
+  steps: 6,
+  phone: [0, 0.28] as [number, number],
+  tags: [0.22, 0.5] as [number, number],
+  drain: [0.3, 0.92] as [number, number],
+  first: [0.78, 0.95] as [number, number],
+  /** What is left of each tag's patience at the end, 0 to 1 (red is next). */
+  patience: { critical: 0.14, urgent: 0.5, minor: 0.8 },
+  page: { seconds: 4.2, holdAfter: 2.4, reveal: { y: 28, duration: 0.6, stagger: 0.08, start: 'top 85%' } },
 } as const;

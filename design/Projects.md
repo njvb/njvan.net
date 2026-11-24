@@ -55,6 +55,17 @@ What each project is, as the site should describe it, and what its section draws
 - **Moment.** The real window capture lands, tracking chips appear around it and are crossed out, then flung away while the link under it sheds its tracking tail. Values are `PASTEPERFECT_SCENE` in `motion.ts`.
 - **Links.** "See PastePerfect" goes to /pasteperfect/. No store link until the app is live.
 
+## 07 · Emergency Tower
+
+- **Line.** Three patients are waiting. One lift. Who rides first?
+- **More.** A pixel-art idle game about building a city's emergency services into one tower, one floor at a time. Patients arrive tagged red, amber or green, and you choose who rides the lift first, because critical cases can't wait.
+- **Index.** "Three patients are waiting. One lift. Who rides first? A pixel-art triage game for iPhone." · `SWIFTUI · SPRITEKIT · STOREKIT`
+- **Accent.** `emergency` (#1C2541 night navy), text in `on-emergency` (#F4F1EA). The one colour of the game's palette that sits near none of the other accents (its blue is WorldBar's, its yellow Tavren's, its amber Cotrip's).
+- **Background.** Flat accent field, like the other scenes.
+- **Moment.** A real whole-screen capture in a phone rises in pixel steps; three triage tags (critical, urgent, minor, each with a patience bar) drop in beside it, the bars drain, and the critical one is marked "Rides first". Values `EMERGENCY` in `motion.ts`.
+- **Links.** "See Emergency Tower" goes to /emergency-tower/. No store link until the game is live (the page carries a "Coming soon" placeholder).
+- **Licence.** Whole-screen screenshots only, never cut-out sprites.
+
 ## Order
 
-Newest or most active first is the default; the order above is a draft. The index numbers (01-06) follow whatever order is chosen.
+Newest or most active first is the default; the order above is a draft. The index numbers (01-07) follow whatever order is chosen.

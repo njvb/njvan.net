@@ -2,6 +2,28 @@ import { expect, test } from '@playwright/test';
 
 // Emergency Tower's support and privacy pages are the URLs the app and its App Store listing use.
 test.describe('Emergency Tower', () => {
+  test('the landing page has the pitch, five whole-screen screenshots and a Coming soon placeholder', async ({ page }) => {
+    await page.goto('/emergency-tower/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Emergency Tower');
+    await expect(page.getByText('Three patients are waiting. One lift. Who rides first?').first()).toBeVisible();
+    await expect(page.getByText('Coming soon to the App Store').first()).toBeVisible();
+    // Not on the App Store yet: no store or TestFlight link until there is a listing.
+    await expect(page.locator('a[href*="apps.apple.com"], a[href*="testflight"]')).toHaveCount(0);
+    await expect(page.locator('.em-shots img')).toHaveCount(5);
+    for (const img of await page.locator('.em-shots img').all()) await expect(img).toHaveAttribute('alt', /.{12,}/);
+    await expect(page.locator('a[href="/emergency-tower/support/"]').first()).toBeAttached();
+    await expect(page.locator('a[href="/emergency-tower/privacy/"]').first()).toBeAttached();
+  });
+
+  test('its homepage scene links to the page and shows the triage tags', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('[data-open-project="emergency"]').click();
+    const scene = page.locator('#emergency');
+    await expect(scene).toHaveClass(/is-current/);
+    await expect(scene.locator('a[href="/emergency-tower/"]')).toBeAttached();
+    await expect(scene.locator('[data-em-tag]')).toHaveCount(3);
+  });
+
   test('support has the contact address, 14 questions and known issues', async ({ page }) => {
     await page.goto('/emergency-tower/support/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Support');
