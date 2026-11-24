@@ -214,6 +214,9 @@ export const TOWER = {
   /** The phone rises into place in this many pixel steps. */
   rise: [0, 0.25] as [number, number],
   riseSteps: 6,
+  /** The two screens fanned behind rise after it: when, and how long one is after the other. */
+  sides: [0.28, 0.5] as [number, number],
+  sidesGap: 0.08,
   /** The screen reveals bottom to top, a floor at a time. */
   reveal: [0.2, 0.75] as [number, number],
   floors: 9,

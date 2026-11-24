@@ -10,8 +10,8 @@ export interface ProjectLink {
   external?: boolean;
   /** Solid (primary) or outline. */
   variant: 'solid' | 'outline';
-  /** Show Apple's own badge instead of a text button (black, for a light or coloured field). */
-  badge?: 'mac-app-store';
+  /** Show Apple's own badge instead of a text button (black, for a light or coloured field): the Mac App Store's or the iPhone App Store's. */
+  badge?: 'mac-app-store' | 'app-store';
 }
 
 export interface Project {
@@ -48,6 +48,9 @@ export interface Project {
  * page and its homepage scene. Remove those buttons (and this) once the app is on the Mac App Store.
  */
 export const WORLDBAR_TESTFLIGHT = 'https://testflight.apple.com/join/XmJFkvgd';
+
+/** Campaign Tower's App Store listing (app id 6804446974). */
+export const CAMPAIGN_TOWER_APP_STORE = 'https://apps.apple.com/app/id6804446974';
 
 export const projects: Project[] = [
   {
@@ -113,11 +116,9 @@ export const projects: Project[] = [
     notes: ['Free on iPhone · iOS 17 or later', 'No energy meter · Nothing behind a paywall'],
     wordmark: { src: 'assets/tower/wordmark-{w}.webp', widths: [600, 1100, 1700], ratio: 1774 / 887 },
     links: [
-      {
-        label: 'Visit the tower',
-        href: '/campaign-tower/',
-        variant: 'solid',
-      },
+      // Live on the App Store (approved 24 Nov 2026).
+      { label: 'Download Campaign Tower on the App Store', href: CAMPAIGN_TOWER_APP_STORE, external: true, variant: 'solid', badge: 'app-store' },
+      { label: 'About the game', href: '/campaign-tower/', variant: 'outline' },
     ],
   },
   {

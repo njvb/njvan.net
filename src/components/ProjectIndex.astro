@@ -11,7 +11,7 @@ const sizes: Record<string, [number, number]> = {
   tavren: [900, 590],
   kora: [900, 592],
   cotrip: [335, 700],
-  tower: [348, 700],
+  tower: [900, 847],
   worldbar: [363, 700],
   pasteperfect: [900, 692],
 };
@@ -236,7 +236,7 @@ const sizes: Record<string, [number, number]> = {
     position: absolute;
     inset: 0;
     display: grid;
-    place-items: center;
+    place-items: end center;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s linear;
@@ -247,7 +247,7 @@ const sizes: Record<string, [number, number]> = {
     width: auto;
     height: auto;
     max-width: 100%;
-    max-height: 100%;
+    max-height: 250px;
   }
 
   .card.is-looping .card__loop {

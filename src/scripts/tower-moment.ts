@@ -54,6 +54,17 @@ export function mountTower(root: HTMLElement): void {
     { clipPath: 'inset(0% 0% 0% 0%)', duration: v.duration, ease: `steps(${TOWER.floors})` },
     v.at
   );
+  // The two screens behind rise after it, a step apart.
+  const sides = Array.from(root.closest<HTMLElement>('.tower-fan')?.querySelectorAll<HTMLElement>('[data-tower-side]') ?? []);
+  const s = span(TOWER.sides);
+  sides.forEach((side, i) => {
+    tl.fromTo(
+      side,
+      { yPercent: 10, autoAlpha: 0 },
+      { yPercent: 0, autoAlpha: 1, duration: s.duration, ease: `steps(${TOWER.riseSteps})` },
+      s.at + i * TOWER.sidesGap
+    );
+  });
   tl.set({}, {}, 1);
 
   onMoment(id, (value) => {

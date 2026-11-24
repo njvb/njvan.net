@@ -32,8 +32,8 @@ What each project is, as the site should describe it, and what its section draws
 - **More.** A pixel-art tower game for iPhone. Hire creatives with strange habits, drive the lift yourself and win briefs from sixty made-up brands.
 - **Stack.** `SWIFTUI · SPRITEKIT · STOREKIT`
 - **Accent.** `tower` (#3FBF5F), from the game's pixel palette.
-- **Moment.** The tower builds itself floor by floor.
-- **Links.** The existing landing page at njvb.github.io/campaigntower-site stays where it is; this section links to it.
+- **Moment.** Three phones rise in pixel steps: the front one reveals floor by floor and plays the real lift gameplay, with the lift-run and winter-tower screens fanned behind it.
+- **Links.** Live on the App Store (approved 24 Nov 2026): the Apple badge goes to https://apps.apple.com/app/id6804446974 (`CAMPAIGN_TOWER_APP_STORE` in `src/data/projects.ts`), and "About the game" goes to /campaign-tower/. The original landing page at njvb.github.io/campaigntower-site stays live for App Review.
 
 ## 05 · WorldBar
 

@@ -1,14 +1,26 @@
 ---
 // Campaign Tower's visual: real gameplay from the game's landing page
 // (njvb.github.io/campaigntower-site), a visitor riding the lift up the tower,
-// in a phone standing in front of the drifting city. Without JavaScript, or
-// under reduced motion, the phone shows the poster frame and nothing plays.
-// src/scripts/tower-moment.ts plays the signature moment: the phone rises in
-// pixel steps, the screen reveals floor by floor, then the gameplay runs.
+// in a phone standing in front of the drifting city, with two more real screens
+// (the lift run and the winter tower) fanned behind it. Without JavaScript, or
+// under reduced motion, the front phone shows the poster frame and nothing plays.
+// src/scripts/tower-moment.ts plays the signature moment: the phones rise in
+// pixel steps, the front screen reveals floor by floor, then the gameplay runs.
 const base = `${import.meta.env.BASE_URL}assets/tower/`;
 ---
 
-<div class="tower-phone" data-tower-phone>
+<div class="tower-fan">
+  <div class="tower-fan__slot tower-fan__slot--left">
+    <div class="tower-phone tower-phone--side" data-tower-side>
+      <div class="tower-phone__screen"><img class="tower-phone__video" src={`${base}shot-dash.webp`} alt="" width="400" height="867" loading="lazy" decoding="async" /></div>
+    </div>
+  </div>
+  <div class="tower-fan__slot tower-fan__slot--right">
+    <div class="tower-phone tower-phone--side" data-tower-side>
+      <div class="tower-phone__screen"><img class="tower-phone__video" src={`${base}shot-winter.webp`} alt="" width="400" height="867" loading="lazy" decoding="async" /></div>
+    </div>
+  </div>
+<div class="tower-phone tower-phone--front" data-tower-phone>
   <div class="tower-phone__screen" data-tower-screen>
     <video
       class="tower-phone__video"
@@ -25,6 +37,7 @@ const base = `${import.meta.env.BASE_URL}assets/tower/`;
     </video>
   </div>
 </div>
+</div>
 
 <script>
   import { mountTower } from '../../scripts/tower-moment';
@@ -38,6 +51,59 @@ const base = `${import.meta.env.BASE_URL}assets/tower/`;
 </script>
 
 <style>
+  .tower-fan {
+    --phone-h: min(64svh, 620px);
+    --w: calc(var(--phone-h) * 430 / 932 + 20px);
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  @container (max-width: 559px) {
+    .tower-fan {
+      --phone-h: min(calc(64cqi * 932 / 430), 480px);
+    }
+  }
+
+  .tower-phone--front {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* The two screens behind: a smaller phone each side, turned away from the front one. */
+  .tower-fan__slot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    width: calc(var(--w) * 0.8);
+  }
+
+  .tower-fan__slot--left {
+    transform: translate(calc(-50% - var(--w) * 0.68), -47%) rotate(-7deg);
+  }
+
+  .tower-fan__slot--right {
+    transform: translate(calc(-50% + var(--w) * 0.68), -53%) rotate(7deg);
+  }
+
+  .tower-fan .tower-phone--side {
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    border-radius: 36px;
+  }
+
+  .tower-fan .tower-phone--side .tower-phone__screen {
+    border-radius: 28px;
+  }
+
+  .tower-fan .tower-phone--side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .tower-phone {
     /* The game's own phone: black, rounded, with a flat pixel-style offset shadow like its landing page. */
     --phone-h: min(64svh, 620px);
