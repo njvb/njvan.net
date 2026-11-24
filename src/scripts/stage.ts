@@ -174,6 +174,21 @@ export function setupStage(): void {
 
   /* ---------- open, switch, close ---------- */
 
+  /**
+   * GSAP stretches an animation when frames are very slow (its lag smoothing), so on a slow or software-rendered
+   * browser a 0.5 second move can take many seconds of real time. This finishes a move that is still running
+   * `slackMs` after it should have ended, so opening, switching and closing never hang.
+   */
+  const finishBy = (tween: gsap.core.Tween, slackMs: number) => {
+    const done = tween.vars.onComplete as (() => void) | undefined;
+    const timer = window.setTimeout(() => tween.progress(1), (tween.delay() + tween.duration()) * 1000 + slackMs);
+    tween.eventCallback('onComplete', () => {
+      window.clearTimeout(timer);
+      done?.();
+    });
+    return tween;
+  };
+
   /** A move has settled: take the next one waiting, if any. */
   const settled = () => {
     busy = false;
@@ -207,10 +222,13 @@ export function setupStage(): void {
       playIntro(s);
       busy = false;
     } else {
-      gsap.fromTo(
-        stage,
-        { clipPath: inset(cardRect(id)) },
-        { clipPath: FULL, duration: STAGE.open.duration, ease: 'animaxxing', clearProps: 'clipPath', onComplete: settled }
+      finishBy(
+        gsap.fromTo(
+          stage,
+          { clipPath: inset(cardRect(id)) },
+          { clipPath: FULL, duration: STAGE.open.duration, ease: 'animaxxing', clearProps: 'clipPath', onComplete: settled }
+        ),
+        STAGE.slackMs
       );
       if (bar) gsap.fromTo(bar, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4, delay: STAGE.bar, ease: 'power2.out', clearProps: 'opacity,transform' });
       playIntro(s);
@@ -254,10 +272,13 @@ export function setupStage(): void {
     }
     gsap.to(stage, { '--on': on, duration: 0.5, ease: 'power2.out' });
     gsap.to(prev.inner, { x: -dir * STAGE.swap.slide, opacity: 0, duration: STAGE.swap.slideOut, ease: 'power2.in' });
-    gsap.fromTo(
-      next.el,
-      { clipPath: dir > 0 ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)' },
-      { clipPath: 'inset(0% 0% 0% 0%)', duration: STAGE.swap.duration, ease: 'animaxxing', onComplete: done }
+    finishBy(
+      gsap.fromTo(
+        next.el,
+        { clipPath: dir > 0 ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)' },
+        { clipPath: 'inset(0% 0% 0% 0%)', duration: STAGE.swap.duration, ease: 'animaxxing', onComplete: done }
+      ),
+      STAGE.slackMs
     );
     playIntro(next);
   };
@@ -299,17 +320,20 @@ export function setupStage(): void {
     }
     gsap.to(s.inner, { opacity: 0, duration: STAGE.close.contentOut, ease: 'power1.in' });
     if (bar) gsap.to(bar, { opacity: 0, duration: STAGE.close.contentOut });
-    gsap.to(stage, {
-      clipPath: inset(cardRect(s.id)),
-      duration: STAGE.close.duration,
-      delay: STAGE.close.contentOut * 0.5,
-      ease: 'power3.inOut',
-      onComplete: () => {
-        delete stage.dataset.closing;
-        if (bar) gsap.set(bar, { clearProps: 'opacity' });
-        finishClose(s);
-      },
-    });
+    finishBy(
+      gsap.to(stage, {
+        clipPath: inset(cardRect(s.id)),
+        duration: STAGE.close.duration,
+        delay: STAGE.close.contentOut * 0.5,
+        ease: 'power3.inOut',
+        onComplete: () => {
+          delete stage.dataset.closing;
+          if (bar) gsap.set(bar, { clearProps: 'opacity' });
+          finishClose(s);
+        },
+      }),
+      STAGE.slackMs
+    );
   };
 
   /** The visitor asked to close: step back in history if this open added an entry, else just close and clear the hash. */
