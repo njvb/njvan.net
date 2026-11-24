@@ -43,11 +43,8 @@ export interface Project {
   links: ProjectLink[];
 }
 
-/**
- * WorldBar's public TestFlight link, for the "Join the TestFlight beta" buttons on the WorldBar
- * page and its homepage scene. Remove those buttons (and this) once the app is on the Mac App Store.
- */
-export const WORLDBAR_TESTFLIGHT = 'https://testflight.apple.com/join/XmJFkvgd';
+/** WorldBar's Mac App Store listing (app id 6836081075). */
+export const WORLDBAR_MAC_APP_STORE = 'https://apps.apple.com/app/id6836081075';
 
 /** Campaign Tower's App Store listing (app id 6804446974). */
 export const CAMPAIGN_TOWER_APP_STORE = 'https://apps.apple.com/app/id6804446974';
@@ -132,10 +129,9 @@ export const projects: Project[] = [
     more: 'A menu bar app for your Mac. Keep up to 8 cities one click away, drag through the day, and see when everyone is in working hours.',
     notes: ['macOS 15 or later', 'No account · No tracking'],
     links: [
-      { label: 'See WorldBar', href: '/worldbar/', variant: 'solid' },
-      { label: 'Join the TestFlight beta', href: WORLDBAR_TESTFLIGHT, external: true, variant: 'outline' },
-      // The listing returns 404 until Apple releases the app, so this branch waits for that.
-      { label: 'Download WorldBar on the Mac App Store', href: 'https://apps.apple.com/app/id6836081075', external: true, variant: 'outline', badge: 'mac-app-store' },
+      // Live on the Mac App Store (app id 6836081075).
+      { label: 'Download WorldBar on the Mac App Store', href: WORLDBAR_MAC_APP_STORE, external: true, variant: 'solid', badge: 'mac-app-store' },
+      { label: 'See WorldBar', href: '/worldbar/', variant: 'outline' },
     ],
   },
   {

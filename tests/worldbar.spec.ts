@@ -22,3 +22,27 @@ test.describe('WorldBar Dock icon FAQ', () => {
     expect(q.acceptedAnswer.text).toContain('Show in the Dock');
   });
 });
+
+// WorldBar is live on the Mac App Store: every download button goes to its listing, and the beta link is gone.
+test.describe('WorldBar is on the Mac App Store', () => {
+  const LISTING = 'https://apps.apple.com/app/id6836081075';
+
+  test('the page links its badges to the listing and has no TestFlight link', async ({ page }) => {
+    await page.goto('/worldbar/');
+    const badges = page.locator('a.wb-badge');
+    expect(await badges.count()).toBeGreaterThanOrEqual(2);
+    for (const href of await badges.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) expect(href).toBe(LISTING);
+    await expect(page.locator('a[href*="testflight"]')).toHaveCount(0);
+    await expect(page.getByText('TestFlight')).toHaveCount(0);
+  });
+
+  test('the homepage scene leads with the Apple badge and has no TestFlight link', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('[data-open-project="worldbar"]').click();
+    const badge = page.locator('#worldbar a.scene-badge');
+    await expect(badge).toHaveAttribute('href', LISTING);
+    await expect(badge).toHaveAttribute('rel', /noopener/);
+    await expect(page.locator('#worldbar a[href="/worldbar/"]')).toBeAttached();
+    await expect(page.locator('#worldbar a[href*="testflight"]')).toHaveCount(0);
+  });
+});
