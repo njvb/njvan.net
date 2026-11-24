@@ -87,3 +87,11 @@ test('contact details are in the footer', async ({ page }) => {
   await expect(page.locator('a[href="mailto:njvanderbyl@gmail.com"]')).toBeVisible();
   await expect(page.locator('a[href*="linkedin.com/in/"]')).toBeVisible();
 });
+
+// AdMob checks this file at the site root for the developer website on the App Store listings.
+test('app-ads.txt lists the AdMob publisher line', async ({ request }) => {
+  const res = await request.get('/app-ads.txt');
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toContain('text/plain');
+  expect((await res.text()).trim()).toBe('google.com, pub-4105854336047546, DIRECT, f08c47fec0942fa0');
+});
