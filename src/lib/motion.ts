@@ -354,6 +354,8 @@ export const STAGE = {
   intro: { name: 0.3, rise: 0.42, visual: 0.46, moment: 0.7 },
   /** The close/next bar fades in at this time. */
   bar: 0.35,
+  /** A move still running this long (ms) after it should have ended is finished at once (slow or software-rendered browsers). */
+  slackMs: 1200,
 } as const;
 
 /**

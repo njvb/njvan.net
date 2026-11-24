@@ -22,11 +22,11 @@
       radial-gradient(90% 80% at 0% 100%, #2c86f0 0%, rgba(44, 134, 240, 0) 60%);
   }
 
+  /* A soft circle drawn as a radial gradient, not a blurred element: a big blur filter is re-drawn every frame while the
+     stage opens and closes, and on a slow or software-rendered browser that stretched the close to many seconds. */
   .wb-backdrop__orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.55;
   }
 
   .wb-backdrop__orb--a {
@@ -34,7 +34,7 @@
     height: 46vw;
     right: -8vw;
     top: -12vw;
-    background: #e7f3ff;
+    background: radial-gradient(closest-side, rgba(231, 243, 255, 0.62), rgba(231, 243, 255, 0));
   }
 
   .wb-backdrop__orb--b {
@@ -42,7 +42,7 @@
     height: 38vw;
     left: -10vw;
     bottom: -14vw;
-    background: #1f6fdc;
+    background: radial-gradient(closest-side, rgba(31, 111, 220, 0.6), rgba(31, 111, 220, 0));
   }
 
   .wb-backdrop__grid {
