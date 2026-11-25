@@ -46,6 +46,9 @@ export interface Project {
 /** WorldBar's Mac App Store listing (app id 6836081075). */
 export const WORLDBAR_MAC_APP_STORE = 'https://apps.apple.com/app/id6836081075';
 
+/** Emergency Tower's App Store listing (app id 6834648880). */
+export const EMERGENCY_TOWER_APP_STORE = 'https://apps.apple.com/app/id6834648880';
+
 /** Campaign Tower's App Store listing (app id 6804446974). */
 export const CAMPAIGN_TOWER_APP_STORE = 'https://apps.apple.com/app/id6804446974';
 
@@ -158,8 +161,11 @@ export const projects: Project[] = [
     more: "A pixel-art idle game about building a city's emergency services into one tower, one floor at a time. Patients arrive tagged red, amber or green, and you choose who rides the lift first, because critical cases can't wait.",
     notes: ['iPhone · iOS 17 or later', 'Free · optional rewarded ads'],
     wordmark: { src: 'assets/emergency-tower/wordmark-{w}.webp', widths: [600, 1000], ratio: 992 / 328 },
-    // Not on the App Store yet: the scene links to the page, which carries the "Coming soon" placeholder.
-    links: [{ label: 'See Emergency Tower', href: '/emergency-tower/', variant: 'solid' }],
+    // Live on the App Store (app id 6834648880).
+    links: [
+      { label: 'Download Emergency Tower on the App Store', href: EMERGENCY_TOWER_APP_STORE, external: true, variant: 'solid', badge: 'app-store' },
+      { label: 'See Emergency Tower', href: '/emergency-tower/', variant: 'outline' },
+    ],
   },
   {
     id: 'dropshelf',

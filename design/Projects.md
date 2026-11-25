@@ -63,7 +63,7 @@ What each project is, as the site should describe it, and what its section draws
 - **Accent.** `emergency` (#1C2541 night navy), text in `on-emergency` (#F4F1EA). The one colour of the game's palette that sits near none of the other accents (its blue is WorldBar's, its yellow Tavren's, its amber Cotrip's).
 - **Background.** Flat accent field, like the other scenes.
 - **Moment.** A real whole-screen capture in a phone rises in pixel steps; three triage tags (critical, urgent, minor, each with a patience bar) drop in beside it, the bars drain, and the critical one is marked "Rides first". Values `EMERGENCY` in `motion.ts`.
-- **Links.** "See Emergency Tower" goes to /emergency-tower/. No store link until the game is live (the page carries a "Coming soon" placeholder).
+- **Links.** Live on the App Store (app id 6834648880, `EMERGENCY_TOWER_APP_STORE`): Apple's badge is the main button, and "See Emergency Tower" goes to /emergency-tower/.
 - **Licence.** Whole-screen screenshots only, never cut-out sprites.
 
 ## 08 · DropShelf
