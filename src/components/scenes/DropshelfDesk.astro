@@ -1,0 +1,157 @@
+---
+// DropShelf's visual: real captures of the app (its library window and its floating shelf, with the synthetic
+// sample files the app's own screenshot script uses), plus one file tile drawn in HTML that drops onto the shelf
+// and is linked. Light or dark captures follow the site theme, so they always contrast with DropShelf's field (white in
+// the dark theme, black in the light one). Without JavaScript, or under reduced motion, it shows the settled frame.
+// src/scripts/dropshelf-desk.ts plays it: the library rises, the shelf slides up, the file drops and is linked.
+interface Props {
+  /** "theme" swaps light and dark captures with the site theme (the default); "dark" always uses the dark ones. */
+  captures?: 'theme' | 'dark';
+  class?: string;
+}
+const { captures = 'theme', class: extra = '' } = Astro.props;
+const base = `${import.meta.env.BASE_URL}assets/dropshelf/`;
+---
+
+<div class:list={['ds-desk', extra, `ds-desk--${captures}`]} data-ds-desk>
+  <figure class="ds-desk__library" data-ds-library>
+    <img class="ds-cap ds-cap--dark" src={`${base}library-dark.webp`} alt="" width="1400" height="952" loading="lazy" decoding="async" />
+    {captures === 'theme' && <img class="ds-cap ds-cap--light" src={`${base}library-light.webp`} alt="" width="1400" height="952" loading="lazy" decoding="async" />}
+  </figure>
+  <figure class="ds-desk__shelf" data-ds-shelf>
+    <img class="ds-cap ds-cap--dark" src={`${base}shelf-dark.webp`} alt="" width="920" height="296" loading="lazy" decoding="async" />
+    {captures === 'theme' && <img class="ds-cap ds-cap--light" src={`${base}shelf-light.webp`} alt="" width="920" height="296" loading="lazy" decoding="async" />}
+  </figure>
+  <span class="ds-desk__file" data-ds-file aria-hidden="true">
+    <span class="ds-desk__doc"><i></i><i></i><i></i><b>PDF</b></span>
+    <span class="ds-desk__name">Brief.pdf</span>
+  </span>
+  <span class="ds-desk__badge" data-ds-badge aria-hidden="true">Linked · original stays put</span>
+</div>
+
+<script>
+  import { mountDropshelfScene } from '../../scripts/dropshelf-desk';
+  document.querySelectorAll<HTMLElement>('[data-ds-desk]').forEach((root) => {
+    if (!root.closest('[data-scene]')) return;
+    try {
+      mountDropshelfScene(root);
+    } catch (error) {
+      console.error('[dropshelf] moment failed, keeping the settled frame', error);
+    }
+  });
+</script>
+
+<style>
+  .ds-desk {
+    position: relative;
+    width: min(100%, 720px);
+    margin-inline: auto;
+    aspect-ratio: 1400 / 1150;
+  }
+
+  .ds-desk figure {
+    margin: 0;
+    position: absolute;
+  }
+
+  .ds-desk img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .ds-desk__library {
+    left: 0;
+    top: 0;
+    width: 92%;
+    filter: drop-shadow(0 18px 30px rgba(10, 18, 32, 0.28));
+  }
+
+  .ds-desk__shelf {
+    right: 0;
+    bottom: 4%;
+    width: 64%;
+    filter: drop-shadow(0 14px 22px rgba(10, 18, 32, 0.32));
+  }
+
+  /* Light and dark captures follow the site theme on the page (the scene keeps the dark ones). */
+  .ds-desk--theme .ds-cap--light {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .ds-desk--theme .ds-cap--dark {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .ds-desk--theme .ds-cap--light {
+    display: block;
+  }
+
+  /* The dropped file: drawn here, not a capture. It lands in the shelf's empty slot. */
+  .ds-desk__file {
+    position: absolute;
+    right: 12%;
+    bottom: 9%;
+    width: 9%;
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+  }
+
+  .ds-desk__doc {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 3px;
+    width: 100%;
+    aspect-ratio: 0.78;
+    padding: 18% 14% 0;
+    border-radius: 5px;
+    background: #ffffff;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+  }
+
+  .ds-desk__doc i {
+    display: block;
+    height: 2px;
+    background: #c9ced6;
+  }
+
+  .ds-desk__doc b {
+    position: absolute;
+    left: 8%;
+    bottom: 10%;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #c62828;
+    color: #fff;
+    font: 700 clamp(7px, 1.4cqi, 10px) var(--font-mono);
+  }
+
+  .ds-desk__name {
+    font: 600 clamp(8px, 1.5cqi, 11px) var(--font-mono);
+    color: #e6ebf2;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+
+  /* On the light captures the name sits on a light shelf. */
+  :global(html[data-theme='light']) .ds-desk--theme .ds-desk__name {
+    color: #1d2433;
+    text-shadow: none;
+  }
+
+  .ds-desk__badge {
+    position: absolute;
+    right: 3%;
+    bottom: 31%;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #0f1520;
+    color: #e6ebf2;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    font: 600 clamp(10px, 1.7cqi, 13px) var(--font-mono);
+    white-space: nowrap;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+  }
+</style>

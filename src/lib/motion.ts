@@ -126,7 +126,7 @@ export const SCENE = {
   /** The signature moment plays once, the first time the scene is active. */
   moment: { at: 0.7, duration: 2.8 },
   /** Scenes whose moment tells a longer story get their own length, in seconds. */
-  momentLength: { cotrip: 5, kora: 4.5, worldbar: 3.6, pasteperfect: 3.4, emergency: 4 } as Record<string, number>,
+  momentLength: { cotrip: 5, kora: 4.5, worldbar: 3.6, pasteperfect: 3.4, emergency: 4, dropshelf: 3.6 } as Record<string, number>,
   /** A moment whose visual loads late waits for it, up to this many seconds. */
   momentWait: 4,
   /** Leaving: the wash retracts down and the name slides up behind its mask. */
@@ -373,4 +373,17 @@ export const EMERGENCY = {
   /** What is left of each tag's patience at the end, 0 to 1 (red is next). */
   patience: { critical: 0.14, urgent: 0.5, minor: 0.8 },
   page: { seconds: 4.2, holdAfter: 2.4, reveal: { y: 28, duration: 0.6, stagger: 0.08, start: 'top 85%' } },
+} as const;
+
+/**
+ * DropShelf (src/scripts/dropshelf-desk.ts, used by its homepage scene and its page): the library window rises, the
+ * floating shelf slides up beside it, then a file drops onto the shelf and is linked. Spans are fractions of the
+ * timeline's progress (the scene's moment); the page plays the same timeline over `page.seconds`.
+ */
+export const DROPSHELF = {
+  library: [0, 0.32] as [number, number],
+  shelf: [0.22, 0.5] as [number, number],
+  drop: [0.5, 0.78] as [number, number],
+  badge: [0.74, 0.92] as [number, number],
+  page: { seconds: 3.8, holdAfter: 2.6, reveal: { y: 26, duration: 0.6, stagger: 0.08, start: 'top 85%' } },
 } as const;
