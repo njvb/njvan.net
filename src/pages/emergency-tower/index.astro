@@ -3,15 +3,16 @@
 // Support and Privacy URLs). The text is the content file written by the Emergency Tower session
 // (marketing/emergency/website.txt in its repo). The screenshots are the game's whole-screen App Store captures:
 // its licence allows the sprites only inside whole-screen screenshots, never on their own. The icon and the title
-// wordmark are free to use alone. The game is not on the App Store yet, so its store button is a labelled "Coming
-// soon" placeholder: link its listing, with Apple's badge, once it is live. The page's motion is src/scripts/emergency-page.ts.
+// wordmark are free to use alone. The game is live on the App Store (app id 6834648880): Apple's badge links its listing. The page's motion is src/scripts/emergency-page.ts.
 import Base from '../../layouts/Base.astro';
 import EmergencyPhone from '../../components/scenes/EmergencyPhone.astro';
+import { EMERGENCY_TOWER_APP_STORE } from '../../data/projects';
 
 const base = import.meta.env.BASE_URL;
 const assets = `${base}assets/emergency-tower/`;
 const SUPPORT = `${base}emergency-tower/support/`;
 const PRIVACY = `${base}emergency-tower/privacy/`;
+const STORE = EMERGENCY_TOWER_APP_STORE;
 
 const description =
   'Emergency Tower is a pixel-art idle game for iPhone about building a city\'s emergency services into one tower. Patients arrive tagged red, amber or green, and you choose who rides the lift first.';
@@ -83,6 +84,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Emergency Tower',
+  installUrl: EMERGENCY_TOWER_APP_STORE,
   applicationCategory: 'GameApplication',
   operatingSystem: 'iOS 17 or later',
   description,
@@ -131,8 +133,8 @@ const jsonLd = {
             and you choose who rides the lift first, because critical cases can't wait.
           </p>
           <div class="em-links">
-            <!-- Not on the App Store yet: a labelled placeholder, not a link. -->
-            <span class="btn btn--lg em-solid" role="note">Coming soon to the App Store</span>
+            <!-- Live on the App Store: Apple's own badge, unaltered. -->
+            <a class="em-badge" href={STORE} target="_blank" rel="noopener" aria-label="Download Emergency Tower on the App Store"><img src={`${base}campaign-tower/img/app-store-badge.svg`} alt="Download on the App Store" width="144" height="48" /></a>
             <a class="btn btn--lg em-ghost" href="#how">How it works ↓</a>
           </div>
           <p class="em-hero__note t-annotation">Free · iPhone · iOS 17 or later · Optional rewarded ads</p>
@@ -233,7 +235,7 @@ const jsonLd = {
         </ul>
         <h2 class="em-end__title" id="em-end-title">Three patients are waiting.</h2>
         <div class="em-links em-links--center">
-          <span class="btn btn--lg em-solid" role="note">Coming soon to the App Store</span>
+          <a class="em-badge" href={STORE} target="_blank" rel="noopener" aria-label="Download Emergency Tower on the App Store"><img src={`${base}campaign-tower/img/app-store-badge.svg`} alt="Download on the App Store" width="144" height="48" /></a>
           <a class="btn btn--lg em-ghost" href={SUPPORT}>Support</a>
           <a class="btn btn--lg em-ghost" href={PRIVACY}>Privacy</a>
         </div>
@@ -268,6 +270,21 @@ const jsonLd = {
   }
 
   /* Buttons: navy and paper, like the game's own panels. */
+  .em-badge {
+    display: inline-flex;
+    line-height: 0;
+    border-radius: 10px;
+  }
+
+  .em-badge img {
+    height: 48px;
+    width: auto;
+  }
+
+  .em-badge:hover {
+    opacity: 0.88;
+  }
+
   .em-solid {
     background: var(--on);
     border-color: var(--on);
