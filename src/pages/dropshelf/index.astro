@@ -1,68 +1,15 @@
 ---
-// DropShelf's landing page, served at njvan.net/dropshelf/ (with /support/ and /privacy/, the App Store's Support and
-// Privacy URLs), ported from the app's own page (dropshelf-site in ~/Projects/Dropshelf) with the facts confirmed by
-// the DropShelf session on 25 November 2026: free to download, with DropShelf Pro as a one-time purchase (no price on the
-// page: a launch price runs until 1 February 2027, so a figure here would go stale); macOS 15 or
-// later; Apple silicon and Intel. The screenshots are the app's real captures (docs/screenshots, synthetic sample files),
-// light or dark with the site theme (the library captures are the regenerated, tooltip-free ones). The app is not on the
-// Mac App Store yet, so its store button is a labelled "Coming soon" placeholder: link its listing, with Apple's badge,
-// once it is live. The page's motion is src/scripts/dropshelf-page.ts.
+// DropShelf's landing page, served at njvan.net/dropshelf/ (with /support/ and /privacy/, for its App Store listing).
+// It is Nathan's own design, ported as it is from ~/Projects/Dropshelf/dropshelf-site (markup from its index.html, styles
+// scoped to .dsx in src/styles/dropshelf.css, its script and images in public/dropshelf/), inside this site's header
+// and footer, like Campaign Tower's page. Only the facts changed: free to download with DropShelf Pro as a one-time
+// purchase (no price, it has a launch price), macOS 15 or later, coming soon to the Mac App Store. The library
+// screenshot is the regenerated, tooltip-free capture. If the original changes, port the change here by hand.
 import Base from '../../layouts/Base.astro';
-import DropshelfDesk from '../../components/scenes/DropshelfDesk.astro';
-
-const base = import.meta.env.BASE_URL;
-const assets = `${base}assets/dropshelf/`;
-const SUPPORT = `${base}dropshelf/support/`;
-const PRIVACY = `${base}dropshelf/privacy/`;
+import '../../styles/dropshelf.css';
 
 const description =
   'DropShelf is a visual workspace for your Mac. Keep the files, folders and links you are working on close, wherever they live, and link, copy or move them, your way.';
-
-const features = [
-  { title: 'Bring your files together', text: 'Keep files, folders and links in visual collections, with thumbnails and Quick Look.' },
-  { title: 'Multiple shelves', text: 'Organise by project, client or however you work. A shelf is a collection, never a folder.' },
-  { title: 'Quick Shelf', text: 'A handy, flexible space for the files you need right now, kept between launches.' },
-  { title: 'Works where you work', text: 'Drag files in and out, open them, or show them in Finder. Always one click away in the menu bar.' },
-];
-
-const modes = [
-  {
-    id: 'link',
-    title: 'Link to Original',
-    badge: 'Default',
-    text: 'Keeps a bookmark to the original where it already is. DropShelf never changes or deletes it.',
-  },
-  { id: 'copy', title: 'Copy to DropShelf', text: 'Stores an independent copy inside DropShelf and leaves the original untouched.' },
-  {
-    id: 'move',
-    title: 'Move to DropShelf',
-    text: 'Puts the file into DropShelf and sends the original to the Trash, but only after the copy is verified, and it always asks you first.',
-  },
-];
-
-const shots = [
-  { file: 'list-light', caption: 'List view', alt: 'DropShelf library in list view, with names, kinds and sizes of the files on a shelf.' },
-  { file: 'add-menu', caption: 'Link, Copy or Move', alt: 'The Add menu in DropShelf: Link Files, Copy Files into DropShelf, Move Files into DropShelf and Add Web Link.' },
-  { file: 'private', caption: 'Private shelves', alt: 'A locked private shelf in DropShelf, its contents hidden until you authenticate.' },
-  { file: 'menu', caption: 'Always in your menu bar', alt: 'The DropShelf menu bar menu, listing Quick Shelf and the shelves, with Show Floating Shelf and Open DropShelf.' },
-];
-
-const faqs = [
-  {
-    q: 'What happens to my original files?',
-    a: 'Link leaves them exactly where they are. Copy makes a separate copy inside DropShelf. Move puts the file into DropShelf and sends the original to the Trash, only after the copy is verified and only after asking you.',
-  },
-  {
-    q: 'If I remove something from a shelf, is the file deleted?',
-    a: 'No. Removing an item only removes it from that shelf, and you can undo it. Linked originals stay where they are.',
-  },
-  { q: 'What does DropShelf Pro add?', a: 'Multiple shelves and private shelves. It is a one-time purchase. Everything else is free.' },
-  {
-    q: 'Are private shelves encrypted?',
-    a: 'No. Private shelves are hidden inside DropShelf until you authenticate with Touch ID or your Mac password. The files themselves are not encrypted. Use FileVault for disk encryption.',
-  },
-  { q: 'What do I need to run it?', a: 'A Mac running macOS 15 Sequoia or later, with Apple silicon or Intel.' },
-];
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -85,720 +32,94 @@ const jsonLd = {
   imageAlt="DropShelf: your files, all in one place."
   jsonLd={jsonLd}
 >
-  <!-- The hero holds its first frame hidden until the script lays out the intro (a failsafe lifts it). -->
+  <!-- No intro on this page: show the header settled at once. -->
   <script is:inline slot="head">
     (function () {
-      var m = document.documentElement.dataset.motion;
-      var calm = m === 'reduced' || (m !== 'full' && matchMedia('(prefers-reduced-motion: reduce)').matches);
-      if (!calm) {
-        document.documentElement.dataset.dsIntro = '';
-        setTimeout(function () { delete document.documentElement.dataset.dsIntro; }, 2500);
-      }
       clearTimeout(window.__motionBootTimer);
       document.documentElement.dataset.motionBoot = 'settled';
       document.addEventListener('DOMContentLoaded', function () { document.body.dataset.phase = 'settled'; });
     })();
   </script>
+  <script is:inline slot="head" src="/dropshelf/script.js" defer></script>
 
-  <div class="ds">
-    <!-- ============ Hero ============ -->
-    <section class="ds-hero" aria-labelledby="ds-title">
-      <div class="shell ds-hero__inner">
-        <div class="ds-hero__copy">
-          <div class="ds-brand"><img src={`${assets}icon.webp`} width="64" height="64" alt="" /><span>DropShelf</span></div>
-          <h1 class="ds-hero__name" id="ds-title">Your files. All in one place.</h1>
-          <p class="ds-hero__more t-body">
-            A visual workspace for your Mac. Keep the files you're working on close, wherever they live, and link, copy
-            or move them, your way.
-          </p>
-          <div class="ds-links">
-            <!-- Not on the Mac App Store yet: a labelled placeholder, not a link. -->
-            <span class="btn btn--lg ds-solid" role="note">Coming soon to the Mac App Store</span>
-            <a class="btn btn--lg ds-ghost" href="#how">How it works ↓</a>
-          </div>
-          <p class="ds-hero__note t-annotation">Free · Pro is a one-time purchase · macOS 15 or later · Apple silicon and Intel</p>
-        </div>
-        <DropshelfDesk captures="theme" class="ds-hero__desk" />
-      </div>
-    </section>
+  <div class="dsx" id="dropshelf-page">
+    <Fragment set:html={'<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>\n  <symbol id="layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8l10-5ZM2 12l10 5 10-5M2 16l10 5 10-5"/></symbol>\n  <symbol id="folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>\n  <symbol id="bolt" viewBox="0 0 24 24"><path d="m14 2-9 12h6l-1 8 9-13h-6Z"/></symbol>\n  <symbol id="monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M12 17v4m-5 0h10"/></symbol>\n  <symbol id="link" viewBox="0 0 24 24"><path d="m10 13 4-4m-6 7-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 1 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0" transform="translate(1 0)"/></symbol>\n  <symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></symbol>\n  <symbol id="arrow" viewBox="0 0 24 24"><path d="M3 12h18m-7-7 7 7-7 7"/></symbol>\n  <symbol id="play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4Z"/></symbol>\n</defs></svg>'} />
 
-    <!-- ============ Features ============ -->
-    <section class="ds-section shell" aria-labelledby="ds-feat-title">
-      <h2 class="ds-h2" id="ds-feat-title">A little shelf for your Mac.</h2>
-      <div class="ds-grid">
-        {
-          features.map((f, i) => (
-            <div class="ds-cell">
-              <span class="ds-cell__n t-annotation">{String(i + 1).padStart(2, '0')}</span>
-              <h3>{f.title}</h3>
-              <p>{f.text}</p>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-waves" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <div class="hero-brand"><img src="assets/app-icon.png" alt="" width="88" height="88"><span>DropShelf</span></div>
+      <h1 id="hero-title">Your files. All in one place.</h1>
+      <p class="hero-intro">A beautiful, visual workspace for your Mac. Keep your important files<br class="desktop-break"> close, wherever they live  -  link, copy or move them, your way.</p>
+      <div class="hero-actions"><a class="button" href="#download" data-download>Get DropShelf <svg aria-hidden="true"><use href="#arrow"/></svg></a><button class="button button-secondary" data-tour hidden><svg aria-hidden="true"><use href="#play"/></svg>Take a quick tour</button></div>
+      <p class="release-note">Free to download · DropShelf Pro, a one-time purchase · macOS 15 or later <span class="note-divider">|</span> Coming soon to the Mac App Store</p>
+      <div class="product-showcase" id="screenshots">
+        <figure class="library-preview"><a href="assets/library.png" data-image="library"><img src="assets/library.png" width="2000" height="1360" alt="DropShelf library with shelves in the sidebar and a visual grid of images, folders and documents."></a><figcaption>Full library <span>Room for everything you’re working on.</span></figcaption></figure>
+        <div class="companion-previews">
+          <figure class="shelf-preview"><a href="assets/floating-shelf.png" data-image="shelf"><img src="assets/floating-shelf.png" width="920" height="296" alt="The compact floating shelf, with files in a horizontal row and a shelf selector."></a><figcaption>Floating shelf <span>A little space. A lot closer.</span></figcaption></figure>
+          <figure class="menu-preview">
+            <div class="mac-bar" aria-hidden="true"><span>⌁</span><svg aria-hidden="true"><use href="#layers"/></svg><span>◉</span><span>⌕</span><span>Mon 10:24</span></div>
+            <div class="menu-mock" role="img" aria-label="Illustrated DropShelf menu bar: Quick Shelf, My Shelf, Work, Personal, Show Floating Shelf and Open Library.">
+              <div class="menu-app"><img src="assets/app-icon.png" width="17" height="17" alt="">DropShelf</div>
+              <div><svg aria-hidden="true"><use href="#bolt"/></svg>Quick Shelf <span>4</span></div>
+              <div class="selected"><svg aria-hidden="true"><use href="#layers"/></svg>My Shelf <span>13</span></div>
+              <div><svg aria-hidden="true"><use href="#folder"/></svg>Work <span>3</span></div>
+              <div><svg aria-hidden="true"><use href="#folder"/></svg>Personal <span>5</span></div>
+              <hr><div>Show Floating Shelf</div><div>Open Library…</div><hr><div>Settings…</div>
             </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- ============ Link, Copy or Move ============ -->
-    <section class="ds-section shell" id="how" aria-labelledby="ds-how-title">
-      <h2 class="ds-h2" id="ds-how-title">Link, Copy or Move. Your choice.</h2>
-      <p class="ds-lede t-body">Add files to DropShelf the way that works for you. Choose one to see what it does.</p>
-      <div class="ds-modes" role="group" aria-label="How DropShelf adds a file">
-        {
-          modes.map((m, i) => (
-            <button class="ds-mode" type="button" data-ds-mode={m.id} aria-pressed={i === 0 ? 'true' : 'false'}>
-              <span class="ds-mode__title">
-                {m.title}
-                {m.badge && <span class="ds-mode__badge">{m.badge}</span>}
-              </span>
-              <span class="ds-mode__text">{m.text}</span>
-            </button>
-          ))
-        }
-      </div>
-      <p class="ds-mode__live" data-ds-live aria-live="polite">Link keeps your original in place. Hold Option to Copy and Command to Move when you drop.</p>
-      <p class="ds-note t-annotation">A demo on this page. It never reads, copies or moves your files.</p>
-    </section>
-
-    <!-- ============ Screenshots ============ -->
-    <section class="ds-section ds-shots-wrap" aria-labelledby="ds-shots-title">
-      <div class="shell"><h2 class="ds-h2" id="ds-shots-title">In the app.</h2></div>
-      <ul class="ds-shots" role="list">
-        {
-          shots.map((s) => (
-            <li>
-              <figure>
-                <img src={`${assets}${s.file}.webp`} alt={s.alt} loading="lazy" decoding="async" />
-                <figcaption class="t-annotation">{s.caption}</figcaption>
-              </figure>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="shell ds-note t-annotation">Real captures of the app, with sample files.</p>
-    </section>
-
-    <!-- ============ Free and Pro ============ -->
-    <section class="ds-section shell" aria-labelledby="ds-price-title">
-      <h2 class="ds-h2" id="ds-price-title">Free to download. Pro when you want more shelves.</h2>
-      <div class="ds-tiers">
-        <div class="ds-tier">
-          <p class="ds-tier__name t-annotation">Free</p>
-          <ul>
-            <li>One personal shelf, plus Quick Shelf</li>
-            <li>Link, Copy and Move</li>
-            <li>Search, Favourites and Recent</li>
-            <li>Spotlight and Shortcuts for your public items</li>
-            <li>The floating shelf and the menu bar</li>
-          </ul>
-        </div>
-        <div class="ds-tier ds-tier--pro">
-          <p class="ds-tier__name t-annotation">DropShelf Pro · one-time in-app purchase</p>
-          <ul>
-            <li>Multiple shelves, by project, client or anything else</li>
-            <li>Private shelves, hidden until you use Touch ID or your password</li>
-            <li>Restore your purchase on another Mac with the same Apple Account</li>
-          </ul>
-          <p class="ds-tier__fine">The price is shown in the app and on the App Store. Private shelves hide items in DropShelf; they don't encrypt files.</p>
+            <figcaption>Always in your menu bar</figcaption>
+          </figure>
         </div>
       </div>
-    </section>
-
-    <!-- ============ Privacy ============ -->
-    <section class="ds-privacy" aria-labelledby="ds-priv-title">
-      <div class="shell ds-section">
-        <h2 class="ds-h2" id="ds-priv-title">Your files stay on your Mac.</h2>
-        <ul class="ds-checks">
-          <li>No account or sign-in</li>
-          <li>No analytics, advertising or tracking</li>
-          <li>No servers of its own</li>
-          <li>Runs in Apple's App Sandbox, seeing only what you give it</li>
-          <li>The only connection is Apple's StoreKit, for the optional Pro purchase</li>
-        </ul>
-        <p class="ds-privacy__link"><a href={PRIVACY}>Read the privacy policy</a></p>
+      <p class="visual-caption">App screenshots with sample files. Menu-bar illustration. <button class="text-button" data-gallery hidden>Explore the screenshots <span aria-hidden="true">↗</span></button></p>
+    </div>
+  </section>
+  <section class="features container" id="features" aria-label="DropShelf features">
+    <article><div class="feature-icon"><svg aria-hidden="true"><use href="#layers"/></svg></div><h2>Bring your files together</h2><p>Keep files, folders, links and<br class="desktop-break"> more in visual collections.</p></article>
+    <article><div class="feature-icon"><svg aria-hidden="true"><use href="#folder"/></svg></div><h2>Multiple shelves</h2><p>Organise by project, client<br class="desktop-break"> or however you work.</p></article>
+    <article><div class="feature-icon"><svg aria-hidden="true"><use href="#bolt"/></svg></div><h2>Quick Shelf</h2><p>A handy, flexible space<br class="desktop-break"> for files while you work.</p></article>
+    <article><div class="feature-icon"><svg aria-hidden="true"><use href="#monitor"/></svg></div><h2>Works where you work</h2><p>Drag files in and out, open<br class="desktop-break"> them, or show them in Finder.</p></article>
+  </section>
+  <section class="how-section container" id="how-it-works" aria-labelledby="how-title">
+    <div class="transfer-art" aria-hidden="true"><div class="art-orb"></div><div class="mini-tray"><span class="file-folder"></span><img src="assets/landscape.svg" alt="" width="70" height="54"><span class="file-paper">PDF</span></div><div class="cursor-mark">↖<span id="operation-badge">↗</span></div><span class="art-label" id="art-label">Keep the original right where it is.</span></div>
+    <div class="how-content"><h2 id="how-title">Link, Copy or Move  -  your choice.</h2><p>Add files to DropShelf the way that works for you.</p>
+      <div class="mode-options" aria-label="File handling demo">
+        <button class="mode-card active" type="button" data-mode="link" aria-pressed="true"><span class="mode-heading"><svg aria-hidden="true"><use href="#link"/></svg><strong>Link to Original</strong></span><span class="default-badge">Default</span><span class="mode-summary">Keep a reference to the file in its current location.</span></button>
+        <button class="mode-card" type="button" data-mode="copy" aria-pressed="false"><span class="mode-heading"><svg aria-hidden="true"><use href="#copy"/></svg><strong>Copy to DropShelf</strong></span><span class="mode-summary">Create a copy in DropShelf’s managed storage.</span></button>
+        <button class="mode-card" type="button" data-mode="move" aria-pressed="false"><span class="mode-heading"><svg aria-hidden="true"><use href="#arrow"/></svg><strong>Move to DropShelf</strong></span><span class="mode-summary">Move the file into DropShelf and keep it organised there.</span></button>
       </div>
-    </section>
+      <p class="demo-explanation" id="mode-description" aria-live="polite">Link keeps your original in place. This is a visual demo; no files are accessed.</p>
+    </div>
+  </section>
+  <section class="download-section container" id="download" aria-labelledby="download-title">
+    <div class="download-panel"><img src="assets/app-icon.png" width="100" height="100" alt=""><div class="download-copy"><h2 id="download-title">Ready to simplify<br>your workflow?</h2><p>Your files, a little closer. Your Mac, a little calmer.</p></div><div class="download-action"><a class="button" href="#release-details" data-download>Get DropShelf <svg aria-hidden="true"><use href="#arrow"/></svg></a><p>Free to download · macOS 15 or later</p></div></div>
+    <p class="release-details" id="release-details">Coming soon to the Mac App Store. DropShelf is free to download; DropShelf Pro, a one-time in-app purchase, adds multiple shelves and private shelves.</p>
+  </section>
+  <section class="support container" id="support" aria-labelledby="support-title"><h2 id="support-title">A few useful details.</h2><div class="faq-grid">
+    <details><summary>What happens to my original files?</summary><p>Link leaves them where they are. Copy creates a separate managed copy. Move transfers the file into DropShelf; the current app sends the original to the Trash only after verifying the transfer.</p></details>
+    <details><summary>Can I try the page’s demos?</summary><p>Yes. Choose Link, Copy or Move above, or take the quick tour. These are website demonstrations and never read, upload, copy or move your files.</p></details>
+    <details><summary>Where can I download DropShelf?</summary><p>DropShelf is coming soon to the Mac App Store. It is free to download, with DropShelf Pro as a one-time in-app purchase, and needs macOS 15 or later.</p></details>
+  </div><p class="support-more">More help: <a href="/dropshelf/support/">Support</a> · <a href="/dropshelf/privacy/">Privacy policy</a></p></section>
 
-    <!-- ============ Questions ============ -->
-    <section class="ds-section shell" aria-labelledby="ds-faq-title">
-      <h2 class="ds-h2" id="ds-faq-title">Common questions.</h2>
-      <div class="ds-faq">
-        {
-          faqs.map((f) => (
-            <details>
-              <summary>{f.q}</summary>
-              <p>{f.a}</p>
-            </details>
-          ))
-        }
-      </div>
-      <p class="ds-faq__more"><a href={SUPPORT}>More answers on the support page</a></p>
-    </section>
-
-    <!-- ============ Closing ============ -->
-    <section class="ds-end" aria-labelledby="ds-end-title">
-      <div class="shell ds-end__inner">
-        <ul class="ds-facts t-annotation">
-          <li>macOS 15 or later</li>
-          <li>Free to download</li>
-          <li>No account</li>
-        </ul>
-        <h2 class="ds-end__title" id="ds-end-title">Your files, a little closer.</h2>
-        <div class="ds-links ds-links--center">
-          <span class="btn btn--lg ds-solid" role="note">Coming soon to the Mac App Store</span>
-          <a class="btn btn--lg ds-ghost" href={SUPPORT}>Support</a>
-          <a class="btn btn--lg ds-ghost" href={PRIVACY}>Privacy</a>
-        </div>
-      </div>
-    </section>
+    <Fragment set:html={'<dialog id="preview-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close dialog" type="button">×</button><div id="dialog-content"></div></dialog>'} />
   </div>
 </Base>
 
-<script>
-  import '../../scripts/dropshelf-page';
-</script>
-
-<style>
-  /* The homepage's panel snapping is for its full-screen scenes; this page scrolls freely. */
-  :global(html) {
+<style is:global>
+  /* The site's panel snapping and over-the-hero header are for the home page; this page scrolls freely. */
+  html:has(#dropshelf-page) {
     scroll-snap-type: none !important;
   }
-
-  /* The header sits on the canvas above the hero, like the other landing pages. */
-  :global(.site-header) {
+  html:has(#dropshelf-page) .site-header {
     position: static !important;
   }
-
-  .ds {
-    --accent: var(--color-dropshelf);
-    --on: var(--color-on-dropshelf);
-    --pixel-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
-  }
-
-  :global(html[data-theme='light']) .ds {
-    --pixel-shadow: 4px 4px 0 rgba(15, 21, 32, 0.16);
-  }
-
-  /* Buttons: navy and paper, like the game's own panels. */
-  .ds-solid {
-    background: var(--on);
-    border-color: var(--on);
-    color: var(--accent);
-    cursor: default;
-  }
-
-  .ds-ghost {
-    border-color: var(--on);
-    color: var(--on);
-  }
-
-  .ds-ghost:hover {
-    background: color-mix(in srgb, var(--on) 12%, transparent);
-  }
-
-  /* Until the intro is laid out the hero copy and phone wait, so nothing flashes. */
-  :global(html[data-ds-intro]) .ds-hero__copy > *,
-  :global(html[data-ds-intro]) .ds-hero__desk {
-    opacity: 0;
-  }
-
-  /* ================= Hero ================= */
-
-  .ds-hero {
-    position: relative;
-    overflow: hidden;
-    padding-block: 56px 96px;
-    background: var(--accent);
-    color: var(--on);
-  }
-
-  .ds-hero__inner {
-    display: grid;
-    gap: 48px;
-    align-items: center;
-  }
-
-  @media (min-width: 900px) {
-    .ds-hero__inner {
-      grid-template-columns: 1.05fr 0.95fr;
-    }
-  }
-
-  .ds-icon {
-    width: 84px;
-    height: 84px;
-    border-radius: 20px;
-    box-shadow: var(--pixel-shadow);
-  }
-
-  .ds-hero__name {
-    margin: 22px 0 18px;
-    line-height: 0;
-  }
-
-  .ds-hero__name img {
-    display: block;
-    width: min(100%, 30rem);
-    height: auto;
-  }
-
-  .ds-hero__line {
-    font-size: clamp(1.4rem, 3vw, 1.9rem);
-    line-height: 1.25;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin: 0 0 14px;
-    max-width: 22ch;
-  }
-
-  .ds-hero__more {
-    color: color-mix(in srgb, var(--on) 82%, transparent);
-    max-width: 34em;
-    margin: 0 0 26px;
-  }
-
-  .ds-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .ds-links--center {
-    justify-content: center;
-    margin-top: 26px;
-  }
-
-  .ds-hero__note {
-    margin: 18px 0 0;
-    color: color-mix(in srgb, var(--on) 70%, transparent);
-  }
-
-  .ds-hero__phone {
-    container-type: inline-size;
-  }
-
-  /* ================= Sections ================= */
-
-  .ds-section {
-    padding-block: 84px;
-  }
-
-  @media (max-width: 819px) {
-    .ds-section {
-      padding-block: 60px;
-    }
-  }
-
-  .ds-h2 {
-    font-size: clamp(1.9rem, 4.6vw, 3.25rem);
-    line-height: 1.08;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin: 0 0 28px;
-    max-width: 18em;
-  }
-
-  .ds-steps {
-    list-style: none;
-    counter-reset: s;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 18px;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-
-  .ds-steps li {
-    counter-increment: s;
-    padding: 24px;
-    background: var(--color-surface);
-    border: var(--border-hairline) solid var(--color-border);
-    border-radius: 10px;
-    box-shadow: var(--pixel-shadow);
-  }
-
-  .ds-steps li::before {
-    content: '0' counter(s);
-    display: inline-block;
-    padding: 2px 8px;
-    background: var(--accent);
-    color: var(--on);
-    font: 600 13px var(--font-mono);
-    letter-spacing: 0.06em;
-  }
-
-  .ds-steps h3,
-  .ds-cell h3 {
-    margin: 12px 0 6px;
-    font-size: 21px;
-    line-height: 1.25;
-    font-weight: 700;
-  }
-
-  .ds-steps p,
-  .ds-cell p {
-    margin: 0;
-    color: var(--color-muted);
-    font-size: 16px;
-  }
-
-  .ds-grid {
-    display: grid;
-    gap: 18px;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  }
-
-  .ds-cell {
-    padding: 24px;
-    border: var(--border-hairline) solid var(--color-border);
-    border-radius: 10px;
-  }
-
-  .ds-cell__n {
-    color: var(--color-muted);
-  }
-
-  .ds-cell h3 {
-    margin-top: 6px;
-    font-size: 20px;
-  }
-
-  /* The five whole-screen captures: a row you can scroll sideways on a phone. */
-  .ds-shots-wrap {
-    padding-inline: 0;
-  }
-
-  .ds-shots {
-    list-style: none;
-    margin: 0 auto;
-    padding: 0 var(--pad, 24px) 12px;
-    max-width: calc(1280px + 2 * var(--pad, 24px));
-    display: flex;
-    gap: 18px;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-  }
-
-  .ds-shots li {
-    flex: 0 0 min(64vw, 250px);
-    scroll-snap-align: start;
-  }
-
-  .ds-shots figure {
-    margin: 0;
-  }
-
-  .ds-shots img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 8px solid #0a0a0a;
-    border-radius: 28px;
-    box-shadow: var(--pixel-shadow);
-  }
-
-  .ds-shots figcaption {
-    margin-top: 12px;
-    color: var(--color-muted);
-  }
-
-  @media (min-width: 1100px) {
-    .ds-shots {
-      overflow: visible;
-    }
-    .ds-shots li {
-      flex: 1 1 0;
-    }
-  }
-
-  /* ================= Free to play ================= */
-
-  .ds-free {
-    background: var(--color-surface);
-    border-block: var(--border-hairline) solid var(--color-border);
-  }
-
-  .ds-checks {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 14px 28px;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-
-  .ds-checks li {
-    position: relative;
-    padding-left: 32px;
-  }
-
-  .ds-checks li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.3em;
-    width: 18px;
-    height: 18px;
-    background: var(--accent);
-  }
-
-  .ds-checks li::after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 0.42em;
-    width: 5px;
-    height: 9px;
-    border: solid var(--on);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-
-  .ds-free__link {
-    margin: 22px 0 0;
-  }
-
-  .ds-free__link a,
-  .ds-faq__more a {
-    color: var(--color-foreground);
-  }
-
-  /* ================= Questions ================= */
-
-  .ds-faq details {
-    max-width: 820px;
-    padding: 18px 0;
-    border-top: var(--border-hairline) solid var(--color-border);
-  }
-
-  .ds-faq details:last-child {
-    border-bottom: var(--border-hairline) solid var(--color-border);
-  }
-
-  .ds-faq summary {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    cursor: pointer;
-    list-style: none;
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .ds-faq summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .ds-faq summary::after {
-    content: '+';
-    font-size: 24px;
-    line-height: 1;
-    color: var(--color-muted);
-  }
-
-  .ds-faq details[open] summary::after {
-    content: '\2212';
-  }
-
-  .ds-faq p {
-    max-width: 44em;
-    margin: 10px 0 0;
-    color: var(--color-muted);
-  }
-
-  .ds-faq__more {
-    margin: 22px 0 0;
-  }
-
-  /* ================= Closing ================= */
-
-  .ds-end {
-    background: var(--accent);
-    color: var(--on);
-    text-align: center;
-  }
-
-  .ds-end__inner {
-    padding-block: 96px 112px;
-  }
-
-  .ds-facts {
-    list-style: none;
-    margin: 0 0 22px;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 22px;
-    color: color-mix(in srgb, var(--on) 75%, transparent);
-  }
-
-  .ds-end__title {
-    max-width: 12em;
-    margin: 0 auto;
-    font-size: clamp(2.4rem, 7vw, 4.75rem);
-    line-height: 0.98;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-  }
-
-  .ds-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-  }
-
-  .ds-brand img {
-    width: 64px;
-    height: 64px;
-  }
-
-  .ds-hero__name {
-    margin: 18px 0 16px;
-    font-size: clamp(2.6rem, 6.4vw, 4.6rem);
-    line-height: 0.98;
-    font-weight: 800;
-    letter-spacing: -0.045em;
-    max-width: 12ch;
-  }
-
-  .ds-hero__desk {
-    container-type: inline-size;
-  }
-
-  .ds-lede {
-    color: var(--color-muted);
-    max-width: 40em;
-    margin: -12px 0 26px;
-  }
-
-  .ds-note {
-    color: var(--color-muted);
-    margin-top: 14px;
-  }
-
-  .ds-modes {
-    display: grid;
-    gap: 14px;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  }
-
-  .ds-mode {
-    display: grid;
-    gap: 8px;
-    padding: 20px;
-    text-align: left;
-    font: inherit;
-    color: var(--color-foreground);
-    background: var(--color-surface);
-    border: var(--border-hairline) solid var(--color-border);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
-  }
-
-  .ds-mode:hover {
-    transform: translateY(-2px);
-  }
-
-  .ds-mode[aria-pressed='true'] {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--on);
-  }
-
-  .ds-mode__title {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    font-size: 19px;
-    font-weight: 700;
-  }
-
-  .ds-mode__badge {
-    padding: 2px 8px;
-    border-radius: 999px;
-    border: 1px solid currentColor;
-    font: 600 11px var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .ds-mode__text {
-    font-size: 15px;
-    opacity: 0.85;
-  }
-
-  .ds-mode__live {
-    margin: 20px 0 0;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .ds-shots li {
-    flex: 0 0 min(78vw, 420px);
-  }
-
-  .ds-shots img {
-    border: 0;
-    border-radius: 12px;
-  }
-
-  @media (min-width: 1100px) {
-    .ds-shots li {
-      flex: 1 1 0;
-    }
-  }
-
-  .ds-tiers {
-    display: grid;
-    gap: 18px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  .ds-tier {
-    padding: 24px;
-    border: var(--border-hairline) solid var(--color-border);
-    border-radius: 12px;
-  }
-
-  .ds-tier--pro {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--on);
-  }
-
-  .ds-tier__name {
-    margin: 0 0 12px;
-    color: inherit;
-  }
-
-  .ds-tier ul {
-    margin: 0;
-    padding-left: 1.2em;
-    display: grid;
-    gap: 8px;
-  }
-
-  .ds-tier__fine {
-    margin: 16px 0 0;
-    font-size: 14px;
-    opacity: 0.8;
-  }
-
-  .ds-privacy {
-    background: var(--color-surface);
-    border-block: var(--border-hairline) solid var(--color-border);
-  }
-
-  .ds-privacy__link {
-    margin: 22px 0 0;
-  }
-
-  .ds-privacy__link a {
-    color: var(--color-foreground);
+  .dsx .support-more {
+    margin-top: 28px;
+    color: var(--muted);
+  }
+  .dsx .support-more a {
+    color: var(--blue);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 </style>

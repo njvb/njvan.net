@@ -376,14 +376,13 @@ export const EMERGENCY = {
 } as const;
 
 /**
- * DropShelf (src/scripts/dropshelf-desk.ts, used by its homepage scene and its page): the library window rises, the
+ * DropShelf's homepage scene (src/scripts/dropshelf-desk.ts): the library window rises, the
  * floating shelf slides up beside it, then a file drops onto the shelf and is linked. Spans are fractions of the
- * timeline's progress (the scene's moment); the page plays the same timeline over `page.seconds`.
+ * timeline's progress (the scene's moment).
  */
 export const DROPSHELF = {
   library: [0, 0.32] as [number, number],
   shelf: [0.22, 0.5] as [number, number],
   drop: [0.5, 0.78] as [number, number],
   badge: [0.74, 0.92] as [number, number],
-  page: { seconds: 3.8, holdAfter: 2.6, reveal: { y: 26, duration: 0.6, stagger: 0.08, start: 'top 85%' } },
 } as const;

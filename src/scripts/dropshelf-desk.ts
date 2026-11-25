@@ -1,11 +1,10 @@
 // DropShelf's library window, floating shelf and dropped file (src/components/scenes/DropshelfDesk.astro), played
-// two ways from one timeline: scrubbed by the homepage scene's moment, or played over time on the /dropshelf/ page.
+// positioned by the homepage scene's moment (the /dropshelf/ page is the app's own design, ported as it is).
 // The library rises, the floating shelf slides up beside it, a file drops onto the shelf, and the badge says it was
 // linked, the app's default. Values: DROPSHELF in src/lib/motion.ts.
 import gsap from 'gsap';
 import { DROPSHELF as D } from '../lib/motion';
 import { onMoment } from '../lib/moments';
-import { prefersReducedMotion } from '../lib/effects/util';
 
 const span = ([a, b]: readonly [number, number]) => ({ at: a, duration: b - a });
 
@@ -35,32 +34,4 @@ export function mountDropshelfScene(root: HTMLElement): void {
   if (!id) return;
   const tl = buildDeskTimeline(root);
   onMoment(id, (p) => tl.progress(p));
-}
-
-/** The /dropshelf/ page: plays it as it comes into view, holds, and replays. Settled under reduced motion. */
-export function playDropshelfDesk(root: HTMLElement): () => void {
-  if (prefersReducedMotion()) return () => {};
-  const tl = buildDeskTimeline(root);
-  tl.progress(0);
-  tl.duration(D.page.seconds);
-  let visible = false;
-  const run = () => {
-    tl.restart();
-    tl.eventCallback('onComplete', () => {
-      if (visible) gsap.delayedCall(D.page.holdAfter, () => visible && tl.restart());
-    });
-  };
-  const io = new IntersectionObserver(
-    ([e]) => {
-      const was = visible;
-      visible = Boolean(e?.isIntersecting);
-      if (visible && !was) run();
-    },
-    { threshold: 0.3 }
-  );
-  io.observe(root);
-  return () => {
-    io.disconnect();
-    tl.kill();
-  };
 }
