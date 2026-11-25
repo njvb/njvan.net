@@ -3,9 +3,6 @@ import { contact } from '../data/projects';
 ---
 
 <footer class="site-footer" id="contact">
-  <div class="shell">
-    <p class="site-footer__open">Open to select freelance projects.</p>
-  </div>
   <div class="shell site-footer__inner t-caption">
     <a class="site-footer__email" href={`mailto:${contact.email}`}>{contact.email}</a>
     {
@@ -61,14 +58,6 @@ import { contact } from '../data/projects';
   }
 
   /* The one line of copy above the contact row. */
-  .site-footer__open {
-    font-family: var(--type-lead-family);
-    font-size: var(--type-lead-size);
-    line-height: var(--type-lead-line-height);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin-bottom: var(--gutter);
-  }
 
   .site-footer__inner {
     display: flex;

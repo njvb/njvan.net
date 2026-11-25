@@ -19,6 +19,15 @@ test.describe('home page', () => {
     watch.expectNone();
   });
 
+  test('the hero says what I do, where I am, and how to get in touch', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.hero__sub')).toHaveText('I design and build apps, tools and games for the web and Apple platforms.');
+    const avail = page.locator('.hero__avail');
+    await expect(avail).toContainText('Based in London');
+    await expect(avail).toContainText('Open to select freelance projects');
+    await expect(avail.getByRole('link', { name: 'Get in touch' })).toHaveAttribute('href', /^mailto:njvanderbyl@gmail\.com/);
+  });
+
   for (const p of projects) {
     test(`opens and closes ${p.name}`, async ({ page }) => {
       const watch = watchErrors(page);

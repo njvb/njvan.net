@@ -1,5 +1,5 @@
 ---
-import { projects } from '../data/projects';
+import { projects, contact } from '../data/projects';
 const count = String(projects.length).padStart(2, '0');
 ---
 
@@ -13,7 +13,12 @@ const count = String(projects.length).padStart(2, '0');
     </div>
 
     <div class="hero__row">
-      <p class="hero__sub" data-intro data-speak>Games, tools and apps I've built.</p>
+      <div class="hero__intro">
+        <p class="hero__sub" data-intro data-speak>I design and build apps, tools and games for the web and Apple platforms.</p>
+        <p class="hero__avail t-annotation" data-intro data-rise>
+          <span>Based in London</span><span aria-hidden="true"> · </span><span>Open to select freelance projects</span><span aria-hidden="true"> · </span><a href={`mailto:${contact.email}?subject=Freelance%20project`}>Get in touch</a>
+        </p>
+      </div>
       <div class="hero__actions">
         <!-- The particle canvas bleeds 180px past the button (the reactor's bleed). -->
         <div class="particle-button" data-particle-button>
@@ -81,7 +86,22 @@ const count = String(projects.length).padStart(2, '0');
     line-height: 28px;
     font-weight: 600;
     letter-spacing: -0.01em;
-    max-width: 26ch;
+    max-width: 38ch;
+  }
+
+  .hero__avail {
+    margin-top: var(--space-4);
+    color: var(--color-muted);
+  }
+
+  .hero__avail a {
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .hero__avail a:hover {
+    text-decoration-thickness: 2px;
   }
 
   .particle-button {
@@ -151,8 +171,11 @@ const count = String(projects.length).padStart(2, '0');
       align-items: end;
     }
 
+    .hero__intro {
+      grid-column: span 7;
+    }
+
     .hero__sub {
-      grid-column: span 6;
       font-size: 28px;
       line-height: 36px;
     }
