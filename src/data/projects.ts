@@ -41,6 +41,8 @@ export interface Project {
     ratio: number;
   };
   links: ProjectLink[];
+  /** Shown first, on a bigger card (Nathan's lead projects). */
+  featured?: boolean;
 }
 
 /** WorldBar's Mac App Store listing (app id 6836081075). */
@@ -54,24 +56,9 @@ export const CAMPAIGN_TOWER_APP_STORE = 'https://apps.apple.com/app/id6804446974
 
 export const projects: Project[] = [
   {
-    id: 'tavren',
-    number: '01',
-    name: 'Tavren',
-    kind: 'Game',
-    indexLine: 'A medieval hex-board strategy game for two to four players.',
-    indexStack: 'Vue 3 · Three.js',
-    line: 'A medieval hex-board strategy game for two to four players.',
-    more: 'Settle an island, build roads and villages, trade, and hold off the bandits. Play on one device, online, or against the computer.',
-    notes: ['Vue 3 · TypeScript · Three.js', '2-4 players · browser, iPhone, iPad and Mac'],
-    wordmark: { src: 'assets/tavren/wordmark-{w}.webp', widths: [600, 1100, 1700], ratio: 1100 / 252 },
-    links: [
-      { label: 'Play Tavren', href: 'https://mac-mini.tail94f02c.ts.net/', external: true, variant: 'solid' },
-      { label: 'Get the app', href: '/tavren/', variant: 'outline' },
-    ],
-  },
-  {
     id: 'kora',
-    number: '02',
+    featured: true,
+    number: '01',
     name: 'Kora',
     kind: 'Tool',
     indexLine: 'The operating system for creative agencies. Ask Kora answers across all of it.',
@@ -88,7 +75,8 @@ export const projects: Project[] = [
   },
   {
     id: 'cotrip',
-    number: '03',
+    featured: true,
+    number: '02',
     name: 'Cotrip',
     kind: 'App',
     indexLine: 'Your whole trip, in one place. Planned with your crew, with AI.',
@@ -101,6 +89,22 @@ export const projects: Project[] = [
     links: [
       { label: 'App Store', href: 'https://apps.apple.com/app/id1536158484', external: true, variant: 'solid' },
       { label: 'Visit cotrip.app', href: 'https://cotrip.app', external: true, variant: 'outline' },
+    ],
+  },
+  {
+    id: 'tavren',
+    number: '03',
+    name: 'Tavren',
+    kind: 'Game',
+    indexLine: 'A medieval hex-board strategy game for two to four players.',
+    indexStack: 'Vue 3 · Three.js',
+    line: 'A medieval hex-board strategy game for two to four players.',
+    more: 'Settle an island, build roads and villages, trade, and hold off the bandits. Play on one device, online, or against the computer.',
+    notes: ['Vue 3 · TypeScript · Three.js', '2-4 players · browser, iPhone, iPad and Mac'],
+    wordmark: { src: 'assets/tavren/wordmark-{w}.webp', widths: [600, 1100, 1700], ratio: 1100 / 252 },
+    links: [
+      { label: 'Play Tavren', href: 'https://mac-mini.tail94f02c.ts.net/', external: true, variant: 'solid' },
+      { label: 'Get the app', href: '/tavren/', variant: 'outline' },
     ],
   },
   {

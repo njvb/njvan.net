@@ -77,4 +77,4 @@ What each project is, as the site should describe it, and what its section draws
 
 ## Order
 
-Newest or most active first is the default; the order above is a draft. The index numbers (01-08) follow whatever order is chosen.
+The homepage order (and its numbers) is the order of `projects` in `src/data/projects.ts`: Kora and Cotrip first, as featured cards, then Tavren, Campaign Tower, WorldBar, PastePerfect, Emergency Tower and DropShelf. The numbered headings above are historical.
