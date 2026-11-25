@@ -19,6 +19,19 @@ test.describe('home page', () => {
     watch.expectNone();
   });
 
+  test('Kora and Cotrip come first, on bigger cards', async ({ page }) => {
+    await page.goto('/');
+    const first = await page.locator('[data-open-project]').evaluateAll((els) => els.slice(0, 2).map((e) => e.getAttribute('data-open-project')));
+    expect(first).toEqual(['kora', 'cotrip']);
+    await expect(page.locator('.card--featured')).toHaveCount(2);
+  });
+
+  test('card images are in full colour at rest (touch devices have no hover to reveal it)', async ({ page }) => {
+    await page.goto('/');
+    const filters = await page.locator('.card__tilt > img').evaluateAll((els) => els.map((e) => getComputedStyle(e).filter));
+    for (const f of filters) expect(f).toBe('none');
+  });
+
   test('the hero says what I do, where I am, and how to get in touch', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('.hero__sub')).toHaveText('I design and build apps, tools and games for the web and Apple platforms.');

@@ -30,9 +30,9 @@ const sizes: Record<string, [number, number]> = {
     <ol class="ledger cards" role="list">
       {
         projects.map((p) => (
-          <li data-scroll-reveal>
+          <li class:list={['cards__item', { 'cards__item--featured': p.featured }]} data-scroll-reveal>
             <a
-              class="ledger-row card"
+              class:list={['ledger-row card', { 'card--featured': p.featured }]}
               href={`#${p.id}`}
               data-project={p.id}
               data-open-project={p.id}
@@ -100,9 +100,13 @@ const sizes: Record<string, [number, number]> = {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* The featured projects come first on bigger cards: a full row each on a tablet, half a row each on a desktop. */
   @media (min-width: 640px) {
     .cards {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cards__item--featured {
+      grid-column: span 2;
     }
     .index__hint {
       display: inline;
@@ -111,8 +115,33 @@ const sizes: Record<string, [number, number]> = {
 
   @media (min-width: 1024px) {
     .cards {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
     }
+    .cards__item {
+      grid-column: span 2;
+    }
+    .cards__item--featured {
+      grid-column: span 3;
+    }
+  }
+
+  .card--featured {
+    min-height: 540px;
+  }
+
+  .card--featured .card__name {
+    font-size: clamp(2.8rem, 5.2cqi, 4.4rem);
+  }
+
+  .card--featured .ledger-row__line {
+    font-size: 17px;
+    line-height: 25px;
+    max-width: 40ch;
+  }
+
+  .card--featured .card__tilt > img,
+  .card--featured .card__loop :global(img) {
+    max-height: 360px;
   }
 
   .card {
@@ -204,7 +233,7 @@ const sizes: Record<string, [number, number]> = {
     transition: color 0.3s var(--ease-entrance);
   }
 
-  /* The project's real hero piece, cut out. Grey until the card floods; on hover a short loop of its own moment plays
+  /* The project's real hero piece, cut out, in full colour (on touch too). On hover a short loop of its own moment plays
      over it (src/scripts/stage.ts), and the whole thing leans toward the pointer. */
   .card__thumb {
     flex: 1;
@@ -230,10 +259,7 @@ const sizes: Record<string, [number, number]> = {
     height: auto;
     max-width: 100%;
     max-height: 250px;
-    filter: grayscale(1) brightness(0.92);
-    transition:
-      filter 0.4s var(--ease-entrance),
-      opacity 0.2s linear;
+    transition: opacity 0.2s linear;
   }
 
   .card__loop {
