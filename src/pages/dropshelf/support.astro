@@ -1,0 +1,202 @@
+---
+// DropShelf support: the Support URL for the App Store listing. Same layout as WorldBar's, PastePerfect's and
+// Emergency Tower's. The text is from the DropShelf session (its facts file of 25 November 2026).
+import Base from '../../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+const EMAIL = 'njvanderbyl@gmail.com';
+
+const include = ["Your Mac model and macOS version (Apple menu > About This Mac).", "The DropShelf version and build (DropShelf > Settings > About).", "What you did, what you expected and what happened instead.", "Whether the item was a linked original, a copy in DropShelf or a moved file.", "For a missing or unavailable item, where the original lives (internal disk, external drive, iCloud Drive, network share).", "A screenshot if it helps. Please don't send the files themselves."];
+
+const faqs = [
+  {
+    q: "What is the difference between Link, Copy and Move?",
+    a: "Link (the default) keeps a bookmark to the original where it already is; DropShelf never changes or deletes it. Copy stores an independent copy inside DropShelf and leaves the original untouched. Move puts the file into DropShelf and sends the original to the Trash, but only after the copy is verified, and it always asks you first.",
+  },
+  {
+    q: "Is a shelf a folder?",
+    a: "No. A shelf is a collection of bookmarks and DropShelf-managed items. Putting an item on a shelf, moving it between shelves or duplicating a shelf never moves or duplicates the file itself.",
+  },
+  {
+    q: "If I remove something from a shelf, is the file deleted?",
+    a: "No. Removing an item only removes it from that shelf, and you can undo it. Linked originals stay where they are. Copies or moved files stored inside DropShelf stay in the library until you delete them yourself.",
+  },
+  {
+    q: "Why does an item say Missing, Not downloaded or Volume disconnected?",
+    a: "DropShelf shows where a linked original is. Missing means it was deleted or moved somewhere DropShelf can't follow. Not downloaded means it is in iCloud Drive and not on this Mac yet. Volume disconnected means the drive it's on isn't connected. Reconnect or download it, or use Locate to point DropShelf at it.",
+  },
+  {
+    q: "How do I open the floating shelf?",
+    a: "Press Control-Option-D (you can change this in Settings), or choose Show Floating Shelf from the menu bar icon. The expand button at its top left grows it into the full library.",
+  },
+  {
+    q: "How do I select and remove several items?",
+    a: "In the library, click, Command-click or Shift-click items, or drag a rectangle over them. Command-A selects everything. Press Delete to remove the selection from the shelf. No files are deleted.",
+  },
+  {
+    q: "What does DropShelf Pro add?",
+    a: "Multiple shelves and private shelves. It's a one-time purchase. Everything else, including Link, Copy, Move, Quick Shelf, search and Spotlight, is free.",
+  },
+  {
+    q: "How do I restore my purchase on another Mac?",
+    a: "Open DropShelf > Settings > Pro and choose Restore Purchases, signed in with the same Apple Account. This unlocks Pro on that Mac. It doesn't copy your shelves or files; each Mac keeps its own library.",
+  },
+  {
+    q: "Are private shelves encrypted?",
+    a: "No. Private shelves are hidden inside DropShelf until you authenticate with Touch ID or your Mac password. The files themselves aren't encrypted and are still visible in Finder and other apps. Use FileVault for disk encryption.",
+  },
+  {
+    q: "Can Spotlight or Siri see my private items?",
+    a: "No. Only items and shelf names that aren't private are added to Spotlight, on your Mac. Items on a private shelf are never added, even while unlocked. You can turn Spotlight participation off completely in Settings > Privacy.",
+  },
+  {
+    q: "Does DropShelf back up my files?",
+    a: "No. Copies and moved files live in DropShelf's own folder on this Mac. Back up your Mac with Time Machine, and use Export Copy before deleting the app. Settings > Files > Show Managed Files in Finder shows that folder.",
+  },
+  {
+    q: "What happens if DropShelf quits in the middle of a Copy or Move?",
+    a: "DropShelf records each transfer step by step. On the next launch it checks what finished. It never resumes deleting an original on its own, and anything uncertain appears under Recovery so you can keep, retry or export it.",
+  },
+  {
+    q: "Why does DropShelf ask me to choose a folder sometimes?",
+    a: "macOS keeps apps in a sandbox. If DropShelf needs access it doesn't have, for example to send a moved file's original to the Trash, it asks you to choose that folder rather than asking for Full Disk Access.",
+  },
+];
+
+const known = ["Move from a read-only or some network volumes keeps the original and reports \"Copied, original retained\", because the original can't be sent to the Trash there.", "Items in iCloud Drive that aren't downloaded show as Not downloaded until macOS downloads them.", "New items can take a little while to appear in Spotlight while macOS indexes them."];
+---
+
+<Base
+  title="Support · DropShelf"
+  description="Help with DropShelf, the visual file shelf for Mac: Link, Copy and Move, shelves, the floating shelf, Pro and private shelves, and how to get in touch."
+  image="/og/dropshelf.jpg"
+  imageAlt="DropShelf: your files, all in one place."
+>
+  <article class="doc shell">
+    <p class="doc__crumb t-annotation"><a href={`${base}dropshelf/`}>DropShelf</a> · Support</p>
+    <h1 class="doc__title">Support</h1>
+    <p class="doc__lede t-body">DropShelf keeps the files, folders and links you're working with on a shelf that's always close at hand. If something isn't working, the answers below cover the common questions.</p>
+
+    <div class="doc__panel">
+      <p>Email <a href={`mailto:${EMAIL}?subject=DropShelf`}>{EMAIL}</a>. When you do, please include:</p>
+      <ul class="doc__list">
+        {include.map((i) => <li>{i}</li>)}
+      </ul>
+    </div>
+
+    <h2 class="doc__h2">Questions</h2>
+    <dl class="faq">
+      {
+        faqs.map((f) => (
+          <div class="faq__item">
+            <dt>{f.q}</dt>
+            <dd class="muted">{f.a}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <h2 class="doc__h2">Known issues</h2>
+    <ul class="doc__list muted">
+      {known.map((k) => <li>{k}</li>)}
+    </ul>
+
+    <p class="doc__links t-annotation"><a href={`${base}dropshelf/`}>DropShelf</a> · <a href={`${base}dropshelf/privacy/`}>Privacy</a></p>
+  </article>
+</Base>
+
+<style>
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .doc {
+    --doc-accent: var(--color-dropshelf);
+    padding-block: 56px 112px;
+    max-width: calc(820px + 2 * var(--pad));
+  }
+
+  .doc__crumb {
+    color: var(--color-muted);
+    margin-bottom: 18px;
+  }
+
+  .doc__crumb a {
+    text-decoration: none;
+  }
+
+  .doc__crumb a:hover {
+    text-decoration: underline;
+  }
+
+  .doc__title {
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .doc__lede,
+  .doc__meta {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+  }
+
+  .doc__panel {
+    padding: 20px 22px;
+    margin-bottom: 48px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-left: 4px solid var(--doc-accent);
+    border-radius: 14px;
+    background:
+      radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--doc-accent) 12%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  .doc__panel p {
+    margin: 0;
+  }
+
+  .doc__links {
+    margin-top: 48px;
+    color: var(--color-muted);
+  }
+
+  .doc__h2 {
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+  }
+
+  .faq {
+    margin: 0 0 56px;
+  }
+
+  .faq__item {
+    padding-block: 18px;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .faq__item dt {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  .faq__item dd {
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  .doc__list {\n    margin: 10px 0 0;\n    padding-left: 1.2em;\n  }\n\n  .doc__list li + li {\n    margin-top: 4px;\n  }\n\n  .muted {
+    color: var(--color-muted);
+  }
+</style>

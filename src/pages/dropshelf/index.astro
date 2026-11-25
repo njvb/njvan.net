@@ -1,0 +1,804 @@
+---
+// DropShelf's landing page, served at njvan.net/dropshelf/ (with /support/ and /privacy/, the App Store's Support and
+// Privacy URLs), ported from the app's own page (dropshelf-site in ~/Projects/Dropshelf) with the facts confirmed by
+// the DropShelf session on 25 November 2026: free to download, with DropShelf Pro as a one-time purchase (no price on the
+// page: a launch price runs until 1 February 2027, so a figure here would go stale); macOS 15 or
+// later; Apple silicon and Intel. The screenshots are the app's real captures (docs/screenshots, synthetic sample files),
+// light or dark with the site theme. The two library captures had a stray path tooltip masked out. The app is not on the
+// Mac App Store yet, so its store button is a labelled "Coming soon" placeholder: link its listing, with Apple's badge,
+// once it is live. The page's motion is src/scripts/dropshelf-page.ts.
+import Base from '../../layouts/Base.astro';
+import DropshelfDesk from '../../components/scenes/DropshelfDesk.astro';
+
+const base = import.meta.env.BASE_URL;
+const assets = `${base}assets/dropshelf/`;
+const SUPPORT = `${base}dropshelf/support/`;
+const PRIVACY = `${base}dropshelf/privacy/`;
+
+const description =
+  'DropShelf is a visual workspace for your Mac. Keep the files, folders and links you are working on close, wherever they live, and link, copy or move them, your way.';
+
+const features = [
+  { title: 'Bring your files together', text: 'Keep files, folders and links in visual collections, with thumbnails and Quick Look.' },
+  { title: 'Multiple shelves', text: 'Organise by project, client or however you work. A shelf is a collection, never a folder.' },
+  { title: 'Quick Shelf', text: 'A handy, flexible space for the files you need right now, kept between launches.' },
+  { title: 'Works where you work', text: 'Drag files in and out, open them, or show them in Finder. Always one click away in the menu bar.' },
+];
+
+const modes = [
+  {
+    id: 'link',
+    title: 'Link to Original',
+    badge: 'Default',
+    text: 'Keeps a bookmark to the original where it already is. DropShelf never changes or deletes it.',
+  },
+  { id: 'copy', title: 'Copy to DropShelf', text: 'Stores an independent copy inside DropShelf and leaves the original untouched.' },
+  {
+    id: 'move',
+    title: 'Move to DropShelf',
+    text: 'Puts the file into DropShelf and sends the original to the Trash, but only after the copy is verified, and it always asks you first.',
+  },
+];
+
+const shots = [
+  { file: 'list-light', caption: 'List view', alt: 'DropShelf library in list view, with names, kinds and sizes of the files on a shelf.' },
+  { file: 'add-menu', caption: 'Link, Copy or Move', alt: 'The Add menu in DropShelf: Link Files, Copy Files into DropShelf, Move Files into DropShelf and Add Web Link.' },
+  { file: 'private', caption: 'Private shelves', alt: 'A locked private shelf in DropShelf, its contents hidden until you authenticate.' },
+  { file: 'menu', caption: 'Always in your menu bar', alt: 'The DropShelf menu bar menu, listing Quick Shelf and the shelves, with Show Floating Shelf and Open DropShelf.' },
+];
+
+const faqs = [
+  {
+    q: 'What happens to my original files?',
+    a: 'Link leaves them exactly where they are. Copy makes a separate copy inside DropShelf. Move puts the file into DropShelf and sends the original to the Trash, only after the copy is verified and only after asking you.',
+  },
+  {
+    q: 'If I remove something from a shelf, is the file deleted?',
+    a: 'No. Removing an item only removes it from that shelf, and you can undo it. Linked originals stay where they are.',
+  },
+  { q: 'What does DropShelf Pro add?', a: 'Multiple shelves and private shelves. It is a one-time purchase. Everything else is free.' },
+  {
+    q: 'Are private shelves encrypted?',
+    a: 'No. Private shelves are hidden inside DropShelf until you authenticate with Touch ID or your Mac password. The files themselves are not encrypted. Use FileVault for disk encryption.',
+  },
+  { q: 'What do I need to run it?', a: 'A Mac running macOS 15 Sequoia or later, with Apple silicon or Intel.' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'DropShelf',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'macOS 15 or later',
+  description,
+  url: 'https://njvan.net/dropshelf/',
+  image: 'https://njvan.net/og/dropshelf.jpg',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'GBP' },
+  author: { '@type': 'Person', name: 'Nathan VanderByl', url: 'https://njvan.net/' },
+};
+---
+
+<Base
+  title="DropShelf: Your files. All in one place."
+  description={description}
+  image="/og/dropshelf.jpg"
+  imageAlt="DropShelf: your files, all in one place."
+  jsonLd={jsonLd}
+>
+  <!-- The hero holds its first frame hidden until the script lays out the intro (a failsafe lifts it). -->
+  <script is:inline slot="head">
+    (function () {
+      var m = document.documentElement.dataset.motion;
+      var calm = m === 'reduced' || (m !== 'full' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (!calm) {
+        document.documentElement.dataset.dsIntro = '';
+        setTimeout(function () { delete document.documentElement.dataset.dsIntro; }, 2500);
+      }
+      clearTimeout(window.__motionBootTimer);
+      document.documentElement.dataset.motionBoot = 'settled';
+      document.addEventListener('DOMContentLoaded', function () { document.body.dataset.phase = 'settled'; });
+    })();
+  </script>
+
+  <div class="ds">
+    <!-- ============ Hero ============ -->
+    <section class="ds-hero" aria-labelledby="ds-title">
+      <div class="shell ds-hero__inner">
+        <div class="ds-hero__copy">
+          <div class="ds-brand"><img src={`${assets}icon.webp`} width="64" height="64" alt="" /><span>DropShelf</span></div>
+          <h1 class="ds-hero__name" id="ds-title">Your files. All in one place.</h1>
+          <p class="ds-hero__more t-body">
+            A visual workspace for your Mac. Keep the files you're working on close, wherever they live, and link, copy
+            or move them, your way.
+          </p>
+          <div class="ds-links">
+            <!-- Not on the Mac App Store yet: a labelled placeholder, not a link. -->
+            <span class="btn btn--lg ds-solid" role="note">Coming soon to the Mac App Store</span>
+            <a class="btn btn--lg ds-ghost" href="#how">How it works ↓</a>
+          </div>
+          <p class="ds-hero__note t-annotation">Free · Pro is a one-time purchase · macOS 15 or later · Apple silicon and Intel</p>
+        </div>
+        <DropshelfDesk captures="theme" class="ds-hero__desk" />
+      </div>
+    </section>
+
+    <!-- ============ Features ============ -->
+    <section class="ds-section shell" aria-labelledby="ds-feat-title">
+      <h2 class="ds-h2" id="ds-feat-title">A little shelf for your Mac.</h2>
+      <div class="ds-grid">
+        {
+          features.map((f, i) => (
+            <div class="ds-cell">
+              <span class="ds-cell__n t-annotation">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ============ Link, Copy or Move ============ -->
+    <section class="ds-section shell" id="how" aria-labelledby="ds-how-title">
+      <h2 class="ds-h2" id="ds-how-title">Link, Copy or Move. Your choice.</h2>
+      <p class="ds-lede t-body">Add files to DropShelf the way that works for you. Choose one to see what it does.</p>
+      <div class="ds-modes" role="group" aria-label="How DropShelf adds a file">
+        {
+          modes.map((m, i) => (
+            <button class="ds-mode" type="button" data-ds-mode={m.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+              <span class="ds-mode__title">
+                {m.title}
+                {m.badge && <span class="ds-mode__badge">{m.badge}</span>}
+              </span>
+              <span class="ds-mode__text">{m.text}</span>
+            </button>
+          ))
+        }
+      </div>
+      <p class="ds-mode__live" data-ds-live aria-live="polite">Link keeps your original in place. Hold Option to Copy and Command to Move when you drop.</p>
+      <p class="ds-note t-annotation">A demo on this page. It never reads, copies or moves your files.</p>
+    </section>
+
+    <!-- ============ Screenshots ============ -->
+    <section class="ds-section ds-shots-wrap" aria-labelledby="ds-shots-title">
+      <div class="shell"><h2 class="ds-h2" id="ds-shots-title">In the app.</h2></div>
+      <ul class="ds-shots" role="list">
+        {
+          shots.map((s) => (
+            <li>
+              <figure>
+                <img src={`${assets}${s.file}.webp`} alt={s.alt} loading="lazy" decoding="async" />
+                <figcaption class="t-annotation">{s.caption}</figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="shell ds-note t-annotation">Real captures of the app, with sample files.</p>
+    </section>
+
+    <!-- ============ Free and Pro ============ -->
+    <section class="ds-section shell" aria-labelledby="ds-price-title">
+      <h2 class="ds-h2" id="ds-price-title">Free to download. Pro when you want more shelves.</h2>
+      <div class="ds-tiers">
+        <div class="ds-tier">
+          <p class="ds-tier__name t-annotation">Free</p>
+          <ul>
+            <li>One personal shelf, plus Quick Shelf</li>
+            <li>Link, Copy and Move</li>
+            <li>Search, Favourites and Recent</li>
+            <li>Spotlight and Shortcuts for your public items</li>
+            <li>The floating shelf and the menu bar</li>
+          </ul>
+        </div>
+        <div class="ds-tier ds-tier--pro">
+          <p class="ds-tier__name t-annotation">DropShelf Pro · one-time in-app purchase</p>
+          <ul>
+            <li>Multiple shelves, by project, client or anything else</li>
+            <li>Private shelves, hidden until you use Touch ID or your password</li>
+            <li>Restore your purchase on another Mac with the same Apple Account</li>
+          </ul>
+          <p class="ds-tier__fine">The price is shown in the app and on the App Store. Private shelves hide items in DropShelf; they don't encrypt files.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Privacy ============ -->
+    <section class="ds-privacy" aria-labelledby="ds-priv-title">
+      <div class="shell ds-section">
+        <h2 class="ds-h2" id="ds-priv-title">Your files stay on your Mac.</h2>
+        <ul class="ds-checks">
+          <li>No account or sign-in</li>
+          <li>No analytics, advertising or tracking</li>
+          <li>No servers of its own</li>
+          <li>Runs in Apple's App Sandbox, seeing only what you give it</li>
+          <li>The only connection is Apple's StoreKit, for the optional Pro purchase</li>
+        </ul>
+        <p class="ds-privacy__link"><a href={PRIVACY}>Read the privacy policy</a></p>
+      </div>
+    </section>
+
+    <!-- ============ Questions ============ -->
+    <section class="ds-section shell" aria-labelledby="ds-faq-title">
+      <h2 class="ds-h2" id="ds-faq-title">Common questions.</h2>
+      <div class="ds-faq">
+        {
+          faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+      <p class="ds-faq__more"><a href={SUPPORT}>More answers on the support page</a></p>
+    </section>
+
+    <!-- ============ Closing ============ -->
+    <section class="ds-end" aria-labelledby="ds-end-title">
+      <div class="shell ds-end__inner">
+        <ul class="ds-facts t-annotation">
+          <li>macOS 15 or later</li>
+          <li>Free to download</li>
+          <li>No account</li>
+        </ul>
+        <h2 class="ds-end__title" id="ds-end-title">Your files, a little closer.</h2>
+        <div class="ds-links ds-links--center">
+          <span class="btn btn--lg ds-solid" role="note">Coming soon to the Mac App Store</span>
+          <a class="btn btn--lg ds-ghost" href={SUPPORT}>Support</a>
+          <a class="btn btn--lg ds-ghost" href={PRIVACY}>Privacy</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import '../../scripts/dropshelf-page';
+</script>
+
+<style>
+  /* The homepage's panel snapping is for its full-screen scenes; this page scrolls freely. */
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  /* The header sits on the canvas above the hero, like the other landing pages. */
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .ds {
+    --accent: var(--color-dropshelf);
+    --on: var(--color-on-dropshelf);
+    --pixel-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  :global(html[data-theme='light']) .ds {
+    --pixel-shadow: 4px 4px 0 rgba(15, 21, 32, 0.16);
+  }
+
+  /* Buttons: navy and paper, like the game's own panels. */
+  .ds-solid {
+    background: var(--on);
+    border-color: var(--on);
+    color: var(--accent);
+    cursor: default;
+  }
+
+  .ds-ghost {
+    border-color: var(--on);
+    color: var(--on);
+  }
+
+  .ds-ghost:hover {
+    background: color-mix(in srgb, var(--on) 12%, transparent);
+  }
+
+  /* Until the intro is laid out the hero copy and phone wait, so nothing flashes. */
+  :global(html[data-ds-intro]) .ds-hero__copy > *,
+  :global(html[data-ds-intro]) .ds-hero__desk {
+    opacity: 0;
+  }
+
+  /* ================= Hero ================= */
+
+  .ds-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: 56px 96px;
+    background: var(--accent);
+    color: var(--on);
+  }
+
+  .ds-hero__inner {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .ds-hero__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+
+  .ds-icon {
+    width: 84px;
+    height: 84px;
+    border-radius: 20px;
+    box-shadow: var(--pixel-shadow);
+  }
+
+  .ds-hero__name {
+    margin: 22px 0 18px;
+    line-height: 0;
+  }
+
+  .ds-hero__name img {
+    display: block;
+    width: min(100%, 30rem);
+    height: auto;
+  }
+
+  .ds-hero__line {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+    max-width: 22ch;
+  }
+
+  .ds-hero__more {
+    color: color-mix(in srgb, var(--on) 82%, transparent);
+    max-width: 34em;
+    margin: 0 0 26px;
+  }
+
+  .ds-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .ds-links--center {
+    justify-content: center;
+    margin-top: 26px;
+  }
+
+  .ds-hero__note {
+    margin: 18px 0 0;
+    color: color-mix(in srgb, var(--on) 70%, transparent);
+  }
+
+  .ds-hero__phone {
+    container-type: inline-size;
+  }
+
+  /* ================= Sections ================= */
+
+  .ds-section {
+    padding-block: 84px;
+  }
+
+  @media (max-width: 819px) {
+    .ds-section {
+      padding-block: 60px;
+    }
+  }
+
+  .ds-h2 {
+    font-size: clamp(1.9rem, 4.6vw, 3.25rem);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 28px;
+    max-width: 18em;
+  }
+
+  .ds-steps {
+    list-style: none;
+    counter-reset: s;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  .ds-steps li {
+    counter-increment: s;
+    padding: 24px;
+    background: var(--color-surface);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: var(--pixel-shadow);
+  }
+
+  .ds-steps li::before {
+    content: '0' counter(s);
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--accent);
+    color: var(--on);
+    font: 600 13px var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  .ds-steps h3,
+  .ds-cell h3 {
+    margin: 12px 0 6px;
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 700;
+  }
+
+  .ds-steps p,
+  .ds-cell p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 16px;
+  }
+
+  .ds-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  }
+
+  .ds-cell {
+    padding: 24px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 10px;
+  }
+
+  .ds-cell__n {
+    color: var(--color-muted);
+  }
+
+  .ds-cell h3 {
+    margin-top: 6px;
+    font-size: 20px;
+  }
+
+  /* The five whole-screen captures: a row you can scroll sideways on a phone. */
+  .ds-shots-wrap {
+    padding-inline: 0;
+  }
+
+  .ds-shots {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0 var(--pad, 24px) 12px;
+    max-width: calc(1280px + 2 * var(--pad, 24px));
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+
+  .ds-shots li {
+    flex: 0 0 min(64vw, 250px);
+    scroll-snap-align: start;
+  }
+
+  .ds-shots figure {
+    margin: 0;
+  }
+
+  .ds-shots img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 8px solid #0a0a0a;
+    border-radius: 28px;
+    box-shadow: var(--pixel-shadow);
+  }
+
+  .ds-shots figcaption {
+    margin-top: 12px;
+    color: var(--color-muted);
+  }
+
+  @media (min-width: 1100px) {
+    .ds-shots {
+      overflow: visible;
+    }
+    .ds-shots li {
+      flex: 1 1 0;
+    }
+  }
+
+  /* ================= Free to play ================= */
+
+  .ds-free {
+    background: var(--color-surface);
+    border-block: var(--border-hairline) solid var(--color-border);
+  }
+
+  .ds-checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  .ds-checks li {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .ds-checks li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.3em;
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+  }
+
+  .ds-checks li::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0.42em;
+    width: 5px;
+    height: 9px;
+    border: solid var(--on);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .ds-free__link {
+    margin: 22px 0 0;
+  }
+
+  .ds-free__link a,
+  .ds-faq__more a {
+    color: var(--color-foreground);
+  }
+
+  /* ================= Questions ================= */
+
+  .ds-faq details {
+    max-width: 820px;
+    padding: 18px 0;
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .ds-faq details:last-child {
+    border-bottom: var(--border-hairline) solid var(--color-border);
+  }
+
+  .ds-faq summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .ds-faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ds-faq summary::after {
+    content: '+';
+    font-size: 24px;
+    line-height: 1;
+    color: var(--color-muted);
+  }
+
+  .ds-faq details[open] summary::after {
+    content: '\2212';
+  }
+
+  .ds-faq p {
+    max-width: 44em;
+    margin: 10px 0 0;
+    color: var(--color-muted);
+  }
+
+  .ds-faq__more {
+    margin: 22px 0 0;
+  }
+
+  /* ================= Closing ================= */
+
+  .ds-end {
+    background: var(--accent);
+    color: var(--on);
+    text-align: center;
+  }
+
+  .ds-end__inner {
+    padding-block: 96px 112px;
+  }
+
+  .ds-facts {
+    list-style: none;
+    margin: 0 0 22px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 22px;
+    color: color-mix(in srgb, var(--on) 75%, transparent);
+  }
+
+  .ds-end__title {
+    max-width: 12em;
+    margin: 0 auto;
+    font-size: clamp(2.4rem, 7vw, 4.75rem);
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+
+  .ds-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .ds-brand img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .ds-hero__name {
+    margin: 18px 0 16px;
+    font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    max-width: 12ch;
+  }
+
+  .ds-hero__desk {
+    container-type: inline-size;
+  }
+
+  .ds-lede {
+    color: var(--color-muted);
+    max-width: 40em;
+    margin: -12px 0 26px;
+  }
+
+  .ds-note {
+    color: var(--color-muted);
+    margin-top: 14px;
+  }
+
+  .ds-modes {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .ds-mode {
+    display: grid;
+    gap: 8px;
+    padding: 20px;
+    text-align: left;
+    font: inherit;
+    color: var(--color-foreground);
+    background: var(--color-surface);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .ds-mode:hover {
+    transform: translateY(-2px);
+  }
+
+  .ds-mode[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on);
+  }
+
+  .ds-mode__title {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .ds-mode__badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font: 600 11px var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ds-mode__text {
+    font-size: 15px;
+    opacity: 0.85;
+  }
+
+  .ds-mode__live {
+    margin: 20px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .ds-shots li {
+    flex: 0 0 min(78vw, 420px);
+  }
+
+  .ds-shots img {
+    border: 0;
+    border-radius: 12px;
+  }
+
+  @media (min-width: 1100px) {
+    .ds-shots li {
+      flex: 1 1 0;
+    }
+  }
+
+  .ds-tiers {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .ds-tier {
+    padding: 24px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: 12px;
+  }
+
+  .ds-tier--pro {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on);
+  }
+
+  .ds-tier__name {
+    margin: 0 0 12px;
+    color: inherit;
+  }
+
+  .ds-tier ul {
+    margin: 0;
+    padding-left: 1.2em;
+    display: grid;
+    gap: 8px;
+  }
+
+  .ds-tier__fine {
+    margin: 16px 0 0;
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  .ds-privacy {
+    background: var(--color-surface);
+    border-block: var(--border-hairline) solid var(--color-border);
+  }
+
+  .ds-privacy__link {
+    margin: 22px 0 0;
+  }
+
+  .ds-privacy__link a {
+    color: var(--color-foreground);
+  }
+</style>

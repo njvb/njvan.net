@@ -1,0 +1,189 @@
+---
+// DropShelf's privacy policy: the Privacy Policy URL for the App Store listing. Same layout as Emergency Tower's.
+// It describes only what the app does (text from the DropShelf session). Keep it in step with the app if that changes.
+import Base from '../../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+const EMAIL = 'njvanderbyl@gmail.com';
+---
+
+<Base
+  title="Privacy policy · DropShelf"
+  description="DropShelf collects no data: no account, no analytics, no advertising and no servers of its own. Everything on your shelves stays on your Mac."
+  image="/og/dropshelf.jpg"
+  imageAlt="DropShelf: your files, all in one place."
+>
+  <article class="doc shell">
+    <p class="doc__crumb t-annotation"><a href={`${base}dropshelf/`}>DropShelf</a> · Privacy</p>
+    <h1 class="doc__title">Privacy policy</h1>
+    <p class="doc__meta t-annotation">Effective 25 November 2026 · Applies to the DropShelf app for Mac</p>
+
+    <div class="doc__panel">
+      <p>
+        <strong>The short version.</strong> DropShelf doesn't collect any data. It has no account, no analytics, no advertising and no servers
+        of its own. Everything you put on a shelf stays on your Mac. The only network connection it makes is
+        through Apple's StoreKit, for the optional Pro purchase.
+      </p>
+    </div>
+
+    <h2>1. Who we are</h2>
+    <p>
+      DropShelf is made by Nathan VanderByl. Contact: <a
+      href={`mailto:${EMAIL}?subject=DropShelf%20privacy`}>{EMAIL}</a>.
+    </p>
+
+    <h2>2. Data we collect</h2>
+    <p>
+      None. DropShelf doesn't collect, transmit, sell or share personal data. There is no sign-in, no
+      tracking, no analytics or crash-reporting service, and no advertising.
+    </p>
+
+    <h2>3. What stays on your Mac</h2>
+    <p>
+      DropShelf runs in Apple's App Sandbox and only sees files and folders you give it, by dropping them or
+      choosing them. It stores the following on your Mac, inside its own app container:
+    </p>
+    <ul>
+      <li>Bookmarks to the items you add, so it can reopen them later. A file's path is used only as a display hint.</li>
+      <li>Shelf names, item names, order, favourites and recent items.</li>
+      <li>Independent copies of files you Copy or Move into DropShelf.</li>
+      <li>Thumbnails, which can be regenerated.</li>
+      <li>Transfer records used to recover safely from an interrupted Copy or Move.</li>
+    </ul>
+    <p>
+      None of this is sent anywhere by DropShelf.
+    </p>
+
+    <h2>4. Linked items</h2>
+    <p>
+      For items you Link, DropShelf keeps a bookmark and never changes, renames or deletes the original.
+    </p>
+
+    <h2>5. Private shelves</h2>
+    <p>
+      Private shelves are hidden inside DropShelf until you authenticate with Touch ID or your Mac password,
+      using Apple's LocalAuthentication. DropShelf never sees your fingerprint or password. Private shelves
+      aren't encrypted: the files and DropShelf's own records of them are stored like any other, and macOS may
+      index linked originals in Spotlight independently.
+    </p>
+
+    <h2>6. Spotlight and Siri</h2>
+    <p>
+      To make items searchable, DropShelf adds the names of items and shelves that aren't private to the
+      Spotlight index on your Mac. Shortcuts and Siri use the same on-device information. Items on a private
+      shelf are never added. You can turn this off in Settings > Privacy, which removes DropShelf's entries.
+    </p>
+
+    <h2>7. Purchases</h2>
+    <p>
+      DropShelf Pro is bought through Apple's App Store using StoreKit. Apple handles payment; DropShelf never
+      sees your payment details. DropShelf checks Apple's signed purchase record to unlock Pro. Restore
+      Purchases asks Apple for your existing purchase so Pro unlocks on another Mac signed in to the same
+      Apple Account. It doesn't sync shelves or files.
+    </p>
+
+    <h2>8. Children</h2>
+    <p>
+      DropShelf doesn't collect data from anyone, including children.
+    </p>
+
+    <h2>9. Deleting your data</h2>
+    <p>
+      Deleting DropShelf and its container removes its library, including copies of files stored in DropShelf.
+      Linked originals aren't affected. Export anything you want to keep first.
+    </p>
+
+    <h2>10. Changes</h2>
+    <p>
+      If this policy changes, the new version will be posted here with a new effective date.
+    </p>
+
+    <p class="doc__links t-annotation"><a href={`${base}dropshelf/`}>DropShelf</a> · <a href={`${base}dropshelf/support/`}>Support</a></p>
+  </article>
+</Base>
+
+<style>
+  :global(html) {
+    scroll-snap-type: none !important;
+  }
+
+  :global(.site-header) {
+    position: static !important;
+  }
+
+  .doc {
+    --doc-accent: var(--color-dropshelf);
+    padding-block: 56px 112px;
+    max-width: calc(820px + 2 * var(--pad));
+  }
+
+  .doc__crumb {
+    color: var(--color-muted);
+    margin-bottom: 18px;
+  }
+
+  .doc__crumb a {
+    text-decoration: none;
+  }
+
+  .doc__crumb a:hover {
+    text-decoration: underline;
+  }
+
+  .doc__title {
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .doc__lede,
+  .doc__meta {
+    color: var(--color-muted);
+    margin-bottom: 32px;
+  }
+
+  .doc__panel {
+    padding: 20px 22px;
+    margin-bottom: 40px;
+    border: var(--border-hairline) solid var(--color-border);
+    border-left: 4px solid var(--doc-accent);
+    border-radius: 14px;
+    background:
+      radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--doc-accent) 12%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+
+  .doc__panel p {
+    margin: 0;
+  }
+
+  .doc__links {
+    margin-top: 48px;
+    color: var(--color-muted);
+  }
+
+  h2 {
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 36px 0 10px;
+  }
+
+  article ul {
+    max-width: 66ch;
+    margin: 0 0 14px;
+    padding-left: 1.2em;
+  }
+
+  article p {
+    max-width: 66ch;
+    margin: 0 0 14px;
+  }
+
+  .doc__panel p {
+    margin: 0;
+  }
+</style>

@@ -66,6 +66,15 @@ What each project is, as the site should describe it, and what its section draws
 - **Links.** "See Emergency Tower" goes to /emergency-tower/. No store link until the game is live (the page carries a "Coming soon" placeholder).
 - **Licence.** Whole-screen screenshots only, never cut-out sprites.
 
+## 08 · DropShelf
+
+- **Line.** Your files. All in one place.
+- **More.** A visual workspace for your Mac. Keep the files you are working on close, wherever they live, and link, copy or move them, your way.
+- **Index.** "Your files, all in one place. A visual shelf for the files you are working on, on your Mac." · `SWIFTUI · APPKIT · MACOS`
+- **Accent.** `dropshelf`: white in the dark theme, black in the light one, text in `on-dropshelf`.
+- **Moment.** The library window rises, the floating shelf slides up beside it, a file drops onto the shelf, and a badge says it was linked. Values `DROPSHELF` in `motion.ts`.
+- **Links.** "See DropShelf" goes to /dropshelf/. No store link until the app is live; no price on the page (launch promotion).
+
 ## Order
 
-Newest or most active first is the default; the order above is a draft. The index numbers (01-07) follow whatever order is chosen.
+Newest or most active first is the default; the order above is a draft. The index numbers (01-08) follow whatever order is chosen.
