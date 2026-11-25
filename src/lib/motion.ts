@@ -67,7 +67,7 @@ export const HERO = {
   /** The subhead starts speaking. */
   speakDelay: 1.05,
   /** Subhead words that arrive letter by letter. */
-  speakEmphasis: ['built'],
+  speakEmphasis: ['build'],
   /** The particle button starts assembling (speak start + 0.2s). */
   buttonDelay: 1.25,
   /** Supporting items (nav, meta row) rise after the letters start landing. */

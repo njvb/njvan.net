@@ -17,7 +17,7 @@ The live versions are on claude.ai: the njvan design system (https://claude.ai/a
 
 ## Decisions already made
 
-- **Hero:** "Nathan VanderByl" on two lines at poster size, no label above it, subheading "Games, tools and apps I've built.", one solid "See the projects" button. The header wordmark reads "njvan".
+- **Hero:** "Nathan VanderByl" on two lines at poster size, no label above it, subheading "I design and build apps, tools and games for the web and Apple platforms.", then "Based in London · Open to select freelance projects · Get in touch" (a mailto link; moved up from the footer), one solid "See the projects" button. The header wordmark reads "njvan".
 - **No GitHub links anywhere.** The repos are private.
 - **Contact:** njvanderbyl@gmail.com and LinkedIn in the footer.
 - **Accents:** Tavren #FFD34D, Kora #5B4BE0 / #8B7CFF dark, Cotrip #F95C30 (coral, not its brand violet), Campaign Tower #3FBF5F. One accent on screen at a time.
