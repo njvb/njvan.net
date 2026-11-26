@@ -4,11 +4,14 @@
 // Motion and the live demo live in src/scripts/worldbar-page.ts; the screenshots are real
 // captures of the app (public/assets/worldbar/), never mock-ups.
 import Base from '../../layouts/Base.astro';
+import { storeLink } from '../../data/projects';
 
 const base = import.meta.env.BASE_URL;
 const shots = `${base}assets/worldbar/`;
 // The Mac App Store listing (live).
 const STORE = 'https://apps.apple.com/app/id6836081075';
+// The download buttons carry a campaign name, so App Analytics can tell this page's downloads apart.
+const STORE_LINK = storeLink(STORE, 'njvan-worldbar');
 const SUPPORT = `${base}worldbar/support/`;
 const PRIVACY = `${base}worldbar/privacy/`;
 
@@ -221,7 +224,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
         </p>
         <div class="wb-hero__links" data-wb-rise>
           <!-- Apple's own badge, unaltered: black on this light field. -->
-          <a class="wb-badge" href={STORE} target="_blank" rel="noopener" aria-label="Download WorldBar on the Mac App Store">
+          <a class="wb-badge" href={STORE_LINK} target="_blank" rel="noopener" aria-label="Download WorldBar on the Mac App Store">
             <img src={`${shots}badge-mac-app-store-black.svg`} alt="Download on the Mac App Store" width="156" height="40" />
           </a>
           <a class="btn btn--lg wb-btn" href="#try">Try it below ↓</a>
@@ -505,7 +508,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': [softwareApp, faqPa
     <h2 class="wb-end__title" id="wb-end-title" data-wb-split>Find a time that works for everyone.</h2>
     <div class="wb-end__links" data-wb-end-links>
       <!-- Apple's badge: white on the dark page, black on the light one. -->
-      <a class="wb-badge" href={STORE} target="_blank" rel="noopener" aria-label="Download WorldBar on the Mac App Store">
+      <a class="wb-badge" href={STORE_LINK} target="_blank" rel="noopener" aria-label="Download WorldBar on the Mac App Store">
         <img class="wb-theme-dark" src={`${shots}badge-mac-app-store-white.svg`} alt="Download on the Mac App Store" width="156" height="40" />
         <img class="wb-theme-light" src={`${shots}badge-mac-app-store-black.svg`} alt="" width="156" height="40" />
       </a>

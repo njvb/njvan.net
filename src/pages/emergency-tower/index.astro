@@ -6,13 +6,14 @@
 // wordmark are free to use alone. The game is live on the App Store (app id 6834648880): Apple's badge links its listing. The page's motion is src/scripts/emergency-page.ts.
 import Base from '../../layouts/Base.astro';
 import EmergencyPhone from '../../components/scenes/EmergencyPhone.astro';
-import { EMERGENCY_TOWER_APP_STORE } from '../../data/projects';
+import { EMERGENCY_TOWER_APP_STORE, storeLink } from '../../data/projects';
 
 const base = import.meta.env.BASE_URL;
 const assets = `${base}assets/emergency-tower/`;
 const SUPPORT = `${base}emergency-tower/support/`;
 const PRIVACY = `${base}emergency-tower/privacy/`;
-const STORE = EMERGENCY_TOWER_APP_STORE;
+// The badges carry a campaign name, so App Analytics can tell this page's downloads apart.
+const STORE = storeLink(EMERGENCY_TOWER_APP_STORE, 'njvan-emergency-tower');
 
 const description =
   'Emergency Tower is a pixel-art idle game for iPhone about building a city\'s emergency services into one tower. Patients arrive tagged red, amber or green, and you choose who rides the lift first.';

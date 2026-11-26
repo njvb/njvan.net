@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { storeLink } from '../src/data/projects';
 
 // The Dock icon answer (WorldBar 1.0.1) is on the landing page, in its structured data, and on the support page.
 test.describe('WorldBar Dock icon FAQ', () => {
@@ -46,7 +47,7 @@ test.describe('WorldBar is on the Mac App Store', () => {
     await page.goto('/worldbar/');
     const badges = page.locator('a.wb-badge');
     expect(await badges.count()).toBeGreaterThanOrEqual(2);
-    for (const href of await badges.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) expect(href).toBe(LISTING);
+    for (const href of await badges.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) expect(href).toBe(storeLink(LISTING, 'njvan-worldbar'));
     await expect(page.locator('a[href*="testflight"]')).toHaveCount(0);
     await expect(page.getByText('TestFlight')).toHaveCount(0);
   });
@@ -55,7 +56,7 @@ test.describe('WorldBar is on the Mac App Store', () => {
     await page.goto('/');
     await page.locator('[data-open-project="worldbar"]').click();
     const badge = page.locator('#worldbar a.scene-badge');
-    await expect(badge).toHaveAttribute('href', LISTING);
+    await expect(badge).toHaveAttribute('href', storeLink(LISTING, 'njvan-home'));
     await expect(badge).toHaveAttribute('rel', /noopener/);
     await expect(page.locator('#worldbar a[href="/worldbar/"]')).toBeAttached();
     await expect(page.locator('#worldbar a[href*="testflight"]')).toHaveCount(0);
