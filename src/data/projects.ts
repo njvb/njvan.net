@@ -45,6 +45,16 @@ export interface Project {
   featured?: boolean;
 }
 
+/**
+ * Apple's provider token for Nathan's App Store Connect account (App Analytics > Campaigns > Generate a Campaign Link).
+ * Every App Store link on this site carries it with a campaign name (`ct`), so App Analytics shows which page sent each download.
+ * The plain listing URLs below stay as they are for structured data.
+ */
+export const APPLE_PROVIDER_TOKEN = '122235622';
+
+/** A listing URL tagged for App Analytics. Campaign names start with "njvan-" and stay under 30 characters. */
+export const storeLink = (listing: string, campaign: string) => `${listing}?pt=${APPLE_PROVIDER_TOKEN}&ct=${campaign}&mt=8`;
+
 /** WorldBar's Mac App Store listing (app id 6836081075). */
 export const WORLDBAR_MAC_APP_STORE = 'https://apps.apple.com/app/id6836081075';
 
@@ -87,7 +97,7 @@ export const projects: Project[] = [
     notes: ['SwiftUI · Vue 3 · Firebase', 'Free · iPhone, iPad and web'],
     logo: { src: 'assets/cotrip/cotrip-logo.png', ratio: 440 / 112 },
     links: [
-      { label: 'App Store', href: 'https://apps.apple.com/app/id1536158484', external: true, variant: 'solid' },
+      { label: 'App Store', href: storeLink('https://apps.apple.com/app/id1536158484', 'njvan-home'), external: true, variant: 'solid' },
       { label: 'Visit cotrip.app', href: 'https://cotrip.app', external: true, variant: 'outline' },
     ],
   },
@@ -121,7 +131,7 @@ export const projects: Project[] = [
     wordmark: { src: 'assets/tower/wordmark-{w}.webp', widths: [600, 1100, 1700], ratio: 1774 / 887 },
     links: [
       // Live on the App Store (approved 24 Nov 2026).
-      { label: 'Download Campaign Tower on the App Store', href: CAMPAIGN_TOWER_APP_STORE, external: true, variant: 'solid', badge: 'app-store' },
+      { label: 'Download Campaign Tower on the App Store', href: storeLink(CAMPAIGN_TOWER_APP_STORE, 'njvan-home'), external: true, variant: 'solid', badge: 'app-store' },
       { label: 'About the game', href: '/campaign-tower/', variant: 'outline' },
     ],
   },
@@ -137,7 +147,7 @@ export const projects: Project[] = [
     notes: ['macOS 15 or later', 'No account · No tracking'],
     links: [
       // Live on the Mac App Store (app id 6836081075).
-      { label: 'Download WorldBar on the Mac App Store', href: WORLDBAR_MAC_APP_STORE, external: true, variant: 'solid', badge: 'mac-app-store' },
+      { label: 'Download WorldBar on the Mac App Store', href: storeLink(WORLDBAR_MAC_APP_STORE, 'njvan-home'), external: true, variant: 'solid', badge: 'mac-app-store' },
       { label: 'See WorldBar', href: '/worldbar/', variant: 'outline' },
     ],
   },
@@ -167,7 +177,7 @@ export const projects: Project[] = [
     wordmark: { src: 'assets/emergency-tower/wordmark-{w}.webp', widths: [600, 1000], ratio: 992 / 328 },
     // Live on the App Store (app id 6834648880).
     links: [
-      { label: 'Download Emergency Tower on the App Store', href: EMERGENCY_TOWER_APP_STORE, external: true, variant: 'solid', badge: 'app-store' },
+      { label: 'Download Emergency Tower on the App Store', href: storeLink(EMERGENCY_TOWER_APP_STORE, 'njvan-home'), external: true, variant: 'solid', badge: 'app-store' },
       { label: 'See Emergency Tower', href: '/emergency-tower/', variant: 'outline' },
     ],
   },

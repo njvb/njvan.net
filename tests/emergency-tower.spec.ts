@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { EMERGENCY_TOWER_APP_STORE } from '../src/data/projects';
+import { EMERGENCY_TOWER_APP_STORE, storeLink } from '../src/data/projects';
 
 // Emergency Tower's support and privacy pages are the URLs the app and its App Store listing use.
 test.describe('Emergency Tower', () => {
@@ -10,7 +10,7 @@ test.describe('Emergency Tower', () => {
     // Live on the App Store: every badge goes to the listing, and the placeholder and any beta link are gone.
     const badges = page.locator('a.em-badge');
     await expect(badges).toHaveCount(2);
-    for (const href of await badges.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) expect(href).toBe(EMERGENCY_TOWER_APP_STORE);
+    for (const href of await badges.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) expect(href).toBe(storeLink(EMERGENCY_TOWER_APP_STORE, 'njvan-emergency-tower'));
     await expect(page.getByText('Coming soon')).toHaveCount(0);
     await expect(page.locator('a[href*="testflight"]')).toHaveCount(0);
     await expect(page.locator('.em-shots img')).toHaveCount(5);
@@ -25,7 +25,7 @@ test.describe('Emergency Tower', () => {
     const scene = page.locator('#emergency');
     await expect(scene).toHaveClass(/is-current/);
     await expect(scene.locator('a[href="/emergency-tower/"]')).toBeAttached();
-    await expect(scene.locator('a.scene-badge')).toHaveAttribute('href', EMERGENCY_TOWER_APP_STORE);
+    await expect(scene.locator('a.scene-badge')).toHaveAttribute('href', storeLink(EMERGENCY_TOWER_APP_STORE, 'njvan-home'));
     await expect(scene.locator('[data-em-tag]')).toHaveCount(3);
   });
 
