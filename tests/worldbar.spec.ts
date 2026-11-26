@@ -23,6 +23,21 @@ test.describe('WorldBar Dock icon FAQ', () => {
   });
 });
 
+// The Dock icon is optional (Settings, General), so no page says flatly that there isn't one.
+test.describe('WorldBar Dock icon wording', () => {
+  test('the facts strip says the Dock icon is optional', async ({ page }) => {
+    await page.goto('/worldbar/');
+    await expect(page.locator('[data-wb-facts]')).toContainText('Dock icon optional');
+  });
+
+  test('the support page does not say flatly that there is no Dock icon', async ({ page }) => {
+    await page.goto('/worldbar/support/');
+    const item = page.locator('.faq__item', { hasText: "I can't see a window" });
+    await expect(item).toContainText('unless you turn one on');
+    await expect(page.getByText('Menu bar app, no Dock icon')).toHaveCount(0);
+  });
+});
+
 // WorldBar is live on the Mac App Store: every download button goes to its listing, and the beta link is gone.
 test.describe('WorldBar is on the Mac App Store', () => {
   const LISTING = 'https://apps.apple.com/app/id6836081075';
